@@ -103,7 +103,7 @@ public class Server {
      * @return time server time
      */
     public long getTime() {
-        return server.e.k(); // Thank you Bukkit
+        return server.e.l();
     }
 
     /**
