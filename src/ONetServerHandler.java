@@ -220,18 +220,22 @@ public class ONetServerHandler extends ONetHandler implements OICommandListener 
                 return;
             }
             
-            OAxisAlignedBB var28 = e.aV.b().b((double) f5, (double) f5, (double) f5).a(0.0D, -0.55D, 0.0D);
-            if (!d.o && !d.e.b(var28)) {
-                if (d7 >= -0.03125D) {
-                    ++h;
-                    if (h > 80) {
-                        a.warning(e.r + " was kicked for floating too long!");
-                        a("Flying is not enabled on this server");
-                        return;
-                    }
-                }
-            } else {
-                this.h = 0;
+            if (!getPlayer().isAdmin() && (!getPlayer().isAllowedFlyMod())) {
+            	OAxisAlignedBB var28 = e.aV.b().b((double) f5, (double) f5, (double) f5).a(0.0D, -0.55D, 0.0D);
+	            if (!d.o && !d.e.b(var28)) {
+	                if (d7 >= -0.03125D) {
+	                    ++h;
+	                    if (h > 80) {
+	                    	d.f.a(new OPacket3Chat("*** " + Colors.Rose + "Kicking " + e.r + " for flymod.. bye....."));
+	                    	a.warning(e.r + " was kicked for flymod!");
+	                        a("Flymod is not allowed on this server");
+	                        this.h = 0;
+	                        return;
+	                    }
+	                }
+	            } else {
+	                this.h = 0;
+	            }
             }
 
 
