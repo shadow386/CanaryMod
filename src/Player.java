@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -1394,5 +1395,18 @@ public class Player extends HumanEntity implements MessageReceiver {
         int hash = 7;
         hash = 71 * hash + id;
         return hash;
+    }
+    
+    /**
+     * Tests if the player is in a group that allows flymod
+     * 
+     * @return true if group is allowed to use flymod
+     */
+    public boolean isAllowedFlyMod() {
+    	if (getGroups().length == 0) {
+    		return false;
+    	}
+    	// checking on the zero index at the moment as I have not seen multiple groups. Please correct me if I am wrong.
+    	return Arrays.asList(etc.getInstance().getFlyAllowedGroups()).contains(getGroups()[0]);
     }
 }

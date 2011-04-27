@@ -63,6 +63,8 @@ public class etc {
 
     private boolean                       mobReload           = false;
     private List<OSpawnListEntry>         animalsList, monsterList, waterAnimalsList;
+    
+    private String[]                      flyAllowedGroups   = new String[] {};
 
     private etc() {
         commands.put("/help", "[Page] - Shows a list of commands. 7 per page.");
@@ -144,6 +146,10 @@ public class etc {
             whitelistEnabled = properties.getBoolean("whitelist", false);
             whitelistMessage = properties.getString("whitelist-message", "Not on whitelist.");
             reservelistEnabled = properties.getBoolean("reservelist", false);
+            flyAllowedGroups = properties.getString("flymod-allowed-groups", "").split(",");
+            if (flyAllowedGroups.length == 1 && (flyAllowedGroups[0].equals(" ") || flyAllowedGroups[0].equals("")))
+            	flyAllowedGroups = new String[] {};
+            
             if (dataSourceType.equalsIgnoreCase("flatfile")) {
                 usersLoc = properties.getString("admintxtlocation", "users.txt");
                 kitsLoc = properties.getString("kitstxtlocation", "kits.txt");
@@ -1079,4 +1085,22 @@ public class etc {
             return false;
     }
 
+    /**
+     * Returns a list of groups allowed to use flymod
+     * 
+     * @return a list of flymod
+     */
+    public String[] getFlyAllowedGroups() {
+        return flyAllowedGroups;
+    }
+
+    /**
+     * Sets a list of groups allowed to use flymod
+     * 
+     * @param flymod
+     *            a list of flymod
+     */
+    public void setFlyAllowedGroups(String[] allowedGroups) {
+    	flyAllowedGroups = allowedGroups;
+    }
 }
