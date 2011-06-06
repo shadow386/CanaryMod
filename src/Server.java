@@ -541,6 +541,18 @@ public class Server {
     public void dropItem(Location loc, int itemId, int quantity) {
         dropItem(loc.x, loc.y, loc.z, itemId, quantity);
     }
+    
+    /**
+     * Drops an item with desired quantity and damage data at the specified location
+     * 
+     * @param loc
+     * @param itemId
+     * @param quantity
+     * @param damage
+     */
+    public void dropItem(Location loc, int itemId, int quantity, int damage) {
+        dropItem(loc.x, loc.y, loc.z, itemId, quantity, damage);
+    }
 
     /**
      * Drops an item with desired quantity at the specified location
@@ -552,11 +564,25 @@ public class Server {
      * @param quantity
      */
     public void dropItem(double x, double y, double z, int itemId, int quantity) {
+        dropItem(x, y, z, itemId, quantity, 0);
+    }
+    
+    /**
+     * Drops an item with desired quantity and damage value at the specified location
+     * 
+     * @param x
+     * @param y
+     * @param z
+     * @param itemId
+     * @param quantity
+     * @param damage
+     */
+    public void dropItem(double x, double y, double z, int itemId, int quantity, int damage) {
         double d1 = server.e.m.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
         double d2 = server.e.m.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
         double d3 = server.e.m.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
 
-        OEntityItem oei = new OEntityItem(server.e, x + d1, y + d2, z + d3, new OItemStack(itemId, quantity, 0));
+        OEntityItem oei = new OEntityItem(server.e, x + d1, y + d2, z + d3, new OItemStack(itemId, quantity, damage));
         oei.c = 10;
         server.e.b(oei);
     }
