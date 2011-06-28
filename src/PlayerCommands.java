@@ -243,6 +243,10 @@ public class PlayerCommands {
                 return;
 
             Player player = etc.getServer().matchPlayer(split[1]);
+            if (player == null) {
+                caller.notify("Can't find user " + split[1] + ".");
+                return;
+            }
             if (!player.getWorld().equals(((Player) caller).getWorld()))
                 if (((Player) caller).canIgnoreRestrictions()) {
                     if (player != null) {
@@ -266,7 +270,6 @@ public class PlayerCommands {
                     return;
                 }
 
-            if (player != null) {
                 if (caller.equals(player)) {
                     caller.notify("You're already here!");
                     return;
@@ -274,8 +277,6 @@ public class PlayerCommands {
 
                 log.info(caller.getName() + " teleported to " + player.getName());
                 ((Player) caller).teleportTo(player);
-            } else
-                caller.notify("Can't find user " + split[1] + ".");
         }
     };
     @Command({"tphere", "s"})
@@ -287,6 +288,10 @@ public class PlayerCommands {
                 return;
 
             Player player = etc.getServer().matchPlayer(split[1]);
+            if (player == null) {
+                caller.notify("Can't find user " + split[1] + ".");
+                return;
+            }
             if (!player.getWorld().equals(((Player) caller).getWorld()))
                 if (((Player) caller).canIgnoreRestrictions()) {
                     if (player != null) {
@@ -309,7 +314,6 @@ public class PlayerCommands {
                     return;
                 }
 
-            if (player != null) {
                 if (caller.equals(player)) {
                     caller.notify("Wow look at that! You teleported yourself to yourself!");
                     return;
@@ -317,8 +321,6 @@ public class PlayerCommands {
 
                 log.info(caller.getName() + " teleported " + player.getName() + " to their self.");
                 player.teleportTo((Player) caller);
-            } else
-                caller.notify("Can't find user " + split[1] + ".");
         }
     };
     @Command({"playerlist", "who"})
