@@ -65,7 +65,7 @@ public class OEntityLightningBolt extends OEntityWeatherEffect {
 
          for(int var6 = 0; var6 < var8.size(); ++var6) {
             OEntity var7 = (OEntity)var8.get(var6);
-            if (!(Boolean) manager.callHook(PluginLoader.Hook.LIGHTNING_STRIKE, var7))
+            if (!(Boolean) manager.callHook(PluginLoader.Hook.LIGHTNING_STRIKE, new BaseEntity(var7)))
                 var7.a(this);
          }
 
