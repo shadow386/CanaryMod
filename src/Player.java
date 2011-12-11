@@ -901,6 +901,10 @@ public class Player extends HumanEntity implements MessageReceiver {
         if (!mcServer.d.a("allow-nether", true)) {
             return;
         }
+        //CanaryMod: Allow end teleportation
+        if (world == 1 && !mcServer.d.a("allow-end", true)) {
+        	return;
+        }
         // Dismount first or get buggy
         if (ent.be != null) {
             ent.c(ent.be);

@@ -73,6 +73,8 @@ public class etc {
     private List<OSpawnListEntry>         animalsList, monsterList, waterAnimalsList;
     private boolean                       crow = false;
     private boolean                       allowNether = true;
+    //CanaryMod: Allow End
+    private boolean                       allowEnd = true;
     // Playerlist options (tab)
     private boolean                       playerList_autoupdate = false;
     private int                           playerList_ticks = 500;
@@ -153,6 +155,7 @@ public class etc {
             spawnProtectionSize = properties.getInt("spawn-protection-size", 16);
             logging = properties.getBoolean("logging", false);
             allowNether = properties.getBoolean("allow-nether", true);
+            allowEnd = properties.getBoolean("allow-end", true);
             enableHealth = properties.getBoolean("enable-health", true);
             enableExperience = properties.getBoolean("enable-experience", true);
             enableAntiXRay = properties.getBoolean("enable-antixray", false);
@@ -1302,6 +1305,15 @@ public class etc {
     public boolean isNetherEnabled() {
         return allowNether;
     }
+    
+    /**
+     * Returns if the end is enabled
+     * 
+     * @return
+     */
+     public boolean isEndEnabled() {
+         return allowEnd;
+     }
     
     /**
      * Returns the location of motd.txt
