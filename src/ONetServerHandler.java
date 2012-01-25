@@ -369,18 +369,27 @@ public class ONetServerHandler extends ONetHandler implements OICommandListener 
                     this.e.a.b((OPacket) (new OPacket53BlockChange(var5, var6, var7, var2)));
                 } else {
                     // CanaryMod: Dig hooks
-                    Block block = var2.world.getBlockAt(var5, var6, var7);
-
+                    //ModLoaderMP: Prevent plugins from throwing exceptions do to custom content.
+                    boolean callfalse = false;
+                    Block block = null;
+                    try {
+                    var2.world.getBlockAt(var5, var6, var7);
+}
+catch (Throwable ex) {
+    callfalse = true;
+}
                     block.setStatus(0); // Started digging
                     x = block.getX();
                     y = block.getY();
                     z = block.getZ();
                     type = block.getType();
+                    if (!callfalse) { 
                     if (!(Boolean) OEntity.manager.callHook(PluginLoader.Hook.BLOCK_DESTROYED, player, block)) {
                         this.e.c.a(var5, var6, var7, var1.d);
                     } else {
                         this.e.a.b((OPacket) (new OPacket53BlockChange(var5, var6, var7, var2)));
                     }
+}
                 }
             } else if (var1.e == 2) {
                 // CanaryMod: Break block
@@ -395,11 +404,18 @@ public class ONetServerHandler extends ONetHandler implements OICommandListener 
                 }
             } else if (var1.e == 3) {
                 // CanaryMod: Send block update
-                Block block = new Block(var2.world, type, x, y, z);
-
+                boolean callfalse = false;
+                Block block = null; 
+                try {
+                block = new Block(var2.world, type, x, y, z);
+}
+catch (Throwable ex) {
+    callfalse = true;
+}
                 block.setStatus(3); // Send update for block
+                if (!callfalse) {
                 OEntity.manager.callHook(PluginLoader.Hook.BLOCK_DESTROYED, player, block);
-
+}
                 double var19 = this.e.bm - ((double) var5 + 0.5D);
                 double var21 = this.e.bn - ((double) var6 + 0.5D);
                 double var23 = this.e.bo - ((double) var7 + 0.5D);
@@ -417,155 +433,157 @@ public class ONetServerHandler extends ONetHandler implements OICommandListener 
     // CanaryMod: Store the blocks between blockPlaced packets
     Block lastRightClicked;
 
-    public void a(OPacket15Place var1) {
-        OWorldServer var2 = this.d.a(this.e.w);
-        OItemStack var3 = this.e.k.d();
-      
-        // CanaryMod: Store block data to call hooks
-        // CanaryMod START
-        Block blockClicked = null;
-        Block blockPlaced = null;
+     public void a(OPacket15Place var1)
+  {
+    OWorldServer var2 = this.d.a(this.e.w);
+    OItemStack var3 = this.e.k.d();
+//ModLoaderMP: Prevent plugins from crashing do to custom content.
+    Block blockClicked = null;
+    Block blockPlaced = null;
 
-        // We allow admins and ops to build!
-        boolean var4 = var2.K = var2.y.h != 0 || this.d.h.h(this.e.v) || getPlayer().isAdmin();
-      
-        if (var1.d == 255) {
-            // ITEM_USE -- if we have a lastRightClicked then it could be a
-            // usable location
-            blockClicked = lastRightClicked;
-            lastRightClicked = null;
-        } else {
-            // RIGHTCLICK or BLOCK_PLACE .. or nothing
-            blockClicked = new Block(var2.world, var2.world.getBlockIdAt(var1.a, var1.b, var1.c), var1.a, var1.b, var1.c);
-            blockClicked.setFaceClicked(Block.Face.fromId(var1.d));
-            lastRightClicked = blockClicked;
-        }
+    boolean var4 = var2.K = (var2.y.h == 0) && (!this.d.h.h(this.e.v)) && (!getPlayer().isAdmin()) ? 0 : 1;
 
-        // If we clicked on something then we also have a location to place the
-        // block
-        if (blockClicked != null && var3 != null) {
-            blockPlaced = new Block(var2.world, var3.c, blockClicked.getX(), blockClicked.getY(), blockClicked.getZ());
-            switch (var1.d) {
-                case 0:
-                    blockPlaced.setY(blockPlaced.getY() - 1);
-                    break;
-
-                case 1:
-                    blockPlaced.setY(blockPlaced.getY() + 1);
-                    break;
-
-                case 2:
-                    blockPlaced.setZ(blockPlaced.getZ() - 1);
-                    break;
-
-                case 3:
-                    blockPlaced.setZ(blockPlaced.getZ() + 1);
-                    break;
-
-                case 4:
-                    blockPlaced.setX(blockPlaced.getX() - 1);
-                    break;
-
-                case 5:
-                    blockPlaced.setX(blockPlaced.getX() + 1);
-                    break;
-            }
-        }
-
-        // CanaryMod: END
-      
-        if (var1.d == 255) {
-            // CanaryMod: call our version with extra blockClicked/blockPlaced
-            if (blockPlaced != null) {
-                // Set the type of block to what it currently is
-                blockPlaced.setType(var2.world.getBlockIdAt(blockPlaced.getX(), blockPlaced.getY(), blockPlaced.getZ()));
-            }
-
-            if (var3 == null) {
-                return;
-            }
-
-            ((Digging) this.e.c).a(this.e, var2, var3, blockPlaced, blockClicked);
-        } else {
-            int var5 = var1.a;
-            int var6 = var1.b;
-            int var7 = var1.c;
-            int var8 = var1.d;
-            OChunkCoordinates var9 = var2.o();
-            // CanaryMod : Fix stupid buggy spawn protection. (2 times)
-            int var10 = (int) OMathHelper.e((var8 == 4 ? var5 - 1 : (var8 == 5 ? (var5 + 1) : var5)) - var9.a);
-            int var11 = (int) OMathHelper.e((var8 == 2 ? var7 - 1 : (var8 == 3 ? (var7 + 1) : var7)) - var9.c);
-
-            if (var10 > var11) {
-                var11 = var10;
-            }
-            
-            // CanaryMod: call BLOCK_RIGHTCLICKED
-            Item item = (var3 != null) ? new Item(var3) : new Item(Item.Type.Air);
-            Player player = getPlayer();
-            boolean cancelled = (Boolean) OEntity.manager.callHook(PluginLoader.Hook.BLOCK_RIGHTCLICKED, player, blockClicked, item);
-         
-            // CanaryMod: call original BLOCK_CREATED
-            OEntity.manager.callHook(PluginLoader.Hook.BLOCK_CREATED, player, blockPlaced, blockClicked, item.getItemId());
-            // CanaryMod: If we were building inside spawn, bail! (unless ops/admin)
-
-            if (this.q && this.e.e((double) var5 + 0.5D, (double) var6 + 0.5D, (double) var7 + 0.5D) < 64.0D && (var11 > etc.getInstance().getSpawnProtectionSize() || var4) && player.canBuild() && !cancelled) {
-                this.e.c.a(this.e, var2, var3, var5, var6, var7, var8);
-            } else {
-                // CanaryMod: No point sending the client to update the blocks, you weren't allowed to place!
-                this.e.a.b((OPacket) (new OPacket53BlockChange(var5, var6, var7, var2)));
-                var2.D = false;
-                return;
-            }
-
-            this.e.a.b((OPacket) (new OPacket53BlockChange(var5, var6, var7, var2)));
-            if (var8 == 0) {
-                --var6;
-            }
-
-            if (var8 == 1) {
-                ++var6;
-            }
-
-            if (var8 == 2) {
-                --var7;
-            }
-
-            if (var8 == 3) {
-                ++var7;
-            }
-
-            if (var8 == 4) {
-                --var5;
-            }
-
-            if (var8 == 5) {
-                ++var5;
-            }
-
-            this.e.a.b((OPacket) (new OPacket53BlockChange(var5, var6, var7, var2)));
-        }
-
-        var3 = this.e.k.d();
-        if (var3 != null && var3.a == 0) {
-            this.e.k.a[this.e.k.c] = null;
-            var3 = null;
-        }
-
-        if (var3 == null || var3.l() == 0) {
-            this.e.h = true;
-            this.e.k.a[this.e.k.c] = OItemStack.b(this.e.k.a[this.e.k.c]);
-            OSlot var12 = this.e.m.a((OIInventory) this.e.k, this.e.k.c);
-
-            this.e.m.a();
-            this.e.h = false;
-            if (!OItemStack.b(this.e.k.d(), var1.e)) {
-                this.b((OPacket) (new OPacket103SetSlot(this.e.m.f, var12.c, this.e.k.d())));
-            }
-        }
-
-        var2.K = false;
+    if (var1.d == 255)
+    {
+      blockClicked = this.lastRightClicked;
+      this.lastRightClicked = null;
     }
+    else {
+      try {
+        blockClicked = new Block(var2.world, var2.world.getBlockIdAt(var1.a, var1.b, var1.c), var1.a, var1.b, var1.c);
+        blockClicked.setFaceClicked(Block.Face.fromId(var1.d));
+        this.lastRightClicked = blockClicked;
+      }
+      catch (Throwable localThrowable1)
+      {
+      }
+
+    }
+
+    if ((blockClicked != null) && (var3 != null)) {
+      blockPlaced = new Block(var2.world, var3.c, blockClicked.getX(), blockClicked.getY(), blockClicked.getZ());
+      switch (var1.d) {
+      case 0:
+        blockPlaced.setY(blockPlaced.getY() - 1);
+        break;
+      case 1:
+        blockPlaced.setY(blockPlaced.getY() + 1);
+        break;
+      case 2:
+        blockPlaced.setZ(blockPlaced.getZ() - 1);
+        break;
+      case 3:
+        blockPlaced.setZ(blockPlaced.getZ() + 1);
+        break;
+      case 4:
+        blockPlaced.setX(blockPlaced.getX() - 1);
+        break;
+      case 5:
+        blockPlaced.setX(blockPlaced.getX() + 1);
+      }
+
+    }
+
+    if (var1.d == 255)
+    {
+      if (blockPlaced != null)
+      {
+        blockPlaced.setType(var2.world.getBlockIdAt(blockPlaced.getX(), blockPlaced.getY(), blockPlaced.getZ()));
+      }
+
+      if (var3 == null) {
+        return;
+      }
+
+      ((Digging)this.e.c).a(this.e, var2, var3, blockPlaced, blockClicked);
+    } else {
+      int var5 = var1.a;
+      int var6 = var1.b;
+      int var7 = var1.c;
+      int var8 = var1.d;
+      OChunkCoordinates var9 = var2.o();
+
+      int var10 = (int)OMathHelper.e((var8 == 5 ? var5 + 1 : var8 == 4 ? var5 - 1 : var5) - var9.a);
+      int var11 = (int)OMathHelper.e((var8 == 3 ? var7 + 1 : var8 == 2 ? var7 - 1 : var7) - var9.c);
+
+      if (var10 > var11) {
+        var11 = var10;
+      }
+
+      boolean callfalse = false;
+      Item item = null;
+      try {
+        item = var3 != null ? new Item(var3) : new Item(Item.Type.Air);
+      }
+      catch (Throwable ex) {
+        callfalse = true;
+      }
+      Player player = getPlayer();
+      boolean cancelled = false;
+      if (!callfalse)
+      {
+        cancelled = ((Boolean)OEntity.manager.callHook(PluginLoader.Hook.BLOCK_RIGHTCLICKED, new Object[] { player, blockClicked, item })).booleanValue();
+
+        OEntity.manager.callHook(PluginLoader.Hook.BLOCK_CREATED, new Object[] { player, blockPlaced, blockClicked, Integer.valueOf(item.getItemId()) });
+      }
+
+      if ((this.q) && (this.e.e(var5 + 0.5D, var6 + 0.5D, var7 + 0.5D) < 64.0D) && ((var11 > etc.getInstance().getSpawnProtectionSize()) || (var4)) && (player.canBuild()) && (!cancelled)) {
+        this.e.c.a(this.e, var2, var3, var5, var6, var7, var8);
+      }
+      else {
+        this.e.a.b(new OPacket53BlockChange(var5, var6, var7, var2));
+        var2.D = false;
+        return;
+      }
+
+      this.e.a.b(new OPacket53BlockChange(var5, var6, var7, var2));
+      if (var8 == 0) {
+        var6--;
+      }
+
+      if (var8 == 1) {
+        var6++;
+      }
+
+      if (var8 == 2) {
+        var7--;
+      }
+
+      if (var8 == 3) {
+        var7++;
+      }
+
+      if (var8 == 4) {
+        var5--;
+      }
+
+      if (var8 == 5) {
+        var5++;
+      }
+
+      this.e.a.b(new OPacket53BlockChange(var5, var6, var7, var2));
+    }
+
+    var3 = this.e.k.d();
+    if ((var3 != null) && (var3.a == 0)) {
+      this.e.k.a[this.e.k.c] = null;
+      var3 = null;
+    }
+
+    if ((var3 == null) || (var3.l() == 0)) {
+      this.e.h = true;
+      this.e.k.a[this.e.k.c] = OItemStack.b(this.e.k.a[this.e.k.c]);
+      OSlot var12 = this.e.m.a(this.e.k, this.e.k.c);
+
+      this.e.m.a();
+      this.e.h = false;
+      if (!OItemStack.a(this.e.k.d(), var1.e)) {
+        b(new OPacket103SetSlot(this.e.m.f, var12.c, this.e.k.d()));
+      }
+    }
+
+    var2.K = false;
+  }
    
     public void a(String var1, Object[] var2) {
         // CanaryMod: disconnect!
