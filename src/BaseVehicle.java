@@ -4,6 +4,7 @@
  * @author James
  */
 public class BaseVehicle extends BaseEntity {
+
     /**
      * Creates an interface for a vehicle
      * 
@@ -16,8 +17,7 @@ public class BaseVehicle extends BaseEntity {
     /**
      * Interface for vehicles.
      */
-    public BaseVehicle() {
-    }
+    public BaseVehicle() {}
 
     /**
      * Checks if this vehicle is empty (unoccupied)
@@ -25,10 +25,11 @@ public class BaseVehicle extends BaseEntity {
      * @return true if unoccupied.
      */
     public boolean isEmpty() {
-        if (entity.aZ == null)
+        if (entity.bg == null) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     /**
@@ -38,9 +39,11 @@ public class BaseVehicle extends BaseEntity {
      * @return passenger
      */
     public Player getPassenger() {
-        if (entity.aZ != null)
-            if (isPlayer(entity.aZ))
-                return ((OEntityPlayerMP) entity.aZ).getPlayer();
+        if (entity.bg != null) {
+            if (isPlayer(entity.bg)) {
+                return ((OEntityPlayerMP) entity.bg).getPlayer();
+            }
+        }
 
         return null;
     }

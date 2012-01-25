@@ -21,12 +21,13 @@ import java.lang.management.ThreadMXBean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 /**
  * @author -Nemesiss- L2M
  * 
  */
 public class DeadLockDetector extends Thread {
-    private static final Logger _log       = Logger.getLogger("Minecraft");
+    private static final Logger _log = Logger.getLogger("Minecraft");
 
     private static final int    _sleepTime = 5 * 1000;
 
@@ -41,7 +42,8 @@ public class DeadLockDetector extends Thread {
     @Override
     public final void run() {
         boolean deadlock = false;
-        while (!deadlock)
+
+        while (!deadlock) {
             try {
                 long[] ids = tmx.findDeadlockedThreads();
 
@@ -49,20 +51,26 @@ public class DeadLockDetector extends Thread {
                     deadlock = true;
                     ThreadInfo[] tis = tmx.getThreadInfo(ids, true, true);
                     String info = "DeadLock Found!\n";
-                    for (ThreadInfo ti : tis)
+
+                    for (ThreadInfo ti : tis) {
                         info += ti.toString();
+                    }
 
                     for (ThreadInfo ti : tis) {
                         LockInfo[] locks = ti.getLockedSynchronizers();
                         MonitorInfo[] monitors = ti.getLockedMonitors();
-                        if (locks.length == 0 && monitors.length == 0)
+
+                        if (locks.length == 0 && monitors.length == 0) {
                             continue;
+                        }
 
                         ThreadInfo dl = ti;
+
                         info += "Java-level deadlock:\n";
                         info += "\t" + dl.getThreadName() + " is waiting to lock " + dl.getLockInfo().toString() + " which is held by " + dl.getLockOwnerName() + "\n";
-                        while ((dl = tmx.getThreadInfo(new long[] { dl.getLockOwnerId() }, true, true)[0]).getThreadId() != ti.getThreadId())
+                        while ((dl = tmx.getThreadInfo(new long[] { dl.getLockOwnerId() }, true, true)[0]).getThreadId() != ti.getThreadId()) {
                             info += "\t" + dl.getThreadName() + " is waiting to lock " + dl.getLockInfo().toString() + " which is held by " + dl.getLockOwnerName() + "\n";
+                        }
                     }
                     _log.warning(info);
                 }
@@ -70,5 +78,6 @@ public class DeadLockDetector extends Thread {
             } catch (Exception e) {
                 _log.log(Level.WARNING, "DeadLockDetector: ", e);
             }
+        }
     }
 }

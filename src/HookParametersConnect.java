@@ -4,11 +4,10 @@
  * @author James
  */
 
-public class HookParametersConnect extends HookParameters{
+public class HookParametersConnect extends HookParameters {
     private String joinMessage;
     private boolean applyPotionsEffects;
     private boolean Hidden = false;
-
 
     public boolean isHidden() {
         return Hidden;
@@ -34,7 +33,7 @@ public class HookParametersConnect extends HookParameters{
         return joinMessage;
     }
 
-    public HookParametersConnect(String joinMessage,boolean potionEffects) {
+    public HookParametersConnect(String joinMessage, boolean potionEffects) {
         super();
         this.joinMessage = joinMessage;
         this.applyPotionsEffects = potionEffects;

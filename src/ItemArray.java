@@ -9,7 +9,7 @@ public abstract class ItemArray<C extends Container<OItemStack>> {
     protected C container;
 
     @SuppressWarnings("unchecked")
-	public ItemArray(Object i) {
+    public ItemArray(Object i) {
         this.container = (C) i;
     }
 
@@ -26,19 +26,22 @@ public abstract class ItemArray<C extends Container<OItemStack>> {
      *            item to add
      */
     public void addItem(Item item) {
-        if (item == null)
+        if (item == null) {
             return;
+        }
 
         int slot = item.getSlot();
         int size = getContentsSize();
 
         if (slot < size && slot >= 0) {
-            if (item.getAmount() <= 0)
+            if (item.getAmount() <= 0) {
                 removeItem(slot);
-            else if (Item.isValidItem(item.getItemId()))
+            } else if (Item.isValidItem(item.getItemId())) {
                 setSlot(item, slot);
+            }
         } else if (slot == -1) {
             int newSlot = getEmptySlot();
+
             if (newSlot != -1) {
                 setSlot(item, newSlot);
                 item.setSlot(newSlot);
@@ -58,8 +61,10 @@ public abstract class ItemArray<C extends Container<OItemStack>> {
 
         if (slot < size && slot >= 0) {
             OItemStack result = container.getContentsAt(slot);
-            if (result != null)
+
+            if (result != null) {
                 return new Item(result, slot);
+            }
         }
 
         return null;
@@ -84,9 +89,11 @@ public abstract class ItemArray<C extends Container<OItemStack>> {
     public Item getItemFromId(int id) {
         Item[] items = getContents();
 
-        for (Item item : items)
-            if ((item != null) && (item.getItemId() == id))
+        for (Item item : items) {
+            if ((item != null) && (item.getItemId() == id)) {
                 return item;
+            }
+        }
 
         return null;
     }
@@ -112,9 +119,11 @@ public abstract class ItemArray<C extends Container<OItemStack>> {
     public Item getItemFromId(int id, int maxAmount) {
         Item[] items = getContents();
 
-        for (Item item : items)
-            if ((item != null) && (item.getItemId() == id) && (item.getAmount() <= maxAmount))
+        for (Item item : items) {
+            if ((item != null) && (item.getItemId() == id) && (item.getAmount() <= maxAmount)) {
                 return item;
+            }
+        }
 
         return null;
     }
@@ -128,8 +137,9 @@ public abstract class ItemArray<C extends Container<OItemStack>> {
         int size = getContentsSize();
 
         for (int i = 0; size > i; i++) {
-            if (container.getContentsAt(i) != null)
+            if (container.getContentsAt(i) != null) {
                 continue;
+            }
             return i;
         }
 
@@ -145,8 +155,9 @@ public abstract class ItemArray<C extends Container<OItemStack>> {
     public void removeItem(int slot) {
         int size = getContentsSize();
 
-        if (slot < size && slot >= 0)
+        if (slot < size && slot >= 0) {
             container.setContentsAt(slot, null);
+        }
     }
 
     /**
@@ -204,8 +215,9 @@ public abstract class ItemArray<C extends Container<OItemStack>> {
     public void setSlot(int itemId, int amount, int damage, int slot) {
         int size = getContentsSize();
 
-        if (slot < size && slot >= 0)
+        if (slot < size && slot >= 0) {
             container.setContentsAt(slot, new OItemStack(itemId, (amount > 64 ? (amount == 255 ? -1 : 64) : amount), damage));
+        }
     }
 
     /**
@@ -245,8 +257,8 @@ public abstract class ItemArray<C extends Container<OItemStack>> {
         Item[] items = getContents();
         int remaining = amount;
 
-        for (Item item : items)
-            if ((item != null) && (item.getItemId() == id))
+        for (Item item : items) {
+            if ((item != null) && (item.getItemId() == id)) {
                 if (item.getAmount() == remaining) {
                     removeItem(item.getSlot());
                     return;
@@ -257,6 +269,8 @@ public abstract class ItemArray<C extends Container<OItemStack>> {
                     removeItem(item.getSlot());
                     remaining -= item.getAmount();
                 }
+            }
+        }
     }
 
     /**
@@ -293,9 +307,11 @@ public abstract class ItemArray<C extends Container<OItemStack>> {
     public boolean hasItem(Item.Type type, int minimum) {
         Item[] items = getContents();
 
-        for (Item item : items)
-            if ((item != null) && (item.getType() == type) && (item.getAmount() >= minimum))
+        for (Item item : items) {
+            if ((item != null) && (item.getType() == type) && (item.getAmount() >= minimum)) {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -313,9 +329,11 @@ public abstract class ItemArray<C extends Container<OItemStack>> {
     public boolean hasItem(int itemId, int minimum) {
         Item[] items = getContents();
 
-        for (Item item : items)
-            if ((item != null) && (item.getItemId() == itemId) && (item.getAmount() >= minimum))
+        for (Item item : items) {
+            if ((item != null) && (item.getItemId() == itemId) && (item.getAmount() >= minimum)) {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -332,9 +350,11 @@ public abstract class ItemArray<C extends Container<OItemStack>> {
     public boolean hasItem(int itemId, int minimum, int maximum) {
         Item[] items = getContents();
 
-        for (Item item : items)
-            if ((item != null) && (item.getItemId() == itemId) && (item.getAmount() >= minimum) && (item.getAmount() <= maximum))
+        for (Item item : items) {
+            if ((item != null) && (item.getItemId() == itemId) && (item.getAmount() >= minimum) && (item.getAmount() <= maximum)) {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -348,8 +368,9 @@ public abstract class ItemArray<C extends Container<OItemStack>> {
         int arraySize = getContentsSize();
         Item[] rt = new Item[arraySize];
 
-        for (int i = 0; i < arraySize; i++)
+        for (int i = 0; i < arraySize; i++) {
             rt[i] = getItemFromSlot(i);
+        }
 
         return rt;
     }
@@ -363,18 +384,20 @@ public abstract class ItemArray<C extends Container<OItemStack>> {
     public void setContents(Item[] contents) {
         int arraySize = getContentsSize();
 
-        for (int i = 0; i < arraySize; i++)
-        	if(contents[i] == null) {
-        		removeItem(i);
-        	} else {
-        		setSlot(contents[i], i);
-        	}
+        for (int i = 0; i < arraySize; i++) {
+            if (contents[i] == null) {
+                removeItem(i);
+            } else {
+                setSlot(contents[i], i);
+            }
+        }
     }
 
     public void clearContents() {
         int size = getContentsSize();
 
-        for (int i = 0; size > i; i++)
+        for (int i = 0; size > i; i++) {
             container.setContentsAt(i, null);
+        }
     }
 }

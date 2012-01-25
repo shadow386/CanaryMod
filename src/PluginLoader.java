@@ -6,6 +6,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -13,381 +14,408 @@ import java.util.logging.Logger;
 
 import net.minecraft.server.MinecraftServer;
 
+
 /**
  * PluginLoader.java - Used to load plugins, toggle them, etc.
  * 
  * @author James
  */
 public class PluginLoader {
+
     /**
      * Hook - Used for adding a listener to listen on specific hooks
      */
     public enum Hook {
+
         /**
          * Calls {@link PluginListener#onLoginChecks(java.lang.String) }
-         */
-        LOGINCHECK,
+         *///
+        LOGINCHECK, //
         /**
          * Calls {@link PluginListener#onLogin(Player) }
-         */
-        LOGIN,
+         *///
+        LOGIN, //
         /**
          * Calls {@link PluginListener#onChat(Player, java.lang.String) }
-         */
-        CHAT,
+         *///
+        CHAT, //
         /**
          * Calls {@link PluginListener#onCommand(Player, java.lang.String[]) }
-         */
-        COMMAND,
+         *///
+        COMMAND, //
         /**
          * Calls {@link PluginListener#onConsoleCommand(java.lang.String[]) }
-         */
-        SERVERCOMMAND,
+         *///
+        SERVERCOMMAND, //
         /**
          * Calls {@link PluginListener#onBan(Player, Player, java.lang.String) }
-         */
-        BAN,
+         *///
+        BAN, //
         /**
          * Calls {@link PluginListener#onIpBan(Player, Player, java.lang.String) }
-         */
-        IPBAN,
+         *///
+        IPBAN, //
         /**
          * Calls {@link PluginListener#onKick(Player, Player, java.lang.String) }
-         */
-        KICK,
+         *///
+        KICK, //
         /**
          * Calls {@link PluginListener#onBlockCreate(Player, Block, Block, int) }
-         */
-        BLOCK_CREATED,
+         *///
+        BLOCK_CREATED, //
         /**
          * Calls {@link PluginListener#onBlockDestroy(Player, Block) }
-         */
-        BLOCK_DESTROYED,
+         *///
+        BLOCK_DESTROYED, //
         /**
          * Calls {@link PluginListener#onDisconnect(Player) }
-         */
-        DISCONNECT,
+         *///
+        DISCONNECT, //
         /**
          * Calls {@link PluginListener#onPlayerMove(Player, Location, Location) }
-         */
-        PLAYER_MOVE,
+         *///
+        PLAYER_MOVE, //
         /**
          * Calls {@link PluginListener#onArmSwing(Player) }
-         */
-        ARM_SWING,
+         *///
+        ARM_SWING, //
         /**
          * Calls {@link PluginListener#onItemDrop(Player, ItemEntity) }
-         */
-        ITEM_DROP,
+         *///
+        ITEM_DROP, //
         /**
          * Calls {@link PluginListener#onItemPickUp(Player, ItemEntity) }
-         */
-        ITEM_PICK_UP,
+         *///
+        ITEM_PICK_UP, //
         /**
          * Calls {@link PluginListener#onTeleport(Player, Location, Location) }
-         */
-        TELEPORT,
+         *///
+        TELEPORT, //
         /**
          * Calls {@link PluginListener#onBlockBreak(Player, Block) }
-         */
-        BLOCK_BROKEN,
+         *///
+        BLOCK_BROKEN, //
         /**
          * Calls {@link PluginListener#onIgnite(Block, Player) }
-         */
-        IGNITE,
+         *///
+        IGNITE, //
         /**
          * Calls {@link PluginListener#onFlow(Block, Block) }
-         */
-        FLOW,
+         *///
+        FLOW, //
         /**
-         * Calls {@link PluginListener#onExplode(Block) }
-         */
-        EXPLODE,
+         * Calls {@link PluginListener#onExplode(Block, OEntity, HashSet) }
+         *///
+        EXPLODE, //
         /**
          * Calls {@link PluginListener#onMobSpawn(Mob) }
-         */
-        MOB_SPAWN,
+         *///
+        MOB_SPAWN, //
         /**
          * Calls {@link PluginListener#onDamage(PluginLoader.DamageType, BaseEntity, BaseEntity, int) }
-         */
-        DAMAGE,
+         *///
+        DAMAGE, //
         /**
          * Calls {@link PluginListener#onHealthChange(Player, int, int) }
-         */
-        HEALTH_CHANGE,
+         *///
+        HEALTH_CHANGE, //
         /**
          * Calls {@link PluginListener#onRedstoneChange(Block, int, int) }
-         */
-        REDSTONE_CHANGE,
+         *///
+        REDSTONE_CHANGE, //
         /**
          * Calls {@link PluginListener#onPistonExtend(Block, Boolean) }
-         */
-        PISTON_EXTEND,
+         *///
+        PISTON_EXTEND, //
         /**
          * Calls {@link PluginListener#onPistonRetract(Block, Boolean) }
-         */
-        PISTON_RETRACT,
+         *///
+        PISTON_RETRACT, //
         /**
          * Calls {@link PluginListener#onBlockPhysics(Block, boolean) }
-         */
-        BLOCK_PHYSICS,
+         *///
+        BLOCK_PHYSICS, //
         /**
          * Calls {@link PluginListener#onVehicleCreate(BaseVehicle) }
-         */
-        VEHICLE_CREATE,
+         *///
+        VEHICLE_CREATE, //
         /**
          * Calls {@link PluginListener#onVehicleUpdate(BaseVehicle) }
-         */
-        VEHICLE_UPDATE,
+         *///
+        VEHICLE_UPDATE, //
         /**
          * Calls {@link PluginListener#onVehicleDamage(BaseVehicle, BaseEntity, int) }
-         */
-        VEHICLE_DAMAGE,
+         *///
+        VEHICLE_DAMAGE, //
         /**
          * Calls {@link PluginListener#onVehicleCollision(BaseVehicle, BaseEntity) }
-         */
-        VEHICLE_COLLISION,
+         *///
+        VEHICLE_COLLISION, //
         /**
          * Calls {@link PluginListener#onVehicleDestroyed(BaseVehicle) }
-         */
-        VEHICLE_DESTROYED,
+         *///
+        VEHICLE_DESTROYED, //
         /**
          * Calls {@link PluginListener#onVehicleEnter(BaseVehicle, HumanEntity) }
-         */
-        VEHICLE_ENTERED,
+         *///
+        VEHICLE_ENTERED, //
         /**
          * Calls {@link PluginListener#onVehiclePositionChange(BaseVehicle, int, int, int) }
-         */
-        VEHICLE_POSITIONCHANGE,
+         *///
+        VEHICLE_POSITIONCHANGE, //
         /**
          * Calls {@link PluginListener#onItemUse(Player, Block, Block, Item) }
-         */
-        ITEM_USE,
+         *///
+        ITEM_USE, //
         /**
          * Calls {@link PluginListener#onBlockPlace(Player, Block, Block, Item) }
-         */
-        BLOCK_PLACE,
+         *///
+        BLOCK_PLACE, //
         /**
          * Calls {@link PluginListener#onBlockRightClicked(Player, Block, Item) }
-         */
-        BLOCK_RIGHTCLICKED,
+         *///
+        BLOCK_RIGHTCLICKED, //
         /**
          * Calls {@link PluginListener#onLiquidDestroy(PluginLoader.HookResult, int, Block) }
-         */
-        LIQUID_DESTROY,
+         *///
+        LIQUID_DESTROY, //
         /**
          * Calls {@link PluginListener#onAttack(LivingEntity, LivingEntity, java.lang.Integer) }
-         */
-        ATTACK,
+         *///
+        ATTACK, //
         /**
          * Calls {@link PluginListener#onOpenInventory(Player, Inventory) }
-         */
-        OPEN_INVENTORY,
+         *///
+        OPEN_INVENTORY, //
+        /**
+         * Calls {@link PluginListener#onOpenInventory(Player, Inventory) }
+         *///
+        CLOSE_INVENTORY, //
         /**
          * Calls {@link PluginListener#onSignShow(Player, Sign) }
-         */
-        SIGN_SHOW,
+         *///
+        SIGN_SHOW, //
         /**
          * Calls {@link PluginListener#onSignChange(Player, Sign) }
-         */
-        SIGN_CHANGE,
+         *///
+        SIGN_CHANGE, //
         /**
          * Calls {@link PluginListener#onLeafDecay(Block) }
-         */
-        LEAF_DECAY,
+         *///
+        LEAF_DECAY, //
         /**
          * Calls {@link PluginListener#onTame(Player, Mob) }
-         */
-        TAME,
+         *///
+        TAME, //
         /**
          * Calls {@link PluginListener#onLightningStrike(BaseEntity) }
-         */
-        LIGHTNING_STRIKE,
+         *///
+        LIGHTNING_STRIKE, //
         /**
          * Calls {@link PluginListener#onWeatherChange(boolean) }
-         */
-        WEATHER_CHANGE,
+         *///
+        WEATHER_CHANGE, //
         /**
          * Calls {@link PluginListener#onThunderChange(boolean) }
-         */
-        THUNDER_CHANGE,
+         *///
+        THUNDER_CHANGE, //
         /**
          * Calls {@link PluginListener#onPortalUse(Player, World) }
-         */
-        PORTAL_USE,
+         *///
+        PORTAL_USE, //
         /**
          * Calls {@link PluginListener#onChunkCreate(int, int, World) }
-         */
-        CHUNK_CREATE,
+         *///
+        CHUNK_CREATE, //
         /**
          * Calls {@link PluginListener#onSpawnpointCreate(World) }
-         */
-        SPAWNPOINT_CREATE,
+         *///
+        SPAWNPOINT_CREATE, //
         /**
          * Calls {@link PluginListener#onChunkCreated(Chunk chunk) }
-         */
-        CHUNK_CREATED,
+         *///
+        CHUNK_CREATED, //
         /**
          * Calls {@link PluginListener#onChunkLoaded(Chunk chunk) }
-         */
-        CHUNK_LOADED,
+         *///
+        CHUNK_LOADED, //
         /**
          * Calls {@link PluginListener#onChunkUnload(Chunk chunk) }
-         */
-        CHUNK_UNLOAD,
+         *///
+        CHUNK_UNLOAD, //
         /**
          * Calls {@link PluginListener#onTimeChange(World, long) }
-         */
-        TIME_CHANGE,
+         *///
+        TIME_CHANGE, //
         /**
          * Calls {@link PluginListener#canPlayerUseCommand(Player, String) }
-         */
-        COMMAND_CHECK,
+         *///
+        COMMAND_CHECK, //
         /**
          * Class {@link PluginListener#onPortalCreate(Block[][]) }
-         */
-        PORTAL_CREATE,
+         *///
+        PORTAL_CREATE, //
         /**
          * Class {@link PluginListener#onPortalDestroy(Block[][]) }
-         */
-        PORTAL_DESTROY,
+         *///
+        PORTAL_DESTROY, //
         /**
          * Class {@link PluginListener#onPlayerRespawn(Player) }
-         */
-        PLAYER_RESPAWN,
+         *///
+        PLAYER_RESPAWN, //
         /**
          * Class {@link PluginListener#onEntityDespawn(BaseEntity) }
-         */
-        ENTITY_DESPAWN,
+         *///
+        ENTITY_DESPAWN, //
         /**
          * Class {@link PluginListener#onEndermanPickup(Enderman, Block) }
-         */
-        ENDERMAN_PICKUP,
+         *///
+        ENDERMAN_PICKUP, //
         /**
          * Class {@link PluginListener#onEndermanDrop(Enderman, Block) }
-         */
-        ENDERMAN_DROP,
+         *///
+        ENDERMAN_DROP, //
         /**
          * Class {@link PluginListener#onCowMilk(Player, Mob) }
-         */
-        COW_MILK,
+         *///
+        COW_MILK, //
         /**
          * Calls {@link PluginListener#onEat(Player, Item) }
-         */
-        EAT,
+         *///
+        EAT, //
         /**
          * Calls {@link PluginListener#onFoodLevelChange(Player, oldLevel, newLevel) }
-         */
-        FOODLEVEL_CHANGE,
+         *///
+        FOODLEVEL_CHANGE, //
         /**
          * Calls (@link PluginListener#onFoodExahustionChange(Player, oldLevel, newLevel) }
-         */
-        FOODEXHAUSTION_CHANGE,
+         *///
+        FOODEXHAUSTION_CHANGE, //
         /**
          * Calls (@link PluginListener#onFoodSaturationChange(Player, oldLevel, newLevel) }
-         */
-        FOODSATURATION_CHANGE,
+         *///
+        FOODSATURATION_CHANGE, //
         /**
          * Calls (@link PluginListener#onPotionEffect(Player,PotionEffect)
-         */
-        POTION_EFFECT,
+         *///
+        POTION_EFFECT, //
         /**
          * Class {@link PluginListener#onExpChange(Player, oldExp, newExp) }
-         */
-        EXPERIENCE_CHANGE,
+         *///
+        EXPERIENCE_CHANGE, //
         /**
          * Class {@link PluginListener#onLevelUp(Player) }
-         */
-        LEVEL_UP,
+         *///
+        LEVEL_UP, //
         /**
          * Calls {@link PluginListener#onPlayerListNameGet(Player, defaultName) }
-         */
-        GET_PLAYERLISTENTRY,
+         *///
+        GET_PLAYERLISTENTRY, //
         /**
          * Calls {@link PluginListener#onPlayerConnect(Player,HookParametersConnect) }
-         */
-        CONNECT,
+         *///
+        PLAYER_CONNECT, //
+        /**
+         * Calls {@link PluginListener#onPlayerDisconnect(Player,HookParametersDisconnect) }
+         *///
+        PLAYER_DISCONNECT, //
         /**
          * Calls {@link PluginListener#onEntityRightClick(Player,BaseEntity) }
-         */
-        ENTITY_RIGHTCLICKED,
+         *///
+        ENTITY_RIGHTCLICKED, //
         /**
-         * Unused.
+         * Calls {@Link PluginListener#onMobTarget(Player,LivingEntity) }
+         *///
+        MOB_TARGET, //
+        /**
+         * Calls {@Link PluginListener#onBlockUpdate(Block) }
+         *///
+        BLOCK_UPDATE, //
+        /**
+         * Calls {@Link PluginListener#onEnchant(HookParametersEnchant) }
          */
-        NUM_HOOKS
+        ENCHANT, //
+        /**
+         * For internal use only.
+         *///
+        NUM_HOOKS;
     }
+
 
     /**
      * HookResult - Used where returning a boolean isn't enough.
      */
     public enum HookResult {
+
         /**
          * Prevent the action
-         */
-        PREVENT_ACTION,
+         *///
+        PREVENT_ACTION, //
         /**
          * Allow the action
-         */
-        ALLOW_ACTION,
+         *///
+        ALLOW_ACTION, //
         /**
          * Do whatever it would normally do, continue processing
-         */
+         *///
         DEFAULT_ACTION
     }
 
+
     public enum DamageType {
+
         /**
          * Creeper explosion
-         */
-        CREEPER_EXPLOSION,
+         *///
+        CREEPER_EXPLOSION, //
         /**
          * Damage dealt by another entity
-         */
-        ENTITY,
+         *///
+        ENTITY, //
         /**
          * Damage caused by explosion
-         */
-        EXPLOSION,
+         *///
+        EXPLOSION, //
         /**
          * Damage caused from falling (fall distance - 3.0)
-         */
-        FALL,
+         *///
+        FALL, //
         /**
          * Damage caused by fire (1)
-         */
-        FIRE,
+         *///
+         FIRE, //
         /**
          * Low periodic damage caused by burning (1)
-         */
-        FIRE_TICK,
+         *///
+         FIRE_TICK, //
         /**
          * Damage caused from lava (4)
-         */
-        LAVA,
+         *///
+         LAVA, //
         /**
          * Damage caused from drowning (2)
-         */
-        WATER,
+         *///
+         WATER, //
         /**
          * Damage caused by cactus (1)
-         */
-        CACTUS,
+         *///
+         CACTUS, //
         /**
          * Damage caused by suffocating(1)
-         */
-        SUFFOCATION,
+         *///
+         SUFFOCATION, //
         /**
          * Damage caused by lightning (5)
-         */
-        LIGHTNING,
+         *///
+         LIGHTNING, //
         /**
          * Damage caused by starvation (1)
-         */
-        STARVATION, 
+         *///
+         STARVATION, //
         /**
          * Damage caused by poison (1) (Potions, Poison)
-         */
-        POTION
+         *///
+         POTION
     }
 
     private static final Logger log = Logger.getLogger("Minecraft");
@@ -410,21 +438,25 @@ public class PluginLoader {
         properties = new PropertiesFile("server.properties");
         this.server = new Server(server);
 
-        for (int h = 0; h < Hook.NUM_HOOKS.ordinal(); ++h)
+        for (int h = 0; h < Hook.NUM_HOOKS.ordinal(); ++h) {
             listeners.add(new ArrayList<PluginRegisteredListener>());
+        }
     }
 
     /**
      * Loads all plugins.
      */
     public void loadPlugins() {
-        if (loaded)
+        if (loaded) {
             return;
+        }
         log.info("CanaryMod: Loading plugins...");
         String[] classes = properties.getString("plugins", "").split(",");
+
         for (String sclass : classes) {
-            if (sclass.equals(""))
+            if (sclass.equals("")) {
                 continue;
+            }
             loadPlugin(sclass.trim());
         }
         log.info("CanaryMod: Loaded " + plugins.size() + " plugins.");
@@ -435,13 +467,16 @@ public class PluginLoader {
      * Loads the plugins that shall be loaded before generating the spawn area.
      */
     public void loadPreloadPlugins() {
-        if (loadedpreload)
+        if (loadedpreload) {
             return;
+        }
         log.info("CanaryMod: Loading preload plugins...");
         String[] classes = properties.getString("preloadplugins", "").split(",");
+
         for (String sclass : classes) {
-            if (sclass.equals(""))
+            if (sclass.equals("")) {
                 continue;
+            }
             loadPlugin(sclass.trim());
         }
         log.info("CanaryMod: Loaded " + plugins.size() + " plugins.");
@@ -470,18 +505,25 @@ public class PluginLoader {
      * @return if the operation was successful
      */
     public Boolean reloadPlugin(String fileName) {
+
         /* Not sure exactly how much of this is necessary */
         Plugin toNull = getPlugin(fileName);
-        if (toNull != null)
-            if (toNull.isEnabled())
+
+        if (toNull != null) {
+            if (toNull.isEnabled()) {
                 toNull.disable();
+            }
+        }
         synchronized (lock) {
             plugins.remove(toNull);
             for (List<PluginRegisteredListener> regListeners : listeners) {
                 Iterator<PluginRegisteredListener> iter = regListeners.iterator();
-                while (iter.hasNext())
-                    if (iter.next().getPlugin() == toNull)
+
+                while (iter.hasNext()) {
+                    if (iter.next().getPlugin() == toNull) {
                         iter.remove();
+                    }
+                }
             }
         }
         toNull = null;
@@ -492,13 +534,15 @@ public class PluginLoader {
     private Boolean load(String fileName) {
         try {
             File file = new File("plugins/" + fileName + ".jar");
+
             if (!file.exists()) {
                 log.log(Level.SEVERE, "Failed to find plugin file: plugins/" + fileName + ".jar. Please ensure the file exists");
                 return false;
             }
             URLClassLoader child = null;
+
             try {
-                child = new MyClassLoader(new URL[]{file.toURI().toURL()}, Thread.currentThread().getContextClassLoader());
+                child = new MyClassLoader(new URL[] { file.toURI().toURL()}, Thread.currentThread().getContextClassLoader());
             } catch (MalformedURLException ex) {
                 log.log(Level.SEVERE, "Exception while loading class", ex);
                 return false;
@@ -506,6 +550,7 @@ public class PluginLoader {
             Class<?> c = child.loadClass(fileName);
 
             Plugin plugin = (Plugin) c.newInstance();
+
             plugin.setName(fileName);
             plugin.enable();
             synchronized (lock) {
@@ -528,9 +573,11 @@ public class PluginLoader {
      */
     public Plugin getPlugin(String name) {
         synchronized (lock) {
-            for (Plugin plugin : plugins)
-                if (plugin.getName().equalsIgnoreCase(name))
+            for (Plugin plugin : plugins) {
+                if (plugin.getName().equalsIgnoreCase(name)) {
                     return plugin;
+                }
+            }
         }
         return null;
     }
@@ -542,6 +589,7 @@ public class PluginLoader {
      */
     public String getPluginList() {
         StringBuilder sb = new StringBuilder();
+
         synchronized (lock) {
             for (Plugin plugin : plugins) {
                 sb.append(plugin.getName());
@@ -551,10 +599,12 @@ public class PluginLoader {
             }
         }
         String str = sb.toString();
-        if (str.length() > 1)
+
+        if (str.length() > 1) {
             return str.substring(0, str.length() - 1);
-        else
+        } else {
             return "Empty";
+        }
     }
 
     /**
@@ -566,6 +616,7 @@ public class PluginLoader {
      */
     public boolean enablePlugin(String name) {
         Plugin plugin = getPlugin(name);
+
         if (plugin != null) {
             if (!plugin.isEnabled()) {
                 plugin.toggleEnabled();
@@ -573,10 +624,12 @@ public class PluginLoader {
             }
         } else { // New plugin, perhaps?
             File file = new File("plugins/" + name + ".jar");
-            if (file.exists())
+
+            if (file.exists()) {
                 return loadPlugin(name);
-            else
+            } else {
                 return false;
+            }
         }
         return true;
     }
@@ -589,11 +642,13 @@ public class PluginLoader {
      */
     public void disablePlugin(String name) {
         Plugin plugin = getPlugin(name);
-        if (plugin != null)
+
+        if (plugin != null) {
             if (plugin.isEnabled()) {
                 plugin.toggleEnabled();
                 plugin.disable();
             }
+        }
     }
 
     /**
@@ -608,20 +663,22 @@ public class PluginLoader {
     private boolean debug_hooks = true;
     private Hook lasthook;
     private int lasthook_count = 0;
-    List ignore_hooks = Arrays.asList(new Hook[]{Hook.IGNITE,Hook.TIME_CHANGE,Hook.FLOW,Hook.LIQUID_DESTROY});
+    List ignore_hooks = Arrays.asList(new Hook[] { Hook.IGNITE, Hook.TIME_CHANGE, Hook.FLOW, Hook.LIQUID_DESTROY});
     
     public void debugHook(Hook h) {
         if (debug_hooks && !ignore_hooks.contains(h)) {
             if (h == lasthook) {
-                lasthook_count ++;
+                lasthook_count++;
             } else {
-                if (lasthook_count > 0)
-                   log.log(Level.INFO,String.format("Hook %s called %d times", lasthook,lasthook_count));
+                if (lasthook_count > 0) {
+                    log.log(Level.INFO, String.format("Hook %s called %d times", lasthook, lasthook_count));
+                }
                 lasthook = h;
                 lasthook_count = 1;
             }
         }        
     }
+
     /**
      * Calls a plugin hook.
      * 
@@ -640,320 +697,468 @@ public class PluginLoader {
         // debugHook(h);
         
         Object toRet;
+
         switch (h) {
-            case REDSTONE_CHANGE:
-                toRet = parameters[2];
-                break;
-            case LIQUID_DESTROY:
-            case TAME:
-            case ENTITY_RIGHTCLICKED:
-            case COMMAND_CHECK:
-                toRet = HookResult.DEFAULT_ACTION;
-                break;
-            case CHUNK_CREATE:
-            case SPAWNPOINT_CREATE:
-                toRet = null;
-                break;
-            case FOODLEVEL_CHANGE:
-            case FOODEXHAUSTION_CHANGE:
-            case FOODSATURATION_CHANGE:
-                toRet = parameters[2];
-                break;
-            case POTION_EFFECT:
-            case GET_PLAYERLISTENTRY:
-            case CONNECT:
-                toRet = parameters[1];
-                break;
-            default:
-                toRet = false;
-                break;
+        case LIQUID_DESTROY:
+        case TAME:
+        case ENTITY_RIGHTCLICKED:
+        case COMMAND_CHECK:
+            toRet = HookResult.DEFAULT_ACTION;
+            break;
+
+        case CHUNK_CREATE:
+        case SPAWNPOINT_CREATE:
+            toRet = null;
+            break;
+
+        case ENCHANT:
+            toRet = parameters[0];
+            break;
+            
+        case REDSTONE_CHANGE:
+        case FOODLEVEL_CHANGE:
+        case FOODEXHAUSTION_CHANGE:
+        case FOODSATURATION_CHANGE:
+            toRet = parameters[2];
+            break;
+
+        case POTION_EFFECT:
+        case GET_PLAYERLISTENTRY:
+        case PLAYER_CONNECT:
+        case PLAYER_DISCONNECT:
+            toRet = parameters[1];
+            break;
+
+        default:
+            toRet = false;
+            break;
         }
 
-        if (!(loaded || loadedpreload))
+        if (!(loaded || loadedpreload)) {
             return toRet;
+        }
 
         synchronized (lock) {
             PluginListener listener = null;
+
             try {
                 List<PluginRegisteredListener> registeredListeners = listeners.get(h.ordinal());
+
                 for (PluginRegisteredListener regListener : registeredListeners) {
-                    if (!regListener.getPlugin().isEnabled())
+                    if (!regListener.getPlugin().isEnabled()) {
                         continue;
+                    }
 
                     listener = regListener.getListener();
 
                     try {
                         switch (h) {
-                            case LOGINCHECK:
-                                String result = listener.onLoginChecks((String) parameters[0]);
-                                if (result != null)
-                                    toRet = result;
-                                break;
-                            case LOGIN:
-                                listener.onLogin((Player) parameters[0]);
-                                break;
-                            case DISCONNECT:
-                                listener.onDisconnect((Player) parameters[0]);
-                                break;
-                            case CHAT:
-                                if (listener.onChat((Player) parameters[0], (String) parameters[1]))
-                                    toRet = true;
-                                break;
-                            case COMMAND:
-                                if (listener.onCommand((Player) parameters[0], (String[]) parameters[1]))
-                                    toRet = true;
-                                break;
-                            case SERVERCOMMAND:
-                                if (listener.onConsoleCommand((String[]) parameters[0]))
-                                    toRet = true;
-                                break;
-                            case BAN:
-                                listener.onBan((Player) parameters[0], (Player) parameters[1], (String) parameters[2]);
-                                break;
-                            case IPBAN:
-                                listener.onIpBan((Player) parameters[0], (Player) parameters[1], (String) parameters[2]);
-                                break;
-                            case KICK:
-                                listener.onKick((Player) parameters[0], (Player) parameters[1], (String) parameters[2]);
-                                break;
-                            case BLOCK_CREATED:
-                                if (listener.onBlockCreate((Player) parameters[0], (Block) parameters[1], (Block) parameters[2], (Integer) parameters[3]))
-                                    toRet = true;
-                                break;
-                            case BLOCK_DESTROYED:
-                                if (listener.onBlockDestroy((Player) parameters[0], (Block) parameters[1]))
-                                    toRet = true;
-                                break;
-                            case PLAYER_MOVE:
-                                listener.onPlayerMove((Player) parameters[0], (Location) parameters[1], (Location) parameters[2]);
-                                break;
-                            case ARM_SWING:
-                                listener.onArmSwing((Player) parameters[0]);
-                                break;
-                            case ITEM_DROP:
-                                if (listener.onItemDrop((Player) parameters[0], (ItemEntity) parameters[1]))
-                                    toRet = true;
-                                break;
-                            case ITEM_PICK_UP:
-                                if (listener.onItemPickUp((Player) parameters[0], (ItemEntity) parameters[1]))
-                                    toRet = true;
-                                break;
-                            case TELEPORT:
-                                if (listener.onTeleport((Player) parameters[0], (Location) parameters[1], (Location) parameters[2]))
-                                    toRet = true;
-                                break;
-                            case BLOCK_BROKEN:
-                                if (listener.onBlockBreak((Player) parameters[0], (Block) parameters[1]))
-                                    toRet = true;
-                                break;
-                            case FLOW:
-                                if (listener.onFlow((Block) parameters[0], (Block) parameters[1]))
-                                    toRet = true;
-                                break;
-                            case IGNITE:
-                                if (listener.onIgnite((Block) parameters[0], (parameters[1] == null ? null : (Player) parameters[1])))
-                                    toRet = true;
-                                break;
-                            case EXPLODE:
-                                if (listener.onExplode((Block) parameters[0]))
-                                    toRet = true;
-                                break;
-                            case MOB_SPAWN:
-                                if (listener.onMobSpawn((Mob) parameters[0]))
-                                    toRet = true;
-                                break;
-                            case DAMAGE:
-                                if (listener.onDamage((DamageType) parameters[0], (BaseEntity) parameters[1], (BaseEntity) parameters[2], (Integer) parameters[3]))
-                                    toRet = true;
-                                break;
-                            case HEALTH_CHANGE:
-                                if (listener.onHealthChange((Player) parameters[0], (Integer) parameters[1], (Integer) parameters[2]))
-                                    toRet = true;
-                                break;
-                            case REDSTONE_CHANGE:
-                                toRet = listener.onRedstoneChange((Block) parameters[0], (Integer) parameters[1], (Integer) toRet);
-                                break;
-                            case PISTON_EXTEND:
-                                toRet = listener.onPistonExtend((Block) parameters[0], (((Block) parameters[0]).getType() == Block.Type.StickyPiston.getType()));
-                                break;
-                            case PISTON_RETRACT:
-                                toRet = listener.onPistonRetract((Block) parameters[0], (((Block) parameters[0]).getType() == Block.Type.StickyPiston.getType()));
-                                break;
-                            case BLOCK_PHYSICS:
-                                if (listener.onBlockPhysics((Block) parameters[0], (Boolean) parameters[1]))
-                                    toRet = true;
-                                break;
-                            case VEHICLE_CREATE:
-                                listener.onVehicleCreate((BaseVehicle) parameters[0]);
-                                break;
-                            case VEHICLE_UPDATE:
-                                listener.onVehicleUpdate((BaseVehicle) parameters[0]);
-                                break;
-                            case VEHICLE_DAMAGE:
-                                if (listener.onVehicleDamage((BaseVehicle) parameters[0], (BaseEntity) parameters[1], (Integer) parameters[2]))
-                                    toRet = true;
-                                break;
-                            case VEHICLE_COLLISION:
-                                if (listener.onVehicleCollision((BaseVehicle) parameters[0], (BaseEntity) parameters[1]))
-                                    toRet = true;
-                                break;
-                            case VEHICLE_DESTROYED:
-                                listener.onVehicleDestroyed((BaseVehicle) parameters[0]);
-                                break;
-                            case VEHICLE_ENTERED:
-                                listener.onVehicleEnter((BaseVehicle) parameters[0], (HumanEntity) parameters[1]);
-                                break;
-                            case VEHICLE_POSITIONCHANGE:
-                                listener.onVehiclePositionChange((BaseVehicle) parameters[0], (Integer) parameters[1], (Integer) parameters[2], (Integer) parameters[3]);
-                                break;
-                            case ITEM_USE:
-                                if (listener.onItemUse((Player) parameters[0], (Block) parameters[1], (Block) parameters[2], (Item) parameters[3]))
-                                    toRet = true;
-                                break;
-                            case BLOCK_RIGHTCLICKED:
-                                if (listener.onBlockRightClick((Player) parameters[0], (Block) parameters[1], (Item) parameters[2]))
-                                    toRet = true;
-                                break;
-                            case BLOCK_PLACE:
-                                if (listener.onBlockPlace((Player) parameters[0], (Block) parameters[1], (Block) parameters[2], (Item) parameters[3]))
-                                    toRet = true;
-                                break;
-                            case LIQUID_DESTROY:
-                                HookResult ret = listener.onLiquidDestroy((HookResult) toRet, (Integer) parameters[0], (Block) parameters[1]);
-                                if (ret != HookResult.DEFAULT_ACTION && (HookResult) toRet == HookResult.DEFAULT_ACTION)
-                                    toRet = ret;
-                                break;
-                            case ATTACK:
-                                if (listener.onAttack((LivingEntity) parameters[0], (LivingEntity) parameters[1], (Integer) parameters[2]))
-                                    toRet = true;
-                                break;
-                            case OPEN_INVENTORY:
-                                if (listener.onOpenInventory((Player) parameters[0], (Inventory) parameters[1]))
-                                    toRet = true;
-                                break;
-                            case SIGN_SHOW:
-                                listener.onSignShow((Player) parameters[0], (Sign) parameters[1]);
-                                break;
-                            case SIGN_CHANGE:
-                                if (listener.onSignChange((Player) parameters[0], (Sign) parameters[1]))
-                                    toRet = true;
-                                break;
-                            case LEAF_DECAY:
-                                if (listener.onLeafDecay((Block) parameters[0]))
-                                    toRet = true;
-                                break;
-                            case TAME:
-                                ret = listener.onTame((Player) parameters[0], (Mob) parameters[1], (Boolean) parameters[2]);
-                                if (ret != HookResult.DEFAULT_ACTION && (HookResult) toRet == HookResult.DEFAULT_ACTION)
-                                    toRet = ret;
-                                break;
-                            case LIGHTNING_STRIKE:
-                                if (listener.onLightningStrike((BaseEntity) parameters[0]))
-                                    toRet = true;
-                                break;
-                            case WEATHER_CHANGE:
-                                if (listener.onWeatherChange((World) parameters[0], (Boolean) parameters[1]))
-                                    toRet = true;
-                                break;
-                            case THUNDER_CHANGE:
-                                if (listener.onThunderChange((World) parameters[0], (Boolean) parameters[1]))
-                                    toRet = true;
-                                break;
-                            case PORTAL_USE:
-                                if (listener.onPortalUse((Player) parameters[0], (World) parameters[1]))
-                                    toRet = true;
-                                break;
-                            case TIME_CHANGE:
-                                if (listener.onTimeChange((World) parameters[0], (long) (Long) parameters[1]))
-                                    toRet = true;
-                                break;
-                            case COMMAND_CHECK:
-                                ret = listener.canPlayerUseCommand((Player) parameters[0], (String) parameters[1]);
-                                if (ret != HookResult.DEFAULT_ACTION)
-                                    toRet = ret;
-                                break;
-                            case CHUNK_CREATE:
-                                byte[] chunk = listener.onChunkCreate((Integer) parameters[0], (Integer) parameters[1], (World) parameters[2]);
-                                if (chunk != null) {
-                                    toRet = chunk;
-                                }
-                                break;
-                            case SPAWNPOINT_CREATE:
-                                Location point = listener.onSpawnpointCreate((World) parameters[0]);
-                                if (point != null) {
-                                    toRet = point;
-                                }
-                                break;
-                            case CHUNK_CREATED:
-                                listener.onChunkCreated((Chunk) parameters[0]);
-                                break;
-                            case CHUNK_LOADED:
-                                listener.onChunkLoaded((Chunk) parameters[0]);
-                                break;
-                            case CHUNK_UNLOAD:
-                                listener.onChunkUnload((Chunk) parameters[0]);
-                                break;
-                            case PORTAL_CREATE:
-                                toRet = listener.onPortalCreate((Block[][]) parameters[0]);
-                                break;
-                            case PORTAL_DESTROY:
-                                toRet = listener.onPortalDestroy((Block[][]) parameters[0]);
-                                break;
-                            case PLAYER_RESPAWN:
-                                listener.onPlayerRespawn((Player) parameters[0]);
-                                break;
-                            case ENTITY_DESPAWN:
-                                toRet = listener.onEntityDespawn((BaseEntity) parameters[0]);
-                                break;
-                            case ENDERMAN_PICKUP:
-                                toRet = listener.onEndermanPickup((Enderman) parameters[0], (Block) parameters[1]);
-                                break;
-                            case ENDERMAN_DROP:
-                                toRet = listener.onEndermanDrop((Enderman) parameters[0], (Block) parameters[1]);
-                                break;
-                            case COW_MILK:
-                                toRet = listener.onCowMilk((Player) parameters[0], (Mob) parameters[1]);
-                                break;
-                            case EAT:
-                                toRet = listener.onEat((Player) parameters[0],(Item) parameters[1]);
-                                break;
-                            case FOODLEVEL_CHANGE:
-                                toRet = (Integer) listener.onFoodLevelChange((Player) parameters[0],(Integer) parameters[1],(Integer) parameters[2]);
-                                break;
-                            case FOODEXHAUSTION_CHANGE:
-                                toRet = (Float) listener.onFoodExhaustionChange((Player) parameters[0],(Float) parameters[1],(Float) parameters[2]);
-                                break;
-                            case FOODSATURATION_CHANGE:
-                                toRet = (Float) listener.onFoodSaturationChange((Player) parameters[0],(Float) parameters[1],(Float) parameters[2]);
-                                break;
-                            case POTION_EFFECT:
-                                toRet = listener.onPotionEffect((LivingEntity) parameters[0], (PotionEffect) parameters[1]);
-                                break;
-                            case EXPERIENCE_CHANGE:
-                                if (listener.onExpChange((Player) parameters[0], (Integer) parameters[1], (Integer) parameters[2]))
-                                    toRet = true;
-                                break;
-                            case LEVEL_UP:
-                                if (listener.onLevelUp((Player) parameters[0]))
-                                    toRet = true;
-                                break;
-                            case GET_PLAYERLISTENTRY:
-                                toRet = listener.onGetPlayerlistEntry((Player) parameters[0],(PlayerlistEntry) parameters[1]);
-                                break;
-                            case CONNECT:
-                                toRet = listener.onPlayerConnect((Player) parameters[0],(HookParametersConnect) parameters[1]);
-                                break;
-                            case ENTITY_RIGHTCLICKED:
-                                ret = listener.onEntityRightClick((Player) parameters[0], (BaseEntity) parameters[1], (Item) parameters[2]);
-                                if (ret != HookResult.DEFAULT_ACTION && (HookResult) toRet == HookResult.DEFAULT_ACTION)
-                                    toRet = ret;
-                                break;
+                        case LOGINCHECK:
+                            String result = listener.onLoginChecks((String) parameters[0]);
+
+                            if (result != null) {
+                                toRet = result;
+                            }
+                            break;
+
+                        case LOGIN:
+                            listener.onLogin((Player) parameters[0]);
+                            break;
+
+                        case DISCONNECT:
+                            listener.onDisconnect((Player) parameters[0]);
+                            break;
+
+                        case CHAT:
+                            if (listener.onChat((Player) parameters[0], (StringBuilder) parameters[1])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case COMMAND:
+                            if (listener.onCommand((Player) parameters[0], ((String[]) parameters[1]).clone())) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case SERVERCOMMAND:
+                            if (listener.onConsoleCommand(((String[]) parameters[0]).clone())) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case BAN:
+                            listener.onBan((Player) parameters[0], (Player) parameters[1], (String) parameters[2]);
+                            break;
+
+                        case IPBAN:
+                            listener.onIpBan((Player) parameters[0], (Player) parameters[1], (String) parameters[2]);
+                            break;
+
+                        case KICK:
+                            listener.onKick((Player) parameters[0], (Player) parameters[1], (String) parameters[2]);
+                            break;
+
+                        case BLOCK_CREATED:
+                            if (listener.onBlockCreate((Player) parameters[0], (Block) parameters[1], (Block) parameters[2], (Integer) parameters[3])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case BLOCK_DESTROYED:
+                            if (listener.onBlockDestroy((Player) parameters[0], (Block) parameters[1])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case PLAYER_MOVE:
+                            listener.onPlayerMove((Player) parameters[0], (Location) parameters[1], (Location) parameters[2]);
+                            break;
+
+                        case ARM_SWING:
+                            listener.onArmSwing((Player) parameters[0]);
+                            break;
+
+                        case ITEM_DROP:
+                            if (listener.onItemDrop((Player) parameters[0], (ItemEntity) parameters[1])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case ITEM_PICK_UP:
+                            if (listener.onItemPickUp((Player) parameters[0], (ItemEntity) parameters[1])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case TELEPORT:
+                            if (listener.onTeleport((Player) parameters[0], (Location) parameters[1], (Location) parameters[2])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case BLOCK_BROKEN:
+                            if (listener.onBlockBreak((Player) parameters[0], (Block) parameters[1])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case FLOW:
+                            if (listener.onFlow((Block) parameters[0], (Block) parameters[1])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case IGNITE:
+                            if (listener.onIgnite((Block) parameters[0], (parameters[1] == null ? null : (Player) parameters[1]))) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case EXPLODE:
+                            if (listener.onExplode((Block) parameters[0], (OEntity) parameters[1], (HashSet) parameters[2])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case MOB_SPAWN:
+                            if (listener.onMobSpawn((Mob) parameters[0])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case DAMAGE:
+                            if (listener.onDamage((DamageType) parameters[0], (BaseEntity) parameters[1], (BaseEntity) parameters[2], (Integer) parameters[3])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case HEALTH_CHANGE:
+                            if (listener.onHealthChange((Player) parameters[0], (Integer) parameters[1], (Integer) parameters[2])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case REDSTONE_CHANGE:
+                            toRet = listener.onRedstoneChange((Block) parameters[0], (Integer) parameters[1], (Integer) toRet);
+                            break;
+
+                        case PISTON_EXTEND:
+                            toRet = listener.onPistonExtend((Block) parameters[0], (((Block) parameters[0]).getType() == Block.Type.StickyPiston.getType()));
+                            break;
+
+                        case PISTON_RETRACT:
+                            toRet = listener.onPistonRetract((Block) parameters[0], (((Block) parameters[0]).getType() == Block.Type.StickyPiston.getType()));
+                            break;
+
+                        case BLOCK_PHYSICS:
+                            if (listener.onBlockPhysics((Block) parameters[0], (Boolean) parameters[1])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case VEHICLE_CREATE:
+                            listener.onVehicleCreate((BaseVehicle) parameters[0]);
+                            break;
+
+                        case VEHICLE_UPDATE:
+                            listener.onVehicleUpdate((BaseVehicle) parameters[0]);
+                            break;
+
+                        case VEHICLE_DAMAGE:
+                            if (listener.onVehicleDamage((BaseVehicle) parameters[0], (BaseEntity) parameters[1], (Integer) parameters[2])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case VEHICLE_COLLISION:
+                            if (listener.onVehicleCollision((BaseVehicle) parameters[0], (BaseEntity) parameters[1])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case VEHICLE_DESTROYED:
+                            listener.onVehicleDestroyed((BaseVehicle) parameters[0]);
+                            break;
+
+                        case VEHICLE_ENTERED:
+                            listener.onVehicleEnter((BaseVehicle) parameters[0], (HumanEntity) parameters[1]);
+                            break;
+
+                        case VEHICLE_POSITIONCHANGE:
+                            listener.onVehiclePositionChange((BaseVehicle) parameters[0], (Integer) parameters[1], (Integer) parameters[2], (Integer) parameters[3]);
+                            break;
+
+                        case ITEM_USE:
+                            if (listener.onItemUse((Player) parameters[0], (Block) parameters[1], (Block) parameters[2], (Item) parameters[3])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case BLOCK_RIGHTCLICKED:
+                            if (listener.onBlockRightClick((Player) parameters[0], (Block) parameters[1], (Item) parameters[2])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case BLOCK_PLACE:
+                            if (listener.onBlockPlace((Player) parameters[0], (Block) parameters[1], (Block) parameters[2], (Item) parameters[3])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case LIQUID_DESTROY:
+                            HookResult ret = listener.onLiquidDestroy((HookResult) toRet, (Integer) parameters[0], (Block) parameters[1]);
+
+                            if (ret != HookResult.DEFAULT_ACTION && (HookResult) toRet == HookResult.DEFAULT_ACTION) {
+                                toRet = ret;
+                            }
+                            break;
+
+                        case ATTACK:
+                            if (listener.onAttack((LivingEntity) parameters[0], (LivingEntity) parameters[1], (Integer) parameters[2])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case OPEN_INVENTORY:
+                            if (listener.onOpenInventory((HookParametersOpenInventory)parameters[0])) {
+                                toRet = true;
+                            }
+                            break;
+                            
+                        case CLOSE_INVENTORY:
+                            listener.onCloseInventory((HookParametersCloseInventory)parameters[0]);
+                            break;
+
+                        case SIGN_SHOW:
+                            listener.onSignShow((Player) parameters[0], (Sign) parameters[1]);
+                            break;
+
+                        case SIGN_CHANGE:
+                            if (listener.onSignChange((Player) parameters[0], (Sign) parameters[1])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case LEAF_DECAY:
+                            if (listener.onLeafDecay((Block) parameters[0])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case TAME:
+                            ret = listener.onTame((Player) parameters[0], (Mob) parameters[1], (Boolean) parameters[2]);
+                            if (ret != HookResult.DEFAULT_ACTION && (HookResult) toRet == HookResult.DEFAULT_ACTION) {
+                                toRet = ret;
+                            }
+                            break;
+
+                        case LIGHTNING_STRIKE:
+                            if (listener.onLightningStrike((BaseEntity) parameters[0])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case WEATHER_CHANGE:
+                            if (listener.onWeatherChange((World) parameters[0], (Boolean) parameters[1])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case THUNDER_CHANGE:
+                            if (listener.onThunderChange((World) parameters[0], (Boolean) parameters[1])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case PORTAL_USE:
+                            if (listener.onPortalUse((Player) parameters[0], (World) parameters[1])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case TIME_CHANGE:
+                            if (listener.onTimeChange((World) parameters[0], (long) (Long) parameters[1])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case COMMAND_CHECK:
+                            ret = listener.canPlayerUseCommand((Player) parameters[0], (String) parameters[1]);
+                            if (ret != HookResult.DEFAULT_ACTION) {
+                                toRet = ret;
+                            }
+                            break;
+
+                        case CHUNK_CREATE:
+                            byte[] chunk = listener.onChunkCreate((Integer) parameters[0], (Integer) parameters[1], (World) parameters[2]);
+
+                            if (chunk != null) {
+                                toRet = chunk;
+                            }
+                            break;
+
+                        case SPAWNPOINT_CREATE:
+                            Location point = listener.onSpawnpointCreate((World) parameters[0]);
+
+                            if (point != null) {
+                                toRet = point;
+                            }
+                            break;
+
+                        case CHUNK_CREATED:
+                            listener.onChunkCreated((Chunk) parameters[0]);
+                            break;
+
+                        case CHUNK_LOADED:
+                            listener.onChunkLoaded((Chunk) parameters[0]);
+                            break;
+
+                        case CHUNK_UNLOAD:
+                            listener.onChunkUnload((Chunk) parameters[0]);
+                            break;
+
+                        case PORTAL_CREATE:
+                            toRet = listener.onPortalCreate(((Block[][]) parameters[0]).clone());
+                            break;
+
+                        case PORTAL_DESTROY:
+                            toRet = listener.onPortalDestroy(((Block[][]) parameters[0]).clone());
+                            break;
+
+                        case PLAYER_RESPAWN:
+                            listener.onPlayerRespawn((Player) parameters[0], (Location) parameters[1]);
+                            break;
+
+                        case ENTITY_DESPAWN:
+                            toRet = listener.onEntityDespawn((BaseEntity) parameters[0]);
+                            break;
+
+                        case ENDERMAN_PICKUP:
+                            toRet = listener.onEndermanPickup((Enderman) parameters[0], (Block) parameters[1]);
+                            break;
+
+                        case ENDERMAN_DROP:
+                            toRet = listener.onEndermanDrop((Enderman) parameters[0], (Block) parameters[1]);
+                            break;
+
+                        case COW_MILK:
+                            toRet = listener.onCowMilk((Player) parameters[0], (Mob) parameters[1]);
+                            break;
+
+                        case EAT:
+                            toRet = listener.onEat((Player) parameters[0], (Item) parameters[1]);
+                            break;
+
+                        case FOODLEVEL_CHANGE:
+                            toRet = (Integer) listener.onFoodLevelChange((Player) parameters[0], (Integer) parameters[1], (Integer) parameters[2]);
+                            break;
+
+                        case FOODEXHAUSTION_CHANGE:
+                            toRet = (Float) listener.onFoodExhaustionChange((Player) parameters[0], (Float) parameters[1], (Float) parameters[2]);
+                            break;
+
+                        case FOODSATURATION_CHANGE:
+                            toRet = (Float) listener.onFoodSaturationChange((Player) parameters[0], (Float) parameters[1], (Float) parameters[2]);
+                            break;
+
+                        case POTION_EFFECT:
+                            toRet = listener.onPotionEffect((LivingEntity) parameters[0], (PotionEffect) parameters[1]);
+                            break;
+
+                        case EXPERIENCE_CHANGE:
+                            if (listener.onExpChange((Player) parameters[0], (Integer) parameters[1], (Integer) parameters[2])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case LEVEL_UP:
+                            if (listener.onLevelUp((Player) parameters[0])) {
+                                toRet = true;
+                            }
+                            break;
+
+                        case GET_PLAYERLISTENTRY:
+                            toRet = listener.onGetPlayerlistEntry((Player) parameters[0], (PlayerlistEntry) parameters[1]);
+                            break;
+
+                        case PLAYER_CONNECT:
+                            toRet = listener.onPlayerConnect((Player) parameters[0], (HookParametersConnect) parameters[1]);
+                            break;
+                            
+                        case PLAYER_DISCONNECT:
+                            toRet = listener.onPlayerDisconnect((Player) parameters[0], (HookParametersDisconnect) parameters[1]);
+                            break;
+
+                        case ENTITY_RIGHTCLICKED:
+                            ret = listener.onEntityRightClick((Player) parameters[0], (BaseEntity) parameters[1], (Item) parameters[2]);
+                            if (ret != HookResult.DEFAULT_ACTION && (HookResult) toRet == HookResult.DEFAULT_ACTION) {
+                                toRet = ret;
+                            }
+                            break;
+
+                        case MOB_TARGET:
+                            if (listener.onMobTarget((Player) parameters[0], (LivingEntity) parameters[1])) {
+                                toRet = true;
+                            }
+                            break;
+                            
+                        case BLOCK_UPDATE:
+                            if(listener.onBlockUpdate((Block) parameters[0], (Integer) parameters[1])){
+                                toRet = true;
+                            }
+                            break;
+                            
+                        case ENCHANT:
+                            toRet = listener.onEnchant((HookParametersEnchant) parameters[0]);
+                            break;
                         }
-                    } catch (UnsupportedOperationException ex) {
-                    }
+                    } catch (UnsupportedOperationException ex) {}
                 }
             } catch (Exception ex) {
                 String listenerString = listener == null ? "null(unknown listener)" : listener.getClass().toString();
+
                 log.log(Level.SEVERE, "Exception while calling plugin function in '" + listenerString + "' while calling hook: '" + h.toString() + "'.", ex);
             } catch (Throwable ex) { // The 'exception' thrown is so severe it's
                 // not even an exception!
@@ -975,6 +1180,7 @@ public class PluginLoader {
      */
     public Object callCustomHook(String name, Object[] parameters) {
         Object toRet = false;
+
         synchronized (lock) {
             try {
                 PluginInterface listener = customListeners.get(name);
@@ -985,6 +1191,7 @@ public class PluginLoader {
                 }
 
                 String msg = listener.checkParameters(parameters);
+
                 if (msg != null) {
                     log.log(Level.SEVERE, msg);
                     return false;
@@ -1019,9 +1226,11 @@ public class PluginLoader {
             List<PluginRegisteredListener> regListeners = listeners.get(hook.ordinal());
 
             int pos = 0;
+
             for (PluginRegisteredListener other : regListeners) {
-                if (other.getPriority() < priority)
+                if (other.getPriority() < priority) {
                     break;
+                }
                 ++pos;
             }
 
@@ -1039,8 +1248,9 @@ public class PluginLoader {
      */
     public void addCustomListener(PluginInterface listener) {
         synchronized (lock) {
-            if (customListeners.get(listener.getName()) != null)
+            if (customListeners.get(listener.getName()) != null) {
                 log.log(Level.SEVERE, "Replacing existing listener: " + listener.getName());
+            }
             customListeners.put(listener.getName(), listener);
             log.info("Registered custom hook: " + listener.getName());
         }
@@ -1054,6 +1264,7 @@ public class PluginLoader {
      */
     public void removeListener(PluginRegisteredListener reg) {
         List<PluginRegisteredListener> regListeners = listeners.get(reg.getHook().ordinal());
+
         synchronized (lock) {
             regListeners.remove(reg);
         }

@@ -1,8 +1,9 @@
 import java.util.LinkedHashMap;
 import java.util.logging.Logger;
 
+
 public class ServerConsoleCommands {
-    private static final Logger                      log      = Logger.getLogger("Minecraft");
+    private static final Logger                      log = Logger.getLogger("Minecraft");
     private static ServerConsoleCommands             instance;
     private final LinkedHashMap<String, BaseCommand> commands = new LinkedHashMap<String, BaseCommand>();
 
@@ -27,8 +28,9 @@ public class ServerConsoleCommands {
      */
     public void add(String name, BaseCommand cmd) {
         if (name != null && cmd != null) {
-            if (!commands.containsValue(cmd))
+            if (!commands.containsValue(cmd)) {
                 etc.getInstance().addCommand("/" + name, cmd.tooltip);
+            }
             commands.put(name, cmd);
         }
     }
@@ -55,10 +57,12 @@ public class ServerConsoleCommands {
      * @return
      */
     public static boolean parseServerConsoleCommand(MessageReceiver caller, String command, String[] args) {
-        if (instance == null)
+        if (instance == null) {
             instance = new ServerConsoleCommands();
+        }
 
         BaseCommand cmd = instance.getCommand(command);
+
         if (cmd != null) {
             cmd.parseCommand(caller, args);
             // Inform caller a matching command was found.
@@ -71,243 +75,256 @@ public class ServerConsoleCommands {
         return commands.get(command);
     }
 
-    public static final BaseCommand reload        = new BaseCommand("- Reloads CanaryMod") {
-                                                      @Override
-                                                      void execute(MessageReceiver caller, String[] parameters) {
-                                                          etc.getInstance().load();
-                                                          etc.getInstance().loadData();
-                                                          for (Player p : etc.getServer().getPlayerList())
-                                                              p.getUser().reloadPlayer();
-                                                          log.info("CanaryMod reloaded by " + caller.getName());
-                                                          caller.notify("Successfully reloaded config");
-                                                      }
-                                                  };
+    public static final BaseCommand reload = new BaseCommand("- Reloads CanaryMod") {
+        @Override
+        void execute(MessageReceiver caller, String[] parameters) {
+            etc.getInstance().load();
+            etc.getInstance().loadData();
+            for (Player p : etc.getServer().getPlayerList()) {
+                p.getUser().reloadPlayer();
+            }
+            log.info("CanaryMod reloaded by " + caller.getName());
+            caller.notify("Successfully reloaded config");
+        }
+    };
 
-    public static final BaseCommand modify        = new BaseCommand("[player] [key] [value] - Type /modify for more info", "Overriden onBadSyntax", 3) {
+    public static final BaseCommand modify = new BaseCommand("[player] [key] [value] - Type /modify for more info", "Overriden onBadSyntax", 3) {
 
-                                                      @Override
-                                                      void execute(MessageReceiver caller, String[] parameters) {
-                                                          if (parameters.length > 2 && parameters[2].contains(":")) {
-                                                              for (int i = 3; i < parameters.length; i++)
-                                                                  if (!parameters[i].contains(":")) {
-                                                                      onBadSyntax(caller, null);
-                                                                      return;
-                                                                  }
+        @Override
+        void execute(MessageReceiver caller, String[] parameters) {
+            if (parameters.length > 2 && parameters[2].contains(":")) {
+                for (int i = 3; i < parameters.length; i++) {
+                    if (!parameters[i].contains(":")) {
+                        onBadSyntax(caller, null);
+                        return;
+                    }
+                }
                                                               
-                                                              Player player = etc.getServer().matchPlayer(parameters[1]);
-                                                               if (player == null) {
-                                                                  if (!etc.getDataSource().doesPlayerExist(parameters[1])) {
-                                                                      caller.notify("Player does not exist.");
-                                                                      return; 
-                                                                  } else {
-                                                                      player = etc.getDataSource().getPlayer(parameters[1]);
-                                                                      player.setOfflineName(parameters[1]);
-                                                                  }
-                                                              } 
+                Player player = etc.getServer().matchPlayer(parameters[1]);
+
+                if (player == null) {
+                    if (!etc.getDataSource().doesPlayerExist(parameters[1])) {
+                        caller.notify("Player does not exist.");
+                        return; 
+                    } else {
+                        player = etc.getDataSource().getPlayer(parameters[1]);
+                        player.setOfflineName(parameters[1]);
+                    }
+                } 
                                                                
-                                                              for (int i = 2; i < parameters.length; i++) {
-                                                                  if (parameters[i].split(":").length != 2) {
-                                                                      caller.notify("This key:value pair is deformed... " + parameters[i]);
-                                                                      return;
-                                                                  }
-                                                                  String key = parameters[i].split(":")[0];
-                                                                  String value = parameters[i].split(":")[1];
-                                                                  boolean newUser = false;
+                for (int i = 2; i < parameters.length; i++) {
+                    if (parameters[i].split(":").length != 2) {
+                        caller.notify("This key:value pair is deformed... " + parameters[i]);
+                        return;
+                    }
+                    String key = parameters[i].split(":")[0];
+                    String value = parameters[i].split(":")[1];
+                    boolean newUser = false;
 
-                                                                  if (!etc.getDataSource().doesPlayerExist(player.getOfflineName())) {
-                                                                      if (!key.equalsIgnoreCase("groups") && !key.equalsIgnoreCase("g")) {
-                                                                          caller.notify("When adding a new user, set their group(s) first.");
-                                                                          return;
-                                                                      }
-                                                                      caller.notify("Adding new user.");
-                                                                      newUser = true;
-                                                                      player.setCanModifyWorld(true);
-                                                                  }
+                    if (!etc.getDataSource().doesPlayerExist(player.getOfflineName())) {
+                        if (!key.equalsIgnoreCase("groups") && !key.equalsIgnoreCase("g")) {
+                            caller.notify("When adding a new user, set their group(s) first.");
+                            return;
+                        }
+                        caller.notify("Adding new user.");
+                        newUser = true;
+                        player.setCanModifyWorld(true);
+                    }
                                                                   
-                                                                  boolean skip = false;
-                                                                  if ((key.equalsIgnoreCase("groups") || key.equalsIgnoreCase("g"))) {
-                                                                      for (String groupname : value.split(",")) {
-                                                                          if (!etc.getDataSource().doesGroupExist(groupname)) {
-                                                                              caller.notify(String.format("Group %s does not exist. Skipping group key.",groupname));
-                                                                              skip = true;
-                                                                          }
-                                                                      }
-                                                                  } 
+                    boolean skip = false;
+
+                    if ((key.equalsIgnoreCase("groups") || key.equalsIgnoreCase("g"))) {
+                        for (String groupname : value.split(",")) {
+                            if (!etc.getDataSource().doesGroupExist(groupname)) {
+                                caller.notify(String.format("Group %s does not exist. Skipping group key.", groupname));
+                                skip = true;
+                            }
+                        }
+                    } 
                                                                   
-                                                                  if (!skip) {
-                                                                      updatePlayerValues(player, key, value);                                                                  
-                                                                      saveChanges(player, newUser);
-                                                                  }
+                    if (!skip) {
+                        updatePlayerValues(player, key, value);                                                                  
+                        saveChanges(player, newUser);
+                    }
                                                                   
-                                                                  log.info("Modifed user " + player.getOfflineName() + ". " + key + " => " + value + " by " + caller.getName());
-                                                              }
-                                                              caller.notify("Modified user.");
-                                                          } else {
-                                                              if (parameters.length < 4) {
-                                                                  onBadSyntax(caller, null);
-                                                                  return;
-                                                              }
+                    log.info("Modifed user " + player.getOfflineName() + ". " + key + " => " + value + " by " + caller.getName());
+                }
+                caller.notify("Modified user.");
+            } else {
+                if (parameters.length < 4) {
+                    onBadSyntax(caller, null);
+                    return;
+                }
                                                               
+                Player player = etc.getServer().matchPlayer(parameters[1]);
+
+                if (player == null) {
+                    if (!etc.getDataSource().doesPlayerExist(parameters[1])) {
+                        caller.notify("Player does not exist.");
+                        return; 
+                    } else {
+                        player = etc.getDataSource().getPlayer(parameters[1]);
+                        player.setOfflineName(parameters[1]);
+                    }
+                } 
+
+                String key = parameters[2];
+                String value = parameters[3];
+                boolean newUser = false;
+
+                if (!etc.getDataSource().doesPlayerExist(player.getOfflineName())) {
+                    if (!key.equalsIgnoreCase("groups") && !key.equalsIgnoreCase("g")) {
+                        caller.notify("When adding a new user, set their group(s) first.");
+                        return;
+                    }
+                    caller.notify("Adding new user.");
+                    newUser = true;
+                }
                                                               
-                                                              Player player = etc.getServer().matchPlayer(parameters[1]);
-                                                              if (player == null) {
-                                                                  if (!etc.getDataSource().doesPlayerExist(parameters[1])) {
-                                                                      caller.notify("Player does not exist.");
-                                                                      return; 
-                                                                  } else {
-                                                                      player = etc.getDataSource().getPlayer(parameters[1]);
-                                                                      player.setOfflineName(parameters[1]);
-                                                                  }
-                                                              } 
+                if ((key.equalsIgnoreCase("groups") || key.equalsIgnoreCase("g"))) {
+                    for (String groupname : value.split(",")) {
+                        if (!etc.getDataSource().doesGroupExist(groupname)) {
+                            caller.notify(String.format("Group %s does not exist. %s groups not modified.", groupname, player.getOfflineName()));
+                            return;
+                        }
+                    }
+                } 
 
-                                                              String key = parameters[2];
-                                                              String value = parameters[3];
-                                                              boolean newUser = false;
+                updatePlayerValues(player, key, value);
+                saveChanges(player, newUser);
 
-                                                              if (!etc.getDataSource().doesPlayerExist(player.getOfflineName())) {
-                                                                  if (!key.equalsIgnoreCase("groups") && !key.equalsIgnoreCase("g")) {
-                                                                      caller.notify("When adding a new user, set their group(s) first.");
-                                                                      return;
-                                                                  }
-                                                                  caller.notify("Adding new user.");
-                                                                  newUser = true;
-                                                              }
-                                                              
-                                                              if ((key.equalsIgnoreCase("groups") || key.equalsIgnoreCase("g"))) {
-                                                                  for (String groupname : value.split(",")) {
-                                                                      if (!etc.getDataSource().doesGroupExist(groupname)) {
-                                                                          caller.notify(String.format("Group %s does not exist. %s groups not modified.",groupname,player.getOfflineName()));
-                                                                          return;
-                                                                      }
-                                                                  }
-                                                              } 
+                caller.notify("Modified user.");
+                // Send to server
+                // log too,
+                // regardless of
+                // caller.
+                log.info("Modifed user " + player.getOfflineName() + ". " + key + " => " + value + " by " + caller.getName());
+            }
+        }
 
-                                                              updatePlayerValues(player, key, value);
-                                                              saveChanges(player, newUser);
+        private void saveChanges(Player player, boolean newUser) {
+            if (newUser) {
+                etc.getDataSource().addPlayer(player);
+            } else {
+                etc.getDataSource().modifyPlayer(player);
+            }
+        }
 
-                                                              caller.notify("Modified user.");
-                                                              // Send to server
-                                                              // log too,
-                                                              // regardless of
-                                                              // caller.
-                                                              log.info("Modifed user " + player.getOfflineName() + ". " + key + " => " + value + " by " + caller.getName());
-                                                          }
-                                                      }
+        private void updatePlayerValues(Player player, String key, String value) {
+            if (key.equalsIgnoreCase("prefix") || key.equalsIgnoreCase("p")) {
+                player.setPrefix(value);
+            } else if (key.equalsIgnoreCase("commands") || key.equalsIgnoreCase("c")) {
+                player.setCommands(value.split(","));
+            } else if (key.equalsIgnoreCase("groups") || key.equalsIgnoreCase("g")) {
+                player.setGroups(value.split(","));
+            } else if (key.equalsIgnoreCase("ignoresrestrictions") || key.equalsIgnoreCase("ir")) {
+                player.setIgnoreRestrictions(value.equalsIgnoreCase("true") || value.equals("1"));
+            } else if (key.equalsIgnoreCase("admin") || key.equalsIgnoreCase("a")) {
+                player.setAdmin(value.equalsIgnoreCase("true") || value.equals("1"));
+            } else if (key.equalsIgnoreCase("modworld") || key.equalsIgnoreCase("mw")) {
+                player.setCanModifyWorld(value.equalsIgnoreCase("true") || value.equals("1"));
+            }
+        }
 
-                                                      private void saveChanges(Player player, boolean newUser) {
-                                                          if (newUser)
-                                                              etc.getDataSource().addPlayer(player);
-                                                          else
-                                                              etc.getDataSource().modifyPlayer(player);
-                                                      }
+        @Override
+        public void onBadSyntax(MessageReceiver caller, String[] params) {
+            caller.notify("Usage is: /modify [player] [key] [value]");
+            caller.notify("Keys:");
+            caller.notify("prefix: only the letter the color represents");
+            caller.notify("commands: list seperated by comma");
+            caller.notify("groups: list seperated by comma");
+            caller.notify("ignoresrestrictions: true or false");
+            caller.notify("admin: true or false");
+            caller.notify("modworld: true or false");
+        }
+    };
 
-                                                      private void updatePlayerValues(Player player, String key, String value) {
-                                                          if (key.equalsIgnoreCase("prefix") || key.equalsIgnoreCase("p"))
-                                                              player.setPrefix(value);
-                                                          else if (key.equalsIgnoreCase("commands") || key.equalsIgnoreCase("c"))
-                                                              player.setCommands(value.split(","));
-                                                          else if (key.equalsIgnoreCase("groups") || key.equalsIgnoreCase("g"))
-                                                              player.setGroups(value.split(","));
-                                                          else if (key.equalsIgnoreCase("ignoresrestrictions") || key.equalsIgnoreCase("ir"))
-                                                              player.setIgnoreRestrictions(value.equalsIgnoreCase("true") || value.equals("1"));
-                                                          else if (key.equalsIgnoreCase("admin") || key.equalsIgnoreCase("a"))
-                                                              player.setAdmin(value.equalsIgnoreCase("true") || value.equals("1"));
-                                                          else if (key.equalsIgnoreCase("modworld") || key.equalsIgnoreCase("mw"))
-                                                              player.setCanModifyWorld(value.equalsIgnoreCase("true") || value.equals("1"));
-                                                      }
+    public final static BaseCommand whitelist = new BaseCommand("[operation (add or remove)] [player]", "whitelist [operation (toggle, add or remove)] <player>", 2) {
+        @Override
+        void execute(MessageReceiver caller, String[] parameters) {
+            if (parameters[1].equalsIgnoreCase("toggle")) {
+                caller.notify((etc.getInstance().toggleWhitelist() ? "Whitelist enabled" : "Whitelist disabled"));
+            } else if (parameters.length == 3) {
+                if (parameters[1].equalsIgnoreCase("add")) {
+                    etc.getDataSource().addToWhitelist(parameters[2]);
+                    caller.notify(parameters[2] + " added to whitelist");
+                } else if (parameters[1].equalsIgnoreCase("remove")) {
+                    etc.getDataSource().removeFromWhitelist(parameters[2]);
+                    caller.notify(parameters[2] + " removed from whitelist");
+                } else {
+                    caller.notify("Invalid operation.");
+                }
+            } else {
+                caller.notify("Invalid operation.");
+            }
+        }
+    };
 
-                                                      @Override
-                                                      public void onBadSyntax(MessageReceiver caller, String[] params) {
-                                                          caller.notify("Usage is: /modify [player] [key] [value]");
-                                                          caller.notify("Keys:");
-                                                          caller.notify("prefix: only the letter the color represents");
-                                                          caller.notify("commands: list seperated by comma");
-                                                          caller.notify("groups: list seperated by comma");
-                                                          caller.notify("ignoresrestrictions: true or false");
-                                                          caller.notify("admin: true or false");
-                                                          caller.notify("modworld: true or false");
-                                                      }
-                                                  };
+    public final static BaseCommand reservelist = new BaseCommand("[operation (add or remove)] [player]", "reservelist [operation (add or remove)] [player]", 3, 3) {
 
-    public final static BaseCommand whitelist     = new BaseCommand("[operation (add or remove)] [player]", "whitelist [operation (toggle, add or remove)] <player>", 2) {
-                                                      @Override
-                                                      void execute(MessageReceiver caller, String[] parameters) {
-                                                          if (parameters[1].equalsIgnoreCase("toggle"))
-                                                              caller.notify((etc.getInstance().toggleWhitelist() ? "Whitelist enabled" : "Whitelist disabled"));
-                                                          else if (parameters.length == 3) {
-                                                              if (parameters[1].equalsIgnoreCase("add")) {
-                                                                  etc.getDataSource().addToWhitelist(parameters[2]);
-                                                                  caller.notify(parameters[2] + " added to whitelist");
-                                                              } else if (parameters[1].equalsIgnoreCase("remove")) {
-                                                                  etc.getDataSource().removeFromWhitelist(parameters[2]);
-                                                                  caller.notify(parameters[2] + " removed from whitelist");
-                                                              } else
-                                                                  caller.notify("Invalid operation.");
-                                                          } else
-                                                              caller.notify("Invalid operation.");
-                                                      }
-                                                  };
+        @Override
+        void execute(MessageReceiver caller, String[] parameters) {
+            if (parameters[1].equalsIgnoreCase("add")) {
+                etc.getDataSource().addToReserveList(parameters[2]);
+                caller.notify(parameters[2] + " added to reservelist");
+            } else if (parameters[1].equalsIgnoreCase("remove")) {
+                etc.getDataSource().removeFromReserveList(parameters[2]);
+                caller.notify(parameters[2] + " removed from reservelist");
+            } else {
+                caller.notify("Invalid operation.");
+            }
+        }
+    };
 
-    public final static BaseCommand reservelist   = new BaseCommand("[operation (add or remove)] [player]", "reservelist [operation (add or remove)] [player]", 3, 3) {
+    public final static BaseCommand listplugins = new BaseCommand("- Lists all plugins") {
+        @Override
+        void execute(MessageReceiver caller, String[] parameters) {
+            caller.notify("Plugins" + Colors.White + ": " + etc.getLoader().getPluginList());
+        }
+    };
 
-                                                      @Override
-                                                      void execute(MessageReceiver caller, String[] parameters) {
-                                                          if (parameters[1].equalsIgnoreCase("add")) {
-                                                              etc.getDataSource().addToReserveList(parameters[2]);
-                                                              caller.notify(parameters[2] + " added to reservelist");
-                                                          } else if (parameters[1].equalsIgnoreCase("remove")) {
-                                                              etc.getDataSource().removeFromReserveList(parameters[2]);
-                                                              caller.notify(parameters[2] + " removed from reservelist");
-                                                          } else
-                                                              caller.notify("Invalid operation.");
-                                                      }
-                                                  };
+    public final static BaseCommand reloadplugin = new BaseCommand("[plugin] - Reloads plugin", "Correct usage is: /reloadplugin [plugin]", 2) {
+        @Override
+        void execute(MessageReceiver caller, String[] parameters) {
+            if (etc.getLoader().reloadPlugin(parameters[1])) {
+                caller.notify("Plugin reloaded.");
+            } else {
+                caller.notify("Unable to reload plugin. Check capitalization and/or server logfile.");
+            }
+        }
+    };
 
-    public final static BaseCommand listplugins   = new BaseCommand("- Lists all plugins") {
-                                                      @Override
-                                                      void execute(MessageReceiver caller, String[] parameters) {
-                                                          caller.notify("Plugins" + Colors.White + ": " + etc.getLoader().getPluginList());
-                                                      }
-                                                  };
-
-    public final static BaseCommand reloadplugin  = new BaseCommand("[plugin] - Reloads plugin", "Correct usage is: /reloadplugin [plugin]", 2) {
-                                                      @Override
-                                                      void execute(MessageReceiver caller, String[] parameters) {
-                                                          if (etc.getLoader().reloadPlugin(parameters[1]))
-                                                              caller.notify("Plugin reloaded.");
-                                                          else
-                                                              caller.notify("Unable to reload plugin. Check capitalization and/or server logfile.");
-                                                      }
-                                                  };
-
-    public final static BaseCommand enableplugin  = new BaseCommand("[plugin] - Enables plugin", "Correct usage is: /enableplugin [plugin]", 2) {
-                                                      @Override
-                                                      void execute(MessageReceiver caller, String[] parameters) {
-                                                          if (etc.getLoader().enablePlugin(parameters[1]))
-                                                              caller.notify("Plugin enabled.");
-                                                          else
-                                                              caller.notify("Unable to enable plugin. Check capitalization and/or server logfile.");
-                                                      }
-                                                  };
+    public final static BaseCommand enableplugin = new BaseCommand("[plugin] - Enables plugin", "Correct usage is: /enableplugin [plugin]", 2) {
+        @Override
+        void execute(MessageReceiver caller, String[] parameters) {
+            if (etc.getLoader().enablePlugin(parameters[1])) {
+                caller.notify("Plugin enabled.");
+            } else {
+                caller.notify("Unable to enable plugin. Check capitalization and/or server logfile.");
+            }
+        }
+    };
 
     public final static BaseCommand disableplugin = new BaseCommand("[plugin] - Disables plugin", "Correct usage is: /disableplugin [plugin]", 2) {
-                                                      @Override
-                                                      void execute(MessageReceiver caller, String[] parameters) {
-                                                          etc.getLoader().disablePlugin(parameters[1]);
-                                                          caller.notify("Plugin disabled.");
-                                                      }
-                                                  };
+        @Override
+        void execute(MessageReceiver caller, String[] parameters) {
+            etc.getLoader().disablePlugin(parameters[1]);
+            caller.notify("Plugin disabled.");
+        }
+    };
 
-    public final static BaseCommand version       = new BaseCommand("- Displays the server version") {
-                                                      @Override
-                                                      void execute(MessageReceiver caller, String[] parameters) {
-                                                          if (!etc.getInstance().getTainted())
-                                                        	  if(etc.getInstance().isCrow())
-                                                        		  caller.notify(Colors.Gold+"Crow Test Build " + etc.getInstance().getVersionStr());
-                                                        	  else
-                                                        		  caller.notify(Colors.Gold+"CanaryMod Build " + etc.getInstance().getVersionStr());
-                                                          else
-                                                        	  caller.notify(Colors.Gold+"Tainted Build Information: " + etc.getInstance().getVersionStr());
-                                                      }
-                                                  };
+    public final static BaseCommand version = new BaseCommand("- Displays the server version") {
+        @Override
+        void execute(MessageReceiver caller, String[] parameters) {
+            if (!etc.getInstance().getTainted()) {
+                if (etc.getInstance().isCrow()) {
+                    caller.notify(Colors.Gold + "Crow Test Build " + etc.getInstance().getVersionStr());
+                } else {
+                    caller.notify(Colors.Gold + "CanaryMod Build " + etc.getInstance().getVersionStr());
+                }
+            } else {
+                caller.notify(Colors.Gold + "Tainted Build Information: " + etc.getInstance().getVersionStr());
+            }
+        }
+    };
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+
 /**
  * MySQLSource.java - Used for accessing users and such from a mysql database
  * 
@@ -14,11 +15,12 @@ import java.util.logging.Level;
  */
 public class MySQLSource extends DataSource {
 
-    private String table_groups, table_users, table_items, table_kits, table_warps, table_homes, table_reservelist, table_whitelist, table_bans, table_enderblocks;
+    private String table_groups, table_users, table_items, table_kits, table_warps, table_homes, table_reservelist, table_whitelist, table_bans, table_enderblocks, table_antixrayblocks;
 
     @Override
     public void initialize() {
         PropertiesFile properties = new PropertiesFile("mysql.properties");
+
         table_groups = properties.getString("groups", "groups");
         table_users = properties.getString("users", "users");
         table_items = properties.getString("items", "items");
@@ -29,12 +31,14 @@ public class MySQLSource extends DataSource {
         table_reservelist = properties.getString("reservelist", "reservelist");
         table_bans = properties.getString("bans", "bans");
         table_enderblocks = properties.getString("enderblocks", "enderblocks");
+        table_antixrayblocks = properties.getString("antixrayblocks", "antixrayblocks");
         loadGroups();
         loadKits();
         loadHomes();
         loadWarps();
         loadItems();
         loadEnderBlocks();
+        loadAntiXRayBlocks();
         // loadBanList();
     }
 
@@ -44,6 +48,7 @@ public class MySQLSource extends DataSource {
             Connection conn = null;
             PreparedStatement ps = null;
             ResultSet rs = null;
+
             try {
                 conn = etc.getSQLConnection();
                 groups = new ArrayList<Group>();
@@ -51,6 +56,7 @@ public class MySQLSource extends DataSource {
                 rs = ps.executeQuery();
                 while (rs.next()) {
                     Group group = new Group();
+
                     group.Administrator = rs.getBoolean("admin");
                     group.CanModifyWorld = rs.getBoolean("canmodifyworld");
                     group.Commands = rs.getString("commands").split(",");
@@ -60,23 +66,27 @@ public class MySQLSource extends DataSource {
                     group.InheritedGroups = rs.getString("inheritedgroups").split(",");
                     group.Name = rs.getString("name");
                     group.Prefix = rs.getString("prefix");
-                    if (group.InheritedGroups.length == 1)
-                        if (group.InheritedGroups[0].equalsIgnoreCase(group.Name))
+                    if (group.InheritedGroups.length == 1) {
+                        if (group.InheritedGroups[0].equalsIgnoreCase(group.Name)) {
                             group.InheritedGroups = new String[] { "" };
+                        }
+                    }
                     groups.add(group);
                 }
             } catch (SQLException ex) {
                 log.log(Level.SEVERE, "Unable to retreive groups from group table", ex);
             } finally {
                 try {
-                    if (ps != null)
+                    if (ps != null) {
                         ps.close();
-                    if (rs != null)
+                    }
+                    if (rs != null) {
                         rs.close();
-                    if (conn != null)
+                    }
+                    if (conn != null) {
                         conn.close();
-                } catch (SQLException ex) {
-                }
+                    }
+                } catch (SQLException ex) {}
             }
         }
     }
@@ -87,6 +97,7 @@ public class MySQLSource extends DataSource {
             Connection conn = null;
             PreparedStatement ps = null;
             ResultSet rs = null;
+
             try {
                 conn = etc.getSQLConnection();
                 kits = new ArrayList<Kit>();
@@ -94,6 +105,7 @@ public class MySQLSource extends DataSource {
                 rs = ps.executeQuery();
                 while (rs.next()) {
                     Kit kit = new Kit();
+
                     kit.Delay = rs.getInt("delay");
                     kit.Group = rs.getString("group");
                     kit.ID = rs.getInt("id");
@@ -101,14 +113,17 @@ public class MySQLSource extends DataSource {
                     kit.IDs = new HashMap<String, Integer>();
 
                     String[] ids = rs.getString("items").split(",");
+
                     for (String str : ids) {
                         String id = "";
                         int amount = 1;
+
                         if (str.contains(" ")) {
                             id = str.split(" ")[0];
                             amount = Integer.parseInt(str.split(" ")[1]);
-                        } else
+                        } else {
                             id = str;
+                        }
                         kit.IDs.put(id, amount);
                     }
                     kits.add(kit);
@@ -117,14 +132,16 @@ public class MySQLSource extends DataSource {
                 log.log(Level.SEVERE, "Unable to retreive kits from kit table", ex);
             } finally {
                 try {
-                    if (ps != null)
+                    if (ps != null) {
                         ps.close();
-                    if (rs != null)
+                    }
+                    if (rs != null) {
                         rs.close();
-                    if (conn != null)
+                    }
+                    if (conn != null) {
                         conn.close();
-                } catch (SQLException ex) {
-                }
+                    }
+                } catch (SQLException ex) {}
             }
         }
     }
@@ -132,11 +149,13 @@ public class MySQLSource extends DataSource {
     @Override
     public void loadHomes() {
         synchronized (homeLock) {
-            if (!etc.getInstance().canSaveHomes())
+            if (!etc.getInstance().canSaveHomes()) {
                 return;
+            }
             Connection conn = null;
             PreparedStatement ps = null;
             ResultSet rs = null;
+
             try {
                 conn = etc.getSQLConnection();
                 homes = new ArrayList<Warp>();
@@ -144,12 +163,14 @@ public class MySQLSource extends DataSource {
                 rs = ps.executeQuery();
                 while (rs.next()) {
                     Location location = new Location();
+
                     location.x = rs.getDouble("x");
                     location.y = rs.getDouble("y");
                     location.z = rs.getDouble("z");
                     location.rotX = rs.getFloat("rotX");
                     location.rotY = rs.getFloat("rotY");
                     Warp home = new Warp();
+
                     home.ID = rs.getInt("id");
                     home.Location = location;
                     home.Name = rs.getString("name");
@@ -160,14 +181,16 @@ public class MySQLSource extends DataSource {
                 log.log(Level.SEVERE, "Unable to retreive homes from home table", ex);
             } finally {
                 try {
-                    if (ps != null)
+                    if (ps != null) {
                         ps.close();
-                    if (rs != null)
+                    }
+                    if (rs != null) {
                         rs.close();
-                    if (conn != null)
+                    }
+                    if (conn != null) {
                         conn.close();
-                } catch (SQLException ex) {
-                }
+                    }
+                } catch (SQLException ex) {}
             }
         }
     }
@@ -178,6 +201,7 @@ public class MySQLSource extends DataSource {
             Connection conn = null;
             PreparedStatement ps = null;
             ResultSet rs = null;
+
             try {
                 conn = etc.getSQLConnection();
                 warps = new ArrayList<Warp>();
@@ -185,6 +209,7 @@ public class MySQLSource extends DataSource {
                 rs = ps.executeQuery();
                 while (rs.next()) {
                     Location location = new Location();
+
                     location.x = rs.getDouble("x");
                     location.y = rs.getDouble("y");
                     location.z = rs.getDouble("z");
@@ -192,6 +217,7 @@ public class MySQLSource extends DataSource {
                     location.rotY = rs.getFloat("rotY");
                     location.dimension = rs.getInt("dimension");
                     Warp warp = new Warp();
+
                     warp.ID = rs.getInt("id");
                     warp.Location = location;
                     warp.Name = rs.getString("name");
@@ -202,14 +228,16 @@ public class MySQLSource extends DataSource {
                 log.log(Level.SEVERE, "Unable to retreive warps from warp table", ex);
             } finally {
                 try {
-                    if (ps != null)
+                    if (ps != null) {
                         ps.close();
-                    if (rs != null)
+                    }
+                    if (rs != null) {
                         rs.close();
-                    if (conn != null)
+                    }
+                    if (conn != null) {
                         conn.close();
-                } catch (SQLException ex) {
-                }
+                    }
+                } catch (SQLException ex) {}
             }
         }
     }
@@ -220,25 +248,29 @@ public class MySQLSource extends DataSource {
             Connection conn = null;
             PreparedStatement ps = null;
             ResultSet rs = null;
+
             try {
                 conn = etc.getSQLConnection();
                 items = new HashMap<String, Integer>();
                 ps = conn.prepareStatement("SELECT * FROM " + table_items);
                 rs = ps.executeQuery();
-                while (rs.next())
+                while (rs.next()) {
                     items.put(rs.getString("name"), rs.getInt("itemid"));
+                }
             } catch (SQLException ex) {
                 log.log(Level.SEVERE, "Unable to retreive items from item table", ex);
             } finally {
                 try {
-                    if (ps != null)
+                    if (ps != null) {
                         ps.close();
-                    if (rs != null)
+                    }
+                    if (rs != null) {
                         rs.close();
-                    if (conn != null)
+                    }
+                    if (conn != null) {
                         conn.close();
-                } catch (SQLException ex) {
-                }
+                    }
+                } catch (SQLException ex) {}
             }
         }
     }
@@ -250,6 +282,7 @@ public class MySQLSource extends DataSource {
             Connection conn = null;
             PreparedStatement ps = null;
             ResultSet rs = null;
+
             try {
                 conn = etc.getSQLConnection();
                 ps = conn.prepareStatement("SELECT * FROM " + table_enderblocks);
@@ -261,22 +294,55 @@ public class MySQLSource extends DataSource {
                 log.log(Level.SEVERE, "Unable to retreive enderman blocks from enderblocks table", ex);
             } finally {
                 try {
-                    if (ps != null)
+                    if (ps != null) {
                         ps.close();
-                    if (rs != null)
+                    }
+                    if (rs != null) {
                         rs.close();
-                    if (conn != null)
+                    }
+                    if (conn != null) {
                         conn.close();
-                } catch (SQLException ex) {
+                    }
+                } catch (SQLException ex) {}
+            }
+            for (int i = 0; i < 256; i += 1) {
+                OEntityEnderman.setHoldable(i, false);
+            }
+            for (Integer id : enderBlocks) {
+                OEntityEnderman.setHoldable(id, true);
+            }
+        }
+    }
+    
+    @Override
+    public void loadAntiXRayBlocks() {
+        synchronized (antiXRayBlocksLock) {
+            antiXRayBlocks = new ArrayList<Integer>();
+            Connection conn = null;
+            PreparedStatement ps = null;
+            ResultSet rs = null;
+
+            try {
+                conn = etc.getSQLConnection();
+                ps = conn.prepareStatement("SELECT * FROM " + table_antixrayblocks);
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    antiXRayBlocks.add(rs.getInt("blockid"));
                 }
-            }
-            for (int i = 0; i < 256; i += 1)
-            {
-               OEntityEnderman.setHoldable(i, false);
-            }
-            for (Integer id : enderBlocks)
-            {
-               OEntityEnderman.setHoldable(id, true);
+            } catch (SQLException ex) {
+                log.log(Level.SEVERE, "Unable to retreive anti-xray blocks from anti-xray table", ex);
+            } finally {
+                try {
+                    if (ps != null) {
+                        ps.close();
+                    }
+                    if (rs != null) {
+                        rs.close();
+                    }
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException ex) {}
             }
         }
     }
@@ -287,6 +353,7 @@ public class MySQLSource extends DataSource {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
+
         try {
             conn = etc.getSQLConnection();
             ps = conn.prepareStatement("INSERT INTO " + table_users + " (name, groups, prefix, commands, admin, canmodifyworld, ignoresrestrictions) VALUES (?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
@@ -300,20 +367,23 @@ public class MySQLSource extends DataSource {
             ps.executeUpdate();
 
             rs = ps.getGeneratedKeys();
-            if (rs.next())
+            if (rs.next()) {
                 player.setSqlId(rs.getInt(1));
+            }
         } catch (SQLException ex) {
             log.log(Level.SEVERE, "Unable to insert user into users table", ex);
         } finally {
             try {
-                if (ps != null)
+                if (ps != null) {
                     ps.close();
-                if (rs != null)
+                }
+                if (rs != null) {
                     rs.close();
-                if (conn != null)
+                }
+                if (conn != null) {
                     conn.close();
-            } catch (SQLException ex) {
-            }
+                }
+            } catch (SQLException ex) {}
         }
     }
 
@@ -321,6 +391,7 @@ public class MySQLSource extends DataSource {
     public void modifyPlayer(Player player) {
         Connection conn = null;
         PreparedStatement ps = null;
+
         try {
             conn = etc.getSQLConnection();
             ps = conn.prepareStatement("UPDATE " + table_users + " SET groups = ?, prefix = ?, commands = ?, admin = ?, canmodifyworld = ?, ignoresrestrictions = ? WHERE id = ?");
@@ -336,12 +407,13 @@ public class MySQLSource extends DataSource {
             log.log(Level.SEVERE, "Unable to update user in users table", ex);
         } finally {
             try {
-                if (ps != null)
+                if (ps != null) {
                     ps.close();
-                if (conn != null)
+                }
+                if (conn != null) {
                     conn.close();
-            } catch (SQLException ex) {
-            }
+                }
+            } catch (SQLException ex) {}
         }
     }
 
@@ -351,25 +423,29 @@ public class MySQLSource extends DataSource {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
+
         try {
             conn = etc.getSQLConnection();
             ps = conn.prepareStatement("SELECT * FROM " + table_users + " WHERE name = ?");
             ps.setString(1, player);
             rs = ps.executeQuery();
-            if (rs.next())
+            if (rs.next()) {
                 exists = true;
+            }
         } catch (SQLException ex) {
             log.log(Level.SEVERE, "Unable to check if user exists", ex);
         } finally {
             try {
-                if (ps != null)
+                if (ps != null) {
                     ps.close();
-                if (rs != null)
+                }
+                if (rs != null) {
                     rs.close();
-                if (conn != null)
+                }
+                if (conn != null) {
                     conn.close();
-            } catch (SQLException ex) {
-            }
+                }
+            } catch (SQLException ex) {}
         }
         return exists;
     }
@@ -402,6 +478,7 @@ public class MySQLSource extends DataSource {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
+
         try {
             conn = etc.getSQLConnection();
             ps = conn.prepareStatement("INSERT INTO " + table_homes + " (name, x, y, z, rotX, rotY, `group`) VALUES(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
@@ -425,14 +502,16 @@ public class MySQLSource extends DataSource {
             log.log(Level.SEVERE, "Unable to insert home into homes table", ex);
         } finally {
             try {
-                if (ps != null)
+                if (ps != null) {
                     ps.close();
-                if (rs != null)
+                }
+                if (rs != null) {
                     rs.close();
-                if (conn != null)
+                }
+                if (conn != null) {
                     conn.close();
-            } catch (SQLException ex) {
-            }
+                }
+            } catch (SQLException ex) {}
         }
     }
 
@@ -440,6 +519,7 @@ public class MySQLSource extends DataSource {
     public void changeHome(Warp home) {
         Connection conn = null;
         PreparedStatement ps = null;
+
         try {
             conn = etc.getSQLConnection();
             ps = conn.prepareStatement("UPDATE " + table_homes + " SET x = ?, y = ?, z = ?, rotX = ?, rotY = ?, `group` = ? WHERE name = ?");
@@ -454,23 +534,28 @@ public class MySQLSource extends DataSource {
 
             synchronized (homeLock) {
                 Warp toRem = null;
-                for (Warp h : homes)
-                    if (h.Name.equalsIgnoreCase(home.Name))
+
+                for (Warp h : homes) {
+                    if (h.Name.equalsIgnoreCase(home.Name)) {
                         toRem = h;
-                if (toRem != null)
+                    }
+                }
+                if (toRem != null) {
                     homes.remove(toRem);
+                }
                 homes.add(home);
             }
         } catch (SQLException ex) {
             log.log(Level.SEVERE, "Unable to update home in homes table", ex);
         } finally {
             try {
-                if (ps != null)
+                if (ps != null) {
                     ps.close();
-                if (conn != null)
+                }
+                if (conn != null) {
                     conn.close();
-            } catch (SQLException ex) {
-            }
+                }
+            } catch (SQLException ex) {}
         }
     }
 
@@ -480,6 +565,7 @@ public class MySQLSource extends DataSource {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
+
         try {
             conn = etc.getSQLConnection();
             ps = conn.prepareStatement("INSERT INTO " + table_warps + " (name, x, y, z, rotX, rotY, dimension, `group`) VALUES(?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
@@ -504,14 +590,16 @@ public class MySQLSource extends DataSource {
             log.log(Level.SEVERE, "Unable to insert warp into warps table", ex);
         } finally {
             try {
-                if (ps != null)
+                if (ps != null) {
                     ps.close();
-                if (rs != null)
+                }
+                if (rs != null) {
                     rs.close();
-                if (conn != null)
+                }
+                if (conn != null) {
                     conn.close();
-            } catch (SQLException ex) {
-            }
+                }
+            } catch (SQLException ex) {}
         }
     }
 
@@ -519,6 +607,7 @@ public class MySQLSource extends DataSource {
     public void changeWarp(Warp warp) {
         Connection conn = null;
         PreparedStatement ps = null;
+
         try {
             conn = etc.getSQLConnection();
             ps = conn.prepareStatement("UPDATE " + table_warps + " SET x = ?, y = ?, z = ?, rotX = ?, rotY = ?, dimension = ?, `group` = ? WHERE name = ?");
@@ -534,23 +623,28 @@ public class MySQLSource extends DataSource {
 
             synchronized (warpLock) {
                 Warp toRem = null;
-                for (Warp h : warps)
-                    if (h.Name.equalsIgnoreCase(warp.Name))
+
+                for (Warp h : warps) {
+                    if (h.Name.equalsIgnoreCase(warp.Name)) {
                         toRem = h;
-                if (toRem != null)
+                    }
+                }
+                if (toRem != null) {
                     warps.remove(toRem);
+                }
                 warps.add(warp);
             }
         } catch (SQLException ex) {
             log.log(Level.SEVERE, "Unable to update warp in warps table", ex);
         } finally {
             try {
-                if (ps != null)
+                if (ps != null) {
                     ps.close();
-                if (conn != null)
+                }
+                if (conn != null) {
                     conn.close();
-            } catch (SQLException ex) {
-            }
+                }
+            } catch (SQLException ex) {}
         }
     }
 
@@ -558,6 +652,7 @@ public class MySQLSource extends DataSource {
     public void removeWarp(Warp warp) {
         Connection conn = null;
         PreparedStatement ps = null;
+
         try {
             conn = etc.getSQLConnection();
             ps = conn.prepareStatement("DELETE FROM " + table_warps + " WHERE id = ?");
@@ -567,12 +662,13 @@ public class MySQLSource extends DataSource {
             log.log(Level.SEVERE, "Unable to delete warp from warps table", ex);
         } finally {
             try {
-                if (ps != null)
+                if (ps != null) {
                     ps.close();
-                if (conn != null)
+                }
+                if (conn != null) {
                     conn.close();
-            } catch (SQLException ex) {
-            }
+                }
+            } catch (SQLException ex) {}
         }
         synchronized (warpLock) {
             warps.remove(warp);
@@ -582,11 +678,13 @@ public class MySQLSource extends DataSource {
     // Whitelist
     @Override
     public void addToWhitelist(String name) {
-        if (isUserOnWhitelist(name))
+        if (isUserOnWhitelist(name)) {
             return;
+        }
 
         Connection conn = null;
         PreparedStatement ps = null;
+
         try {
             conn = etc.getSQLConnection();
             ps = conn.prepareStatement("INSERT INTO " + table_whitelist + " VALUES(?)");
@@ -596,22 +694,25 @@ public class MySQLSource extends DataSource {
             log.log(Level.SEVERE, "Unable to update whitelist", ex);
         } finally {
             try {
-                if (ps != null)
+                if (ps != null) {
                     ps.close();
-                if (conn != null)
+                }
+                if (conn != null) {
                     conn.close();
-            } catch (SQLException ex) {
-            }
+                }
+            } catch (SQLException ex) {}
         }
     }
 
     @Override
     public void removeFromWhitelist(String name) {
-        if (!isUserOnWhitelist(name))
+        if (!isUserOnWhitelist(name)) {
             return;
+        }
 
         Connection conn = null;
         PreparedStatement ps = null;
+
         try {
             conn = etc.getSQLConnection();
             ps = conn.prepareStatement("DELETE FROM " + table_whitelist + " WHERE name = ?");
@@ -621,12 +722,13 @@ public class MySQLSource extends DataSource {
             log.log(Level.SEVERE, "Unable to update whitelist", ex);
         } finally {
             try {
-                if (ps != null)
+                if (ps != null) {
                     ps.close();
-                if (conn != null)
+                }
+                if (conn != null) {
                     conn.close();
-            } catch (SQLException ex) {
-            }
+                }
+            } catch (SQLException ex) {}
         }
     }
 
@@ -636,6 +738,7 @@ public class MySQLSource extends DataSource {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
+
         try {
             conn = etc.getSQLConnection();
             ps = conn.prepareStatement("SELECT * FROM " + table_users + " WHERE name = ?");
@@ -655,14 +758,16 @@ public class MySQLSource extends DataSource {
             log.log(Level.SEVERE, "Unable to retreive users from user table", ex);
         } finally {
             try {
-                if (ps != null)
+                if (ps != null) {
                     ps.close();
-                if (rs != null)
+                }
+                if (rs != null) {
                     rs.close();
-                if (conn != null)
+                }
+                if (conn != null) {
                     conn.close();
-            } catch (SQLException ex) {
-            }
+                }
+            } catch (SQLException ex) {}
         }
         return player;
     }
@@ -674,12 +779,14 @@ public class MySQLSource extends DataSource {
             Connection conn = null;
             PreparedStatement ps = null;
             ResultSet rs = null;
+
             try {
                 conn = etc.getSQLConnection();
                 ps = conn.prepareStatement("SELECT * FROM " + table_bans);
                 rs = ps.executeQuery();
                 while (rs.next()) {
                     Ban ban = new Ban();
+
                     ban.setName(rs.getString("name"));
                     ban.setIp(rs.getString("ip"));
                     ban.setReason(rs.getString("reason"));
@@ -690,14 +797,16 @@ public class MySQLSource extends DataSource {
                 log.log(Level.SEVERE, "Unable to retreive bans from ban table", ex);
             } finally {
                 try {
-                    if (ps != null)
+                    if (ps != null) {
                         ps.close();
-                    if (rs != null)
+                    }
+                    if (rs != null) {
                         rs.close();
-                    if (conn != null)
+                    }
+                    if (conn != null) {
                         conn.close();
-                } catch (SQLException ex) {
-                }
+                    }
+                } catch (SQLException ex) {}
             }
         }
     }
@@ -708,25 +817,29 @@ public class MySQLSource extends DataSource {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
+
         try {
             conn = etc.getSQLConnection();
             ps = conn.prepareStatement("SELECT * FROM " + table_whitelist + " WHERE name = ?");
             ps.setString(1, user);
             rs = ps.executeQuery();
-            if (rs.next())
+            if (rs.next()) {
                 toRet = true;
+            }
         } catch (SQLException ex) {
             log.log(Level.SEVERE, "Unable to check if user is on whitelist", ex);
         } finally {
             try {
-                if (ps != null)
+                if (ps != null) {
                     ps.close();
-                if (rs != null)
+                }
+                if (rs != null) {
                     rs.close();
-                if (conn != null)
+                }
+                if (conn != null) {
                     conn.close();
-            } catch (SQLException ex) {
-            }
+                }
+            } catch (SQLException ex) {}
         }
         return toRet;
     }
@@ -742,44 +855,54 @@ public class MySQLSource extends DataSource {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
+
         try {
             conn = etc.getSQLConnection();
             ps = conn.prepareStatement("SELECT * FROM " + table_reservelist + " WHERE name = ?");
             ps.setString(1, user);
             rs = ps.executeQuery();
-            if (rs.next())
+            if (rs.next()) {
                 toRet = true;
+            }
         } catch (SQLException ex) {
             log.log(Level.SEVERE, "Unable to check if user is on reservelist", ex);
         } finally {
             try {
-                if (ps != null)
+                if (ps != null) {
                     ps.close();
-                if (rs != null)
+                }
+                if (rs != null) {
                     rs.close();
-                if (conn != null)
+                }
+                if (conn != null) {
                     conn.close();
-            } catch (SQLException ex) {
-            }
+                }
+            } catch (SQLException ex) {}
         }
-        if (toRet || user.charAt(0) == '@')
+        if (toRet || user.charAt(0) == '@') {
             return toRet;
+        }
         Player pl = getPlayer(user);
         String[] playerGroups = pl.getGroups();
-        for (int i = 0; i < playerGroups.length; ++i)
-            if (isUserOnReserveList("@" + playerGroups[i]))
+
+        for (int i = 0; i < playerGroups.length; ++i) {
+            if (isUserOnReserveList("@" + playerGroups[i])) {
                 return true;
+            }
+        }
         return toRet;
     }
 
     // Reservelist
     @Override
     public void addToReserveList(String name) {
-        if (isUserOnReserveList(name))
+        if (isUserOnReserveList(name)) {
             return;
+        }
 
         Connection conn = null;
         PreparedStatement ps = null;
+
         try {
             conn = etc.getSQLConnection();
             ps = conn.prepareStatement("INSERT INTO " + table_reservelist + " VALUES(?)");
@@ -789,22 +912,25 @@ public class MySQLSource extends DataSource {
             log.log(Level.SEVERE, "Unable to update reservelist", ex);
         } finally {
             try {
-                if (ps != null)
+                if (ps != null) {
                     ps.close();
-                if (conn != null)
+                }
+                if (conn != null) {
                     conn.close();
-            } catch (SQLException ex) {
-            }
+                }
+            } catch (SQLException ex) {}
         }
     }
 
     @Override
     public void removeFromReserveList(String name) {
-        if (!isUserOnReserveList(name))
+        if (!isUserOnReserveList(name)) {
             return;
+        }
 
         Connection conn = null;
         PreparedStatement ps = null;
+
         try {
             conn = etc.getSQLConnection();
             ps = conn.prepareStatement("DELETE FROM " + table_reservelist + " WHERE name = ?");
@@ -814,12 +940,13 @@ public class MySQLSource extends DataSource {
             log.log(Level.SEVERE, "Unable to update reservelist", ex);
         } finally {
             try {
-                if (ps != null)
+                if (ps != null) {
                     ps.close();
-                if (conn != null)
+                }
+                if (conn != null) {
                     conn.close();
-            } catch (SQLException ex) {
-            }
+                }
+            } catch (SQLException ex) {}
         }
     }
 }

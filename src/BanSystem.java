@@ -11,8 +11,7 @@ public class BanSystem {
      * @param player
      *            player to ban
      */
-    public void fileBan(Player player) {
-    }
+    public void fileBan(Player player) {}
 
     /**
      * Files an IP address ban
@@ -20,8 +19,7 @@ public class BanSystem {
      * @param player
      *            player to IP ban
      */
-    public void fileIpBan(Player player) {
-    }
+    public void fileIpBan(Player player) {}
 
     /**
      * Files a temporary ban (both name and IP bans)
@@ -38,6 +36,7 @@ public class BanSystem {
     public void fileTempBan(Player player, int minutes, int hours, int days) {
         // This is sort of crappy but I'm lazy.
         int timestamp = ((int) (System.currentTimeMillis() / 1000L));
+
         timestamp += minutes * 60;
         timestamp += hours * 60 * 60;
         timestamp += days * 60 * 60 * 24;
