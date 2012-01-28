@@ -40,6 +40,10 @@ public class PluginLoader {
          *///
         CHAT, //
         /**
+         * Calls {@link PluginListener#onChatReceive(Player) }
+         */
+        CHAT_RECEIVE, //
+        /**
          * Calls {@link PluginListener#onCommand(Player, java.lang.String[]) }
          *///
         COMMAND, //
@@ -774,6 +778,12 @@ public class PluginLoader {
                                 toRet = true;
                             }
                             break;
+
+                        case CHAT_RECEIVE:
+                        	if(listener.onChatReceive((Player) parameters[0])){
+                        		toRet = true;
+                    		}
+                    		break;
 
                         case COMMAND:
                             if (listener.onCommand((Player) parameters[0], ((String[]) parameters[1]).clone())) {

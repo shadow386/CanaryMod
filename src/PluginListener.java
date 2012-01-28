@@ -109,6 +109,16 @@ public class PluginListener {
     }
 
     /**
+     * Called Before Chat Messages are sent to each player. Return true to disable receiving.
+     * 
+     * @param player
+     * @return false if you want the message to be sent to the player.
+     */
+    public boolean onChatReceive(Player player){
+    	return false;
+    }
+    
+    /**
      * Called before the command is parsed. Return true if you don't want the command to be parsed.
      * 
      * @param player
