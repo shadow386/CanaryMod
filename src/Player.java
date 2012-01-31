@@ -760,7 +760,7 @@ public class Player extends HumanEntity implements MessageReceiver {
 
         // If player is in vehicle - eject them before they are teleported.
         if (player.bh != null) {
-            player.a(player.bh);
+            player.b(player.bh);
         }
         player.a.a(x, y, z, rotation, pitch);
     }
