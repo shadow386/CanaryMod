@@ -348,6 +348,13 @@ public class OServerConfigurationManager {
     public void a(OPacket var1) {
         for (int var2 = 0; var2 < this.b.size(); ++var2) {
             OEntityPlayerMP var3 = (OEntityPlayerMP) this.b.get(var2);
+            
+            //CanaryMod - Stop player from receiving messages
+            if(var1 instanceof OPacket3Chat){
+            	if((Boolean) etc.getLoader().callHook(PluginLoader.Hook.CHAT_RECEIVE, var3.getPlayer())){ //TODO just keeping track of this
+            		continue;
+        		}
+        	}
 
             var3.a.b(var1);
         }
