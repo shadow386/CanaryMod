@@ -912,7 +912,7 @@ public class Player extends HumanEntity implements MessageReceiver {
         }
         // Dismount first or get buggy
         if (ent.bh != null) {
-            ent.c(ent.bh);
+            ent.b(ent.bh);
         }
 
         ent.a((OStatBase) OAchievementList.B);
