@@ -172,8 +172,12 @@ public class PlayerCommands {
 
             if (player != null) {
                 if (player.toggleMute()) {
+                	//df: adding to mutelist
+                	etc.getDataSource().setPlayerToMuteList(player.getName());
                     caller.notify("Player was muted");
                 } else {
+                	//df: removing from mute list
+                	etc.getDataSource().removePlayerFromMuteList(player.getName());
                     caller.notify("Player was unmuted");
                 }
             } else {
