@@ -27,6 +27,7 @@ public class FlatFileSource extends DataSource {
         loadItems();
         loadEnderBlocks();
         loadAntiXRayBlocks();
+        loadMutedPlayers();
         // loadBanList();
 
         String location = etc.getInstance().getUsersLocation();
@@ -1559,4 +1560,52 @@ public class FlatFileSource extends DataSource {
     public List getGroupList(){
         return this.groups;
     }
+
+	@Override
+	public void loadMutedPlayers() {
+        try {
+        	String location = etc.getInstance().getMuteListLocation();
+            String line = "";
+        	BufferedReader reader = new BufferedReader(new FileReader(new File(location)));
+			while ((line = reader.readLine()) != null) {
+			   this.mutedPlayers.add(line);
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	@Override
+	public void setPlayerToMuteList(String name) {
+		this.mutedPlayers.add(name);
+		String location = etc.getInstance().getMuteListLocation();
+		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter(location));
+			for(String key : this.mutedPlayers){
+				out.write(key); out.newLine();
+			}
+			out.close();
+		} catch (IOException e) {
+			log.warning("Unable to write to "+location);
+		}
+		
+	}
+
+	@Override
+	public void removePlayerFromMuteList(String name) {
+		this.mutedPlayers.remove(name);
+		String location = etc.getInstance().getMuteListLocation();
+		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter(location));
+			for(String key : this.mutedPlayers){
+				out.write(key); out.newLine();
+			}
+			out.close();
+		} catch (IOException e) {
+			log.warning("Unable to write to "+location);
+		}
+		
+	}
 }

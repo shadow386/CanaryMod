@@ -16,7 +16,7 @@ import java.util.logging.Level;
  */
 public class MySQLSource extends DataSource {
 
-    private String table_groups, table_users, table_items, table_kits, table_warps, table_homes, table_reservelist, table_whitelist, table_bans, table_enderblocks, table_antixrayblocks;
+    private String table_groups, table_users, table_items, table_kits, table_warps, table_homes, table_reservelist, table_whitelist, table_bans, table_enderblocks, table_antixrayblocks, table_muted_players;
 
     @Override
     public void initialize() {
@@ -33,6 +33,7 @@ public class MySQLSource extends DataSource {
         table_bans = properties.getString("bans", "bans");
         table_enderblocks = properties.getString("enderblocks", "enderblocks");
         table_antixrayblocks = properties.getString("antixrayblocks", "antixrayblocks");
+        table_muted_players = properties.getString("muted-players", "muted_players");
         loadGroups();
         loadKits();
         loadHomes();
@@ -40,6 +41,7 @@ public class MySQLSource extends DataSource {
         loadItems();
         loadEnderBlocks();
         loadAntiXRayBlocks();
+        loadMutedPlayers();
         // loadBanList();
     }
 
@@ -956,4 +958,84 @@ public class MySQLSource extends DataSource {
     public List getGroupList(){
         return this.groups;
     }
+
+	@Override
+	public void loadMutedPlayers() {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = etc.getSQLConnection();
+            ps = conn.prepareStatement("SELECT * FROM " + table_muted_players);
+           ResultSet rs = ps.executeQuery();
+           while(rs.next()) {
+        	   this.mutedPlayers.add(rs.getString("name"));
+           }
+        } catch (SQLException ex) {
+            log.log(Level.SEVERE, "Unable to load muted players list", ex);
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {}
+        }
+		
+	}
+
+	@Override
+	public void setPlayerToMuteList(String name) {
+		Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = etc.getSQLConnection();
+            ps = conn.prepareStatement("INSERT INTO " + table_muted_players + "(name) VALUES (?)");
+            ps.setString(1, name);
+           ps.executeUpdate();
+           this.mutedPlayers.add(name);
+
+        } catch (SQLException ex) {
+            log.log(Level.SEVERE, "Unable to add player to muted players list", ex);
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {}
+        }
+		
+	}
+
+	@Override
+	public void removePlayerFromMuteList(String name) {
+		Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = etc.getSQLConnection();
+            ps = conn.prepareStatement("DELETE FROM " + table_muted_players + "WHERE name = ?");
+            ps.setString(1, name);
+           ps.executeUpdate();
+           this.mutedPlayers.remove(name);
+
+        } catch (SQLException ex) {
+            log.log(Level.SEVERE, "Unable to add player to muted players list", ex);
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {}
+        }
+	}
 }

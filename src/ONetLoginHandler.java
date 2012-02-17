@@ -109,6 +109,12 @@ public class ONetLoginHandler extends ONetHandler {
             // CanaryMod - Check Creative Mode
             var2.getPlayer().refreshCreativeMode();
             
+            // CanaryMod - Check if player is listed as muted, and mute him
+            if(etc.getDataSource().isPlayerOnMuteList(var2.getPlayer().getName())) {
+            	var2.getPlayer().toggleMute();
+            }
+            // CanaryMod END
+            
             this.e.h.c(var2);
             var5.a(var2.bm, var2.bn, var2.bo, var2.bs, var2.bt);
             this.e.c.a(var5);

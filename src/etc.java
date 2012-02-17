@@ -29,7 +29,7 @@ public class etc {
     private static final etc              instance = new etc();
     private static MinecraftServer        server;
     private String                   	  configDir = "config/";
-    private String                        usersLoc = "config/users.txt", kitsLoc = "config/kits.txt", homeLoc = "config/homes.txt", warpLoc = "config/warps.txt", itemLoc = "config/items.txt", groupLoc = "config/groups.txt", enderBlocksLoc = "config/endermanblocks.txt";
+    private String                        usersLoc = "config/users.txt", kitsLoc = "config/kits.txt", homeLoc = "config/homes.txt", warpLoc = "config/warps.txt", itemLoc = "config/items.txt", groupLoc = "config/groups.txt", enderBlocksLoc = "config/endermanblocks.txt", muteListLoc = "config/muted-players.txt";
     private String                        whitelistLoc = "config/whitelist.txt", reservelistLoc = "config/reservelist.txt", antiXRayBlocksLoc = "config/antixray.txt";
     private String                        whitelistMessage = "Not on whitelist.";
 
@@ -141,6 +141,7 @@ public class etc {
                 whitelistLoc = properties.getString("whitelist-txt-location", "config/whitelist.txt");
                 reservelistLoc = properties.getString("reservelist-txt-location", "config/reservelist.txt");
                 antiXRayBlocksLoc = properties.getString("antixray-txt-location", "config/antixray.txt");
+                muteListLoc = properties.getString("muted-players-location", "config/muted-players.txt");
             } else {
                 PropertiesFile sql = new PropertiesFile("mysql.properties");
 
@@ -743,6 +744,10 @@ public class etc {
     public String getAntiXRayBlocksLocation() {
         return antiXRayBlocksLoc;
     }
+    
+    public String getMuteListLocation() {
+        return muteListLoc;
+    }
 
     /**
      * Returns true if the server is saving homes
@@ -808,6 +813,10 @@ public class etc {
     public boolean isWhitelistEnabled() {
         return whitelistEnabled;
     }
+    
+//    public boolean isPlayerOnMuteList(String player) {
+//    	if(this.getDataSource().get)
+//    }
 
     /**
      * Returns the location of whitelist.txt

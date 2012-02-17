@@ -22,6 +22,7 @@ public abstract class DataSource {
     protected List<Warp>           homes = new ArrayList<Warp>();
     protected List<Warp>           warps = new ArrayList<Warp>();
     protected List<Ban>            bans = new ArrayList<Ban>();
+    protected List<String>			mutedPlayers = new ArrayList<String>();
     protected Map<String, Integer> items = new HashMap<String, Integer>();
     protected List<Integer>        enderBlocks = new ArrayList<Integer>();
     protected List<Integer>        antiXRayBlocks = new ArrayList<Integer>();
@@ -63,6 +64,11 @@ public abstract class DataSource {
      * Loads the ban list
      */
     abstract public void loadBanList();
+    
+    /**
+     * Loads the list of muted players
+     */
+    abstract public void loadMutedPlayers();
     
     /**
      * Loads the enderman blocks list
@@ -336,6 +342,39 @@ public abstract class DataSource {
 
         return builder.toString();
     }
+    
+    /**
+     * Get a List<String> of muted players
+     * @return List<String>
+     */
+    public List<String> getMutedPlayers() {
+    	return mutedPlayers;
+    }
+    
+    /**
+     * Check if a player is on the mute list and will therefore be
+     * automatically muted on login
+     * @param name
+     * @return true if player is on the mute list, false otherwise
+     */
+    public boolean isPlayerOnMuteList(String name) {
+    	if(mutedPlayers.contains(name)) {
+    		return true;
+    	}
+    	return false;
+    }
+    
+    /**
+     * Sets a player on the list of muted people.
+     * @param name
+     */
+    abstract public void setPlayerToMuteList(String name);
+    
+    /**
+     * Removes a player from the list of muted people
+     * @param name
+     */
+    abstract public void removePlayerFromMuteList(String name);
 
     /**
      * Returns item id corresponding to item name
