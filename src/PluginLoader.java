@@ -36,7 +36,7 @@ public class PluginLoader {
          *///
         LOGIN, //
         /**
-         * Calls {@link PluginListener#onChat(Player, java.lang.String) }
+         * Calls {@link PluginListener#onChat(HookParametersChat parametersChat) }
          *///
         CHAT, //
         /**
@@ -749,6 +749,7 @@ public class PluginLoader {
             break;
 
         case ENCHANT:
+        case CHAT:
             toRet = parameters[0];
             break;
             
@@ -791,7 +792,7 @@ public class PluginLoader {
                     try {
                         switch (h) {
                         case LOGINCHECK:
-                            String result = listener.onLoginChecks((String) parameters[0]);
+                            String result = listener.onLoginChecks((String) parameters[0], (String) parameters[1]);
 
                             if (result != null) {
                                 toRet = result;
@@ -807,9 +808,7 @@ public class PluginLoader {
                             break;
 
                         case CHAT:
-                            if (listener.onChat((Player) parameters[0], (StringBuilder) parameters[1])) {
-                                toRet = true;
-                            }
+                            toRet = listener.onChat((HookParametersChat) parameters[0]);
                             break;
 
                         case COMMAND:

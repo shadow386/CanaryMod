@@ -125,15 +125,34 @@ public class Player extends HumanEntity implements MessageReceiver {
                 sendMessage(Colors.Rose + "You are currently muted.");
                 return;
             }
+            
+        	List<Player> receivers = etc.getServer().getPlayerList();
+        	StringBuilder prefix = new StringBuilder("<" + getColor() + getName() + Colors.White + ">");
             StringBuilder sbMessage = new StringBuilder(message);
-            if ((Boolean) etc.getLoader().callHook(PluginLoader.Hook.CHAT, new Object[] { this, sbMessage })) {
+            HookParametersChat parametersChat = (HookParametersChat) etc.getLoader().callHook(PluginLoader.Hook.CHAT, new Object[] { new HookParametersChat(this, prefix, sbMessage, receivers)});
+            	
+            if ((parametersChat.isCanceled()) ) {
                 return;
             }
+            
+            receivers = parametersChat.getReceivers();
+            prefix = parametersChat.getPrefix();
+            sbMessage = parametersChat.getMessage();
 
-            String chat = "<" + getColor() + getName() + Colors.White + "> " + sbMessage.toString();
+            String chat = prefix.toString() +" "+ sbMessage.toString();
 
             log.log(Level.INFO, "<" + getName() + "> " + sbMessage.toString());
-            etc.getServer().messageAll(chat);
+            
+            //etc.getServer().messageAll(chat);
+            for(Player player : receivers){
+                if(prefix.length()+message.length() >= 119){
+                    player.sendMessage(prefix.toString());
+                    player.sendMessage(sbMessage.toString());
+                }
+                else{
+                    player.sendMessage(chat);
+                }
+            }
         }
     }
 

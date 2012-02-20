@@ -63,9 +63,23 @@ public class PluginListener {
      * 
      * @param user
      * @return kick reason. null if you don't want to kick the player.
+     * 
+     * @deprecated use onLoginChecks(String user, String IP)
      */
     public String onLoginChecks(String user) {
         return null;
+    }
+    
+    /**
+     * Called during the early login process to check whether or not to kick the player
+     * 
+     * @param user
+     * @param IP
+     * @return kick reason. null if you don't want to kick the player.
+     *
+     */
+    public String onLoginChecks(String user, String IP){
+        return onLoginChecks(user);
     }
 
     /**
@@ -103,9 +117,25 @@ public class PluginListener {
      * @param player
      * @param sbMessage
      * @return false if you want the message to be sent.
+     * 
+     * @deprecated use HookParameters onChat(HookParametersChat) to get the information
      */
     public boolean onChat(Player player, StringBuilder sbMessage) {
         return onChat(player, sbMessage.toString());
+    }
+    
+    /**
+     * Called when a player talks.
+     * 
+     * @param parametersChat
+     * 
+     * @return parametersChat   use parametersChat.setCanceled(true) to stop the message
+     */
+    public HookParametersChat onChat(HookParametersChat parametersChat){
+        if(onChat(parametersChat.getPlayer(), parametersChat.getMessage())){
+            parametersChat.setCanceled(true);
+        }
+        return parametersChat;
     }
 
     /**

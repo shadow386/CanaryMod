@@ -154,7 +154,7 @@ public class OServerConfigurationManager {
         // CanaryMod: whole section below is modified to handle whitelists etc
         OEntityPlayerMP temp = new OEntityPlayerMP(c, c.a(0), var2, new OItemInWorldManager(c.a(0)));
         Player player = temp.getPlayer();
-
+        String var3;
         if (this.f.contains(var2.trim().toLowerCase())) {
             var1.a("You are banned from this server!");
             return null;
@@ -162,7 +162,7 @@ public class OServerConfigurationManager {
             var1.a(etc.getInstance().getWhitelistMessage());
             return null;
         } else {
-            String var3 = var1.b.c().toString();
+            var3 = var1.b.c().toString();
 
             var3 = var3.substring(var3.indexOf("/") + 1);
             var3 = var3.substring(0, var3.indexOf(":"));
@@ -184,7 +184,7 @@ public class OServerConfigurationManager {
                 // return new OEntityPlayerMP(this.c, this.c.a(0), var2, new OItemInWorldManager(this.c.a(0)));
             }
         }
-        Object obj = etc.getLoader().callHook(PluginLoader.Hook.LOGINCHECK, var2);
+        Object obj = etc.getLoader().callHook(PluginLoader.Hook.LOGINCHECK, var2, var3);
 
         if (obj instanceof String) {
             String result = (String) obj;
