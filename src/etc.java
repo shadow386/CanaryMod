@@ -77,6 +77,9 @@ public class etc {
     private int                           playerList_ticks = 500;
     private boolean                       playerList_colors = true;
     private boolean                       playerList_enabled = true;
+    
+    //Connection Manager
+    private ConnectionService cs;
 
     private etc() {
         load();
@@ -149,6 +152,8 @@ public class etc {
                 username = sql.getString("user", "root");
                 password = sql.getString("pass", "root");
                 db = sql.getString("db", "jdbc:mysql://localhost:3306/minecraft");
+                //Note: The pool size should not be set by users. It might have performance implications
+                cs = new ConnectionService(db, username, password, 10);
             }
             spawnProtectionSize = properties.getInt("spawn-protection-size", 16);
             logging = properties.getBoolean("logging", false);
@@ -1191,6 +1196,11 @@ public class etc {
         mobSpawnRate = rate;
     }
 
+    /**
+     * Get y mysql connection without pooling it.
+     * @return Connection 
+     * @deprecated
+     */
     private Connection _getSQLConnection() {
         try {
             return DriverManager.getConnection(db + "?autoReconnect=true&user=" + username + "&password=" + password);
@@ -1199,14 +1209,28 @@ public class etc {
         }
         return null;
     }
+    
+    private CanaryConnection _getConnection() throws SQLException {
+    	return cs.getConnection();
+    }
 
     /**
      * Returns a SQL connection
      * 
      * @return sql connection
+     * @deprecated
      */
     public static Connection getSQLConnection() {
         return getInstance()._getSQLConnection();
+    }
+    
+    /**
+     * Return a connection from the connection pool
+     * @return
+     * @throws SQLException
+     */
+    public static CanaryConnection getConnection() throws SQLException {
+    	return etc.getInstance()._getConnection();
     }
 
     public static int floor(float paramFloat) {
