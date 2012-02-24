@@ -1,4 +1,5 @@
 
+
 /**
  * MobSpawner.java - Wrapper for mob spawners.
  * 
@@ -19,17 +20,17 @@ public class MobSpawner implements ComplexBlock {
 
     @Override
     public int getX() {
-        return spawner.j;
+        return spawner.l;
     }
 
     @Override
     public int getY() {
-        return spawner.k;
+        return spawner.m;
     }
 
     @Override
     public int getZ() {
-        return spawner.l;
+        return spawner.n;
     }
 
     @Override
@@ -39,12 +40,12 @@ public class MobSpawner implements ComplexBlock {
 
     @Override
     public World getWorld() {
-        return spawner.i.world;
+        return spawner.k.world;
     }
 
     @Override
     public void update() {
-        spawner.i();
+        spawner.l_();
     }
 
     /**
@@ -54,7 +55,7 @@ public class MobSpawner implements ComplexBlock {
      */
     public void setSpawn(String spawn) {
         spawner.d = spawn;
-        //update(); If we call update here, mobspawner resets to default (Pig)
+        // update(); If we call update here, mobspawner resets to default (Pig)
     }
 
     /**
@@ -67,9 +68,9 @@ public class MobSpawner implements ComplexBlock {
     }
 
     /**
-     * Allows delay of what to spawn to change on-the-fly Modification of this
-     * is near-useless as delays get randomized after spawn. See:
-     * Block.setSpawnData() if you want to adjust this value.
+     * Allows delay of what to spawn to change on-the-fly.
+     * Modification of this is near-useless as delays get randomized after
+     * spawn.
      * 
      * @param delay
      */

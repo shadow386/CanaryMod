@@ -1,200 +1,223 @@
 import java.util.List;
 
+
 public class OEntityFireball extends OEntity {
 
-   private int f = -1;
-   private int g = -1;
-   private int h = -1;
-   private int i = 0;
-   private boolean j = false;
-   public int a = 0;
-   public OEntityLiving b;
-   private int k;
-   private int l = 0;
-   public double c;
-   public double d;
-   public double e;
+    private int e = -1;
+    private int f = -1;
+    private int g = -1;
+    private int h = 0;
+    private boolean i = false;
+    public OEntityLiving a;
+    private int j;
+    private int k = 0;
+    public double b;
+    public double c;
+    public double d;
 
+    public OEntityFireball(OWorld var1) {
+        super(var1);
+        this.b(1.0F, 1.0F);
+    }
 
-   public OEntityFireball(OWorld var1) {
-      super(var1);
-      this.b(1.0F, 1.0F);
-   }
+    protected void b() {}
 
-   protected void b() {}
+    public OEntityFireball(OWorld var1, OEntityLiving var2, double var3, double var5, double var7) {
+        super(var1);
+        this.a = var2;
+        this.b(1.0F, 1.0F);
+        this.c(var2.bm, var2.bn, var2.bo, var2.bs, var2.bt);
+        this.c(this.bm, this.bn, this.bo);
+        this.bF = 0.0F;
+        this.bp = this.bq = this.br = 0.0D;
+        var3 += this.bS.nextGaussian() * 0.4D;
+        var5 += this.bS.nextGaussian() * 0.4D;
+        var7 += this.bS.nextGaussian() * 0.4D;
+        double var9 = (double) OMathHelper.a(var3 * var3 + var5 * var5 + var7 * var7);
 
-   public OEntityFireball(OWorld var1, OEntityLiving var2, double var3, double var5, double var7) {
-      super(var1);
-      this.b = var2;
-      this.b(1.0F, 1.0F);
-      this.c(var2.bf, var2.bg, var2.bh, var2.bl, var2.bm);
-      this.c(this.bf, this.bg, this.bh);
-      this.by = 0.0F;
-      this.bi = this.bj = this.bk = 0.0D;
-      var3 += this.bL.nextGaussian() * 0.4D;
-      var5 += this.bL.nextGaussian() * 0.4D;
-      var7 += this.bL.nextGaussian() * 0.4D;
-      double var9 = (double)OMathHelper.a(var3 * var3 + var5 * var5 + var7 * var7);
-      this.c = var3 / var9 * 0.1D;
-      this.d = var5 / var9 * 0.1D;
-      this.e = var7 / var9 * 0.1D;
-   }
+        this.b = var3 / var9 * 0.1D;
+        this.c = var5 / var9 * 0.1D;
+        this.d = var7 / var9 * 0.1D;
+    }
 
-   public void s_() {
-      super.s_();
-      this.bO = 10;
-      if(this.a > 0) {
-         --this.a;
-      }
+    public void y_() {
+        super.y_();
+        this.j(1);
+        if (!this.bi.I && (this.a == null || this.a.bE)) {
+            this.T();
+        }
 
-      if(this.j) {
-         int var1 = this.bb.a(this.f, this.g, this.h);
-         if(var1 == this.i) {
+        if (this.i) {
+            int var1 = this.bi.a(this.e, this.f, this.g);
+
+            if (var1 == this.h) {
+                ++this.j;
+                if (this.j == 1200) {
+                    this.T();
+                }
+
+                return;
+            }
+
+            this.i = false;
+            this.bp *= (double) (this.bS.nextFloat() * 0.2F);
+            this.bq *= (double) (this.bS.nextFloat() * 0.2F);
+            this.br *= (double) (this.bS.nextFloat() * 0.2F);
+            this.j = 0;
+            this.k = 0;
+        } else {
             ++this.k;
-            if(this.k == 1200) {
-               this.N();
+        }
+
+        OVec3D var15 = OVec3D.b(this.bm, this.bn, this.bo);
+        OVec3D var2 = OVec3D.b(this.bm + this.bp, this.bn + this.bq, this.bo + this.br);
+        OMovingObjectPosition var3 = this.bi.a(var15, var2);
+
+        var15 = OVec3D.b(this.bm, this.bn, this.bo);
+        var2 = OVec3D.b(this.bm + this.bp, this.bn + this.bq, this.bo + this.br);
+        if (var3 != null) {
+            var2 = OVec3D.b(var3.f.a, var3.f.b, var3.f.c);
+        }
+
+        OEntity var4 = null;
+        List var5 = this.bi.b((OEntity) this, this.bw.a(this.bp, this.bq, this.br).b(1.0D, 1.0D, 1.0D));
+        double var6 = 0.0D;
+
+        for (int var8 = 0; var8 < var5.size(); ++var8) {
+            OEntity var9 = (OEntity) var5.get(var8);
+
+            if (var9.e_() && (!var9.a((OEntity) this.a) || this.k >= 25)) {
+                float var10 = 0.3F;
+                OAxisAlignedBB var11 = var9.bw.b((double) var10, (double) var10, (double) var10);
+                OMovingObjectPosition var12 = var11.a(var15, var2);
+
+                if (var12 != null) {
+                    double var13 = var15.b(var12.f);
+
+                    if (var13 < var6 || var6 == 0.0D) {
+                        var4 = var9;
+                        var6 = var13;
+                    }
+                }
+            }
+        }
+
+        if (var4 != null) {
+            var3 = new OMovingObjectPosition(var4);
+        }
+
+        if (var3 != null) {
+            this.a(var3);
+        }
+
+        this.bm += this.bp;
+        this.bn += this.bq;
+        this.bo += this.br;
+        float var16 = OMathHelper.a(this.bp * this.bp + this.br * this.br);
+
+        this.bs = (float) (Math.atan2(this.bp, this.br) * 180.0D / 3.1415927410125732D);
+
+        for (this.bt = (float) (Math.atan2(this.bq, (double) var16) * 180.0D / 3.1415927410125732D); this.bt - this.bv < -180.0F; this.bv -= 360.0F) {
+            ;
+        }
+
+        while (this.bt - this.bv >= 180.0F) {
+            this.bv += 360.0F;
+        }
+
+        while (this.bs - this.bu < -180.0F) {
+            this.bu -= 360.0F;
+        }
+
+        while (this.bs - this.bu >= 180.0F) {
+            this.bu += 360.0F;
+        }
+
+        this.bt = this.bv + (this.bt - this.bv) * 0.2F;
+        this.bs = this.bu + (this.bs - this.bu) * 0.2F;
+        float var17 = 0.95F;
+
+        if (this.aK()) {
+            for (int var19 = 0; var19 < 4; ++var19) {
+                float var18 = 0.25F;
+
+                this.bi.a("bubble", this.bm - this.bp * (double) var18, this.bn - this.bq * (double) var18, this.bo - this.br * (double) var18, this.bp, this.bq, this.br);
             }
 
-            return;
-         }
+            var17 = 0.8F;
+        }
 
-         this.j = false;
-         this.bi *= (double)(this.bL.nextFloat() * 0.2F);
-         this.bj *= (double)(this.bL.nextFloat() * 0.2F);
-         this.bk *= (double)(this.bL.nextFloat() * 0.2F);
-         this.k = 0;
-         this.l = 0;
-      } else {
-         ++this.l;
-      }
+        this.bp += this.b;
+        this.bq += this.c;
+        this.br += this.d;
+        this.bp *= (double) var17;
+        this.bq *= (double) var17;
+        this.br *= (double) var17;
+        this.bi.a("smoke", this.bm, this.bn + 0.5D, this.bo, 0.0D, 0.0D, 0.0D);
+        this.c(this.bm, this.bn, this.bo);
+    }
 
-      OVec3D var15 = OVec3D.b(this.bf, this.bg, this.bh);
-      OVec3D var2 = OVec3D.b(this.bf + this.bi, this.bg + this.bj, this.bh + this.bk);
-      OMovingObjectPosition var3 = this.bb.a(var15, var2);
-      var15 = OVec3D.b(this.bf, this.bg, this.bh);
-      var2 = OVec3D.b(this.bf + this.bi, this.bg + this.bj, this.bh + this.bk);
-      if(var3 != null) {
-         var2 = OVec3D.b(var3.f.a, var3.f.b, var3.f.c);
-      }
-
-      OEntity var4 = null;
-      List var5 = this.bb.b((OEntity)this, this.bp.a(this.bi, this.bj, this.bk).b(1.0D, 1.0D, 1.0D));
-      double var6 = 0.0D;
-
-      for(int var8 = 0; var8 < var5.size(); ++var8) {
-         OEntity var9 = (OEntity)var5.get(var8);
-         if(var9.r_() && (var9 != this.b || this.l >= 25)) {
-            float var10 = 0.3F;
-            OAxisAlignedBB var11 = var9.bp.b((double)var10, (double)var10, (double)var10);
-            OMovingObjectPosition var12 = var11.a(var15, var2);
-            if(var12 != null) {
-               double var13 = var15.b(var12.f);
-               if(var13 < var6 || var6 == 0.0D) {
-                  var4 = var9;
-                  var6 = var13;
-               }
-            }
-         }
-      }
-
-      if(var4 != null) {
-         var3 = new OMovingObjectPosition(var4);
-      }
-
-      if(var3 != null) {
-         if(!this.bb.I) {
-            if(var3.g != null && var3.g.a(ODamageSource.a(this, this.b), 0)) {
-               ;
+    protected void a(OMovingObjectPosition var1) {
+        if (!this.bi.I) {
+            if (var1.g != null && var1.g.a(ODamageSource.a(this, this.a), 4)) {
+                ;
             }
 
-            this.bb.a((OEntity)this, this.bf, this.bg, this.bh, 1.0F, true);
-         }
+            this.bi.a((OEntity) null, this.bm, this.bn, this.bo, 1.0F, true);
+            this.T();
+        }
 
-         this.N();
-      }
+    }
 
-      this.bf += this.bi;
-      this.bg += this.bj;
-      this.bh += this.bk;
-      float var16 = OMathHelper.a(this.bi * this.bi + this.bk * this.bk);
-      this.bl = (float)(Math.atan2(this.bi, this.bk) * 180.0D / 3.1415927410125732D);
+    public void b(ONBTTagCompound var1) {
+        var1.a("xTile", (short) this.e);
+        var1.a("yTile", (short) this.f);
+        var1.a("zTile", (short) this.g);
+        var1.a("inTile", (byte) this.h);
+        var1.a("inGround", (byte) (this.i ? 1 : 0));
+    }
 
-      for(this.bm = (float)(Math.atan2(this.bj, (double)var16) * 180.0D / 3.1415927410125732D); this.bm - this.bo < -180.0F; this.bo -= 360.0F) {
-         ;
-      }
+    public void a(ONBTTagCompound var1) {
+        this.e = var1.e("xTile");
+        this.f = var1.e("yTile");
+        this.g = var1.e("zTile");
+        this.h = var1.d("inTile") & 255;
+        this.i = var1.d("inGround") == 1;
+    }
 
-      while(this.bm - this.bo >= 180.0F) {
-         this.bo += 360.0F;
-      }
+    public boolean e_() {
+        return true;
+    }
 
-      while(this.bl - this.bn < -180.0F) {
-         this.bn -= 360.0F;
-      }
+    public float j_() {
+        return 1.0F;
+    }
 
-      while(this.bl - this.bn >= 180.0F) {
-         this.bn += 360.0F;
-      }
+    public boolean a(ODamageSource var1, int var2) {
+        this.aM();
+        if (var1.a() != null) {
+            OVec3D var3 = var1.a().aA();
 
-      this.bm = this.bo + (this.bm - this.bo) * 0.2F;
-      this.bl = this.bn + (this.bl - this.bn) * 0.2F;
-      float var17 = 0.95F;
-      if(this.ao()) {
-         for(int var19 = 0; var19 < 4; ++var19) {
-            float var18 = 0.25F;
-            this.bb.a("bubble", this.bf - this.bi * (double)var18, this.bg - this.bj * (double)var18, this.bh - this.bk * (double)var18, this.bi, this.bj, this.bk);
-         }
+            if (var3 != null) {
+                this.bp = var3.a;
+                this.bq = var3.b;
+                this.br = var3.c;
+                this.b = this.bp * 0.1D;
+                this.c = this.bq * 0.1D;
+                this.d = this.br * 0.1D;
+            }
 
-         var17 = 0.8F;
-      }
+            if (var1.a() instanceof OEntityLiving) {
+                this.a = (OEntityLiving) var1.a();
+            }
 
-      this.bi += this.c;
-      this.bj += this.d;
-      this.bk += this.e;
-      this.bi *= (double)var17;
-      this.bj *= (double)var17;
-      this.bk *= (double)var17;
-      this.bb.a("smoke", this.bf, this.bg + 0.5D, this.bh, 0.0D, 0.0D, 0.0D);
-      this.c(this.bf, this.bg, this.bh);
-   }
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-   public void b(ONBTTagCompound var1) {
-      var1.a("xTile", (short)this.f);
-      var1.a("yTile", (short)this.g);
-      var1.a("zTile", (short)this.h);
-      var1.a("inTile", (byte)this.i);
-      var1.a("shake", (byte)this.a);
-      var1.a("inGround", (byte)(this.j?1:0));
-   }
-
-   public void a(ONBTTagCompound var1) {
-      this.f = var1.d("xTile");
-      this.g = var1.d("yTile");
-      this.h = var1.d("zTile");
-      this.i = var1.c("inTile") & 255;
-      this.a = var1.c("shake") & 255;
-      this.j = var1.c("inGround") == 1;
-   }
-
-   public boolean r_() {
-      return true;
-   }
-
-   public boolean a(ODamageSource var1, int var2) {
-      this.aq();
-      if(var1.a() != null) {
-         OVec3D var3 = var1.a().ai();
-         if(var3 != null) {
-            this.bi = var3.a;
-            this.bj = var3.b;
-            this.bk = var3.c;
-            this.c = this.bi * 0.1D;
-            this.d = this.bj * 0.1D;
-            this.e = this.bk * 0.1D;
-         }
-
-         return true;
-      } else {
-         return false;
-      }
-   }
+    public float a(float var1) {
+        return 1.0F;
+    }
 }

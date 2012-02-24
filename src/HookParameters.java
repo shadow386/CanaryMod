@@ -3,6 +3,4 @@
  * 
  * @author James
  */
-public class HookParameters {
-
-}
+public class HookParameters {}

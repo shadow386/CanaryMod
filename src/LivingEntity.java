@@ -4,11 +4,11 @@
  * @author
  */
 public class LivingEntity extends BaseEntity {
+
     /**
      * Interface for living entities
      */
-    public LivingEntity() {
-    }
+    public LivingEntity() {}
 
     /**
      * Interface for living entities
@@ -35,7 +35,7 @@ public class LivingEntity extends BaseEntity {
      * @return health
      */
     public int getHealth() {
-        return getEntity().an;
+        return getEntity().ap;
     }
 
     /**
@@ -45,7 +45,7 @@ public class LivingEntity extends BaseEntity {
      *            amount of health to increase the players health with.
      */
     public void increaseHealth(int health) {
-        getEntity().c(health);
+        getEntity().d(health);
     }
 
     /**
@@ -54,11 +54,13 @@ public class LivingEntity extends BaseEntity {
      * @param health
      */
     public void setHealth(int health) {
-        if (health < -1)
+        if (health < -1) {
             health = -1;
-        if (health > 20)
+        }
+        if (health > 20) {
             health = 20;
-        getEntity().an = health;
+        }
+        getEntity().ap = health;
     }
 
     /**
@@ -67,7 +69,7 @@ public class LivingEntity extends BaseEntity {
      * @return
      */
     public int getDeathTicks() {
-        return getEntity().ag;
+        return getEntity().av;
     }
 
     /**
@@ -76,7 +78,7 @@ public class LivingEntity extends BaseEntity {
      * @param ticks
      */
     public void setDeathTicks(int ticks) {
-        getEntity().ag = ticks;
+        getEntity().av = ticks;
     }
 
     /**
@@ -86,7 +88,7 @@ public class LivingEntity extends BaseEntity {
      * @return
      */
     public int getBaseNoDamageTicks() {
-        return getEntity().R;
+        return getEntity().S;
     }
 
     /**
@@ -96,7 +98,7 @@ public class LivingEntity extends BaseEntity {
      * @param ticks
      */
     public void setBaseNoDamageTicks(int ticks) {
-        getEntity().R = ticks;
+        getEntity().S = ticks;
     }
 
     /**
@@ -105,7 +107,7 @@ public class LivingEntity extends BaseEntity {
      * @return
      */
     public int getLastDamage() {
-        return getEntity().ax;
+        return getEntity().aU;
     }
 
     /**
@@ -115,6 +117,21 @@ public class LivingEntity extends BaseEntity {
      * @param amount
      */
     public void setLastDamage(int amount) {
-        getEntity().ax = amount;
+        getEntity().aU = amount;
+    }
+    
+    /**
+     * Drops this mob's loot. Automatically called if health is set to 0.
+     */
+    public void dropLoot() {
+        getEntity().a(true, 0);
+    }
+    
+    /**
+     * Gets the entity's mob spawner.
+     * @return MobSpawner of the entity, or null if it wasn't spawned with a mob spawner.
+     */
+    public MobSpawner getSpawner() {
+        return getEntity().spawner;
     }
 }

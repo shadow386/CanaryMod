@@ -1,4 +1,5 @@
 
+
 /**
  * Sign.java - Interface to signs
  * 
@@ -26,8 +27,9 @@ public class Sign implements ComplexBlock {
      *            text
      */
     public void setText(int index, String text) {
-        if (index >= 0 && sign.a.length > index)
+        if (index >= 0 && sign.a.length > index) {
             sign.a[index] = text;
+        }
     }
 
     /**
@@ -38,39 +40,34 @@ public class Sign implements ComplexBlock {
      * @return text
      */
     public String getText(int index) {
-        if (index >= 0 && sign.a.length > index)
+        if (index >= 0 && sign.a.length > index) {
             return sign.a[index];
+        }
         return "";
     }
 
-    @Override
     public int getX() {
-        return sign.j;
-    }
-
-    @Override
-    public int getY() {
-        return sign.k;
-    }
-
-    @Override
-    public int getZ() {
         return sign.l;
     }
 
-    @Override
+    public int getY() {
+        return sign.m;
+    }
+
+    public int getZ() {
+        return sign.n;
+    }
+
     public Block getBlock() {
         return getWorld().getBlockAt(getX(), getY(), getZ());
     }
 
-    @Override
     public World getWorld() {
-        return sign.i.world;
+        return this.sign.k.world;
     }
 
-    @Override    
     public void update() {
-       sign.i.world.getWorld().h(getX(), getY(), getZ());
+        getWorld().getWorld().h(getX(), getY(), getZ());
     }
 
     /**
@@ -92,17 +89,23 @@ public class Sign implements ComplexBlock {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj == null)
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         final Sign other = (Sign) obj;
-        if (getX() != other.getX())
+
+        if (getX() != other.getX()) {
             return false;
-        if (getY() != other.getY())
+        }
+        if (getY() != other.getY()) {
             return false;
-        if (getZ() != other.getZ())
+        }
+        if (getZ() != other.getZ()) {
             return false;
+        }
         return true;
     }
 
@@ -114,6 +117,7 @@ public class Sign implements ComplexBlock {
     @Override
     public int hashCode() {
         int hash = 7;
+
         hash = 97 * hash + getX();
         hash = 97 * hash + getY();
         hash = 97 * hash + getZ();

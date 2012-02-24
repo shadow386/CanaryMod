@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+
 /**
  * Used for accessing and creating .[properties] files, reads them as utf-8,
  * saves as utf-8. Internationalization is key importance especially for
@@ -16,7 +17,7 @@ import java.util.logging.Logger;
  */
 public final class PropertiesFile {
 
-    private static final Logger log   = Logger.getLogger("Minecraft");
+    private static final Logger log = Logger.getLogger("Minecraft");
     private String              fileName;
     private Properties          props = new Properties();
 
@@ -34,10 +35,11 @@ public final class PropertiesFile {
         File file = new File(fileName);
 
         try {
-            if (file.exists())
+            if (file.exists()) {
                 load();
-            else
+            } else {
                 save();
+            }
         } catch (IOException ex) {
             log.severe("[PropertiesFile] Unable to load " + fileName + "!");
         }
@@ -52,16 +54,16 @@ public final class PropertiesFile {
      */
     public void load() throws IOException {
         FileInputStream stream = null;
+
         try {
             stream = new FileInputStream(fileName);
             props.load(stream);
-        } catch (IOException ex) {
-        } finally {
+        } catch (IOException ex) {} finally {
             try {
-                if (stream != null)
+                if (stream != null) {
                     stream.close();
-            } catch (IOException ex) {
-            }
+                }
+            } catch (IOException ex) {}
         }
     }
 
@@ -71,16 +73,16 @@ public final class PropertiesFile {
      */
     public void save() {
         FileOutputStream stream = null;
+
         try {
             stream = new FileOutputStream(fileName);
             props.store(stream, null);
-        } catch (IOException ex) {
-        } finally {
+        } catch (IOException ex) {} finally {
             try {
-                if (stream != null)
+                if (stream != null) {
                     stream.close();
-            } catch (IOException ex) {
-            }
+                }
+            } catch (IOException ex) {}
         }
     }
 
@@ -177,8 +179,9 @@ public final class PropertiesFile {
      * @return
      */
     public String getString(String key) {
-        if (containsKey(key))
+        if (containsKey(key)) {
             return getProperty(key);
+        }
 
         return "";
     }
@@ -200,8 +203,9 @@ public final class PropertiesFile {
      *         prior existing value depending on existance.
      */
     public String getString(String key, String value) {
-        if (containsKey(key))
+        if (containsKey(key)) {
             return getProperty(key);
+        }
 
         setString(key, value);
         return value;
@@ -234,8 +238,9 @@ public final class PropertiesFile {
      * @return
      */
     public int getInt(String key) {
-        if (containsKey(key))
+        if (containsKey(key)) {
             return Integer.parseInt(getProperty(key));
+        }
 
         return 0;
     }
@@ -254,8 +259,9 @@ public final class PropertiesFile {
      *         a prior existing value depending on existance.
      */
     public int getInt(String key, int value) {
-        if (containsKey(key))
+        if (containsKey(key)) {
             return Integer.parseInt(getProperty(key));
+        }
 
         setInt(key, value);
         return value;
@@ -290,8 +296,9 @@ public final class PropertiesFile {
      * @return
      */
     public double getDouble(String key) {
-        if (containsKey(key))
+        if (containsKey(key)) {
             return Double.parseDouble(getProperty(key));
+        }
 
         return 0;
     }
@@ -310,8 +317,9 @@ public final class PropertiesFile {
      *         a prior existing value depending on existance.
      */
     public double getDouble(String key, double value) {
-        if (containsKey(key))
+        if (containsKey(key)) {
             return Double.parseDouble(getProperty(key));
+        }
 
         setDouble(key, value);
         return value;
@@ -345,8 +353,9 @@ public final class PropertiesFile {
      * @return
      */
     public long getLong(String key) {
-        if (containsKey(key))
+        if (containsKey(key)) {
             return Long.parseLong(getProperty(key));
+        }
 
         return 0;
     }
@@ -365,8 +374,9 @@ public final class PropertiesFile {
      *         prior existing value depending on existance.
      */
     public long getLong(String key, long value) {
-        if (containsKey(key))
+        if (containsKey(key)) {
             return Long.parseLong(getProperty(key));
+        }
 
         setLong(key, value);
         return value;
@@ -400,8 +410,9 @@ public final class PropertiesFile {
      * @return Boolean value
      */
     public boolean getBoolean(String key) {
-        if (containsKey(key))
+        if (containsKey(key)) {
             return Boolean.parseBoolean(getProperty(key));
+        }
 
         return false;
     }
@@ -420,8 +431,9 @@ public final class PropertiesFile {
      *         a prior existing value depending on existance.
      */
     public boolean getBoolean(String key, boolean value) {
-        if (containsKey(key))
+        if (containsKey(key)) {
             return Boolean.parseBoolean(getProperty(key));
+        }
 
         setBoolean(key, value);
         return value;

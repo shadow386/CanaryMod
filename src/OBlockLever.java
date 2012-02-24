@@ -1,3 +1,4 @@
+
 public class OBlockLever extends OBlock {
 
     protected OBlockLever(int var1, int var2) {
@@ -16,6 +17,10 @@ public class OBlockLever extends OBlock {
         return false;
     }
 
+    public int c() {
+        return 12;
+    }
+
     public boolean b(OWorld var1, int var2, int var3, int var4, int var5) {
         return var5 == 1 && var1.e(var2, var3 - 1, var4) ? true : (var5 == 2 && var1.e(var2, var3, var4 + 1) ? true : (var5 == 3 && var1.e(var2, var3, var4 - 1) ? true : (var5 == 4 && var1.e(var2 + 1, var3, var4) ? true : var5 == 5 && var1.e(var2 - 1, var3, var4))));
     }
@@ -27,6 +32,7 @@ public class OBlockLever extends OBlock {
     public void e(OWorld var1, int var2, int var3, int var4, int var5) {
         int var6 = var1.c(var2, var3, var4);
         int var7 = var6 & 8;
+
         var6 &= 7;
         var6 = -1;
         if (var5 == 1 && var1.e(var2, var3 - 1, var4)) {
@@ -50,7 +56,7 @@ public class OBlockLever extends OBlock {
         }
 
         if (var6 == -1) {
-            this.g(var1, var2, var3, var4, var1.c(var2, var3, var4));
+            this.b(var1, var2, var3, var4, var1.c(var2, var3, var4), 0);
             var1.e(var2, var3, var4, 0);
         } else {
             var1.c(var2, var3, var4, var6 + var7);
@@ -61,6 +67,7 @@ public class OBlockLever extends OBlock {
         if (this.g(var1, var2, var3, var4)) {
             int var6 = var1.c(var2, var3, var4) & 7;
             boolean var7 = false;
+
             if (!var1.e(var2 - 1, var3, var4) && var6 == 1) {
                 var7 = true;
             }
@@ -86,7 +93,7 @@ public class OBlockLever extends OBlock {
             }
 
             if (var7) {
-                this.g(var1, var2, var3, var4, var1.c(var2, var3, var4));
+                this.b(var1, var2, var3, var4, var1.c(var2, var3, var4), 0);
                 var1.e(var2, var3, var4, 0);
             }
         }
@@ -95,7 +102,7 @@ public class OBlockLever extends OBlock {
 
     private boolean g(OWorld var1, int var2, int var3, int var4) {
         if (!this.c(var1, var2, var3, var4)) {
-            this.g(var1, var2, var3, var4, var1.c(var2, var3, var4));
+            this.b(var1, var2, var3, var4, var1.c(var2, var3, var4), 0);
             var1.e(var2, var3, var4, 0);
             return false;
         } else {
@@ -106,6 +113,7 @@ public class OBlockLever extends OBlock {
     public void a(OIBlockAccess var1, int var2, int var3, int var4) {
         int var5 = var1.c(var2, var3, var4) & 7;
         float var6 = 0.1875F;
+
         if (var5 == 1) {
             this.a(0.0F, 0.2F, 0.5F - var6, var6 * 2.0F, 0.8F, 0.5F + var6);
         } else if (var5 == 2) {
@@ -135,23 +143,24 @@ public class OBlockLever extends OBlock {
             // CanaryMod: Allow the lever to change the current first 3 bits are for postion 4th bit is for power. (on / off)
             int old = (var8 != 8) ? 1 : 0;
             int current = (var8 == 8) ? 1 : 0;
-            current = ((Integer) etc.getLoader().callHook(PluginLoader.Hook.REDSTONE_CHANGE, new Block(var1.world, bA, var2, var3, var4), old, current)).intValue();
+
+            current = ((Integer) etc.getLoader().callHook(PluginLoader.Hook.REDSTONE_CHANGE, new Block(var1.world, bO, var2, var3, var4), old, current)).intValue();
             var8 = (current > 0) ? 8 : 0;
 
             var1.c(var2, var3, var4, var7 + var8);
             var1.b(var2, var3, var4, var2, var3, var4);
             var1.a((double) var2 + 0.5D, (double) var3 + 0.5D, (double) var4 + 0.5D, "random.click", 0.3F, var8 > 0 ? 0.6F : 0.5F);
-            var1.h(var2, var3, var4, this.bA);
+            var1.h(var2, var3, var4, this.bO);
             if (var7 == 1) {
-                var1.h(var2 - 1, var3, var4, this.bA);
+                var1.h(var2 - 1, var3, var4, this.bO);
             } else if (var7 == 2) {
-                var1.h(var2 + 1, var3, var4, this.bA);
+                var1.h(var2 + 1, var3, var4, this.bO);
             } else if (var7 == 3) {
-                var1.h(var2, var3, var4 - 1, this.bA);
+                var1.h(var2, var3, var4 - 1, this.bO);
             } else if (var7 == 4) {
-                var1.h(var2, var3, var4 + 1, this.bA);
+                var1.h(var2, var3, var4 + 1, this.bO);
             } else {
-                var1.h(var2, var3 - 1, var4, this.bA);
+                var1.h(var2, var3 - 1, var4, this.bO);
             }
 
             return true;
@@ -160,19 +169,21 @@ public class OBlockLever extends OBlock {
 
     public void d(OWorld var1, int var2, int var3, int var4) {
         int var5 = var1.c(var2, var3, var4);
+
         if ((var5 & 8) > 0) {
-            var1.h(var2, var3, var4, this.bA);
+            var1.h(var2, var3, var4, this.bO);
             int var6 = var5 & 7;
+
             if (var6 == 1) {
-                var1.h(var2 - 1, var3, var4, this.bA);
+                var1.h(var2 - 1, var3, var4, this.bO);
             } else if (var6 == 2) {
-                var1.h(var2 + 1, var3, var4, this.bA);
+                var1.h(var2 + 1, var3, var4, this.bO);
             } else if (var6 == 3) {
-                var1.h(var2, var3, var4 - 1, this.bA);
+                var1.h(var2, var3, var4 - 1, this.bO);
             } else if (var6 == 4) {
-                var1.h(var2, var3, var4 + 1, this.bA);
+                var1.h(var2, var3, var4 + 1, this.bO);
             } else {
-                var1.h(var2, var3 - 1, var4, this.bA);
+                var1.h(var2, var3 - 1, var4, this.bO);
             }
         }
 
@@ -185,15 +196,17 @@ public class OBlockLever extends OBlock {
 
     public boolean d(OWorld var1, int var2, int var3, int var4, int var5) {
         int var6 = var1.c(var2, var3, var4);
+
         if ((var6 & 8) == 0) {
             return false;
         } else {
             int var7 = var6 & 7;
+
             return var7 == 6 && var5 == 1 ? true : (var7 == 5 && var5 == 1 ? true : (var7 == 4 && var5 == 2 ? true : (var7 == 3 && var5 == 3 ? true : (var7 == 2 && var5 == 4 ? true : var7 == 1 && var5 == 5))));
         }
     }
 
-    public boolean d() {
+    public boolean e() {
         return true;
     }
 }

@@ -1,6 +1,7 @@
 import java.util.List;
 import java.util.Random;
 
+
 public class OBlockPressurePlate extends OBlock {
 
     private OEnumMobType a;
@@ -10,10 +11,11 @@ public class OBlockPressurePlate extends OBlock {
         this.a = var3;
         this.a(true);
         float var5 = 0.0625F;
+
         this.a(var5, 0.0F, var5, 1.0F - var5, 0.03125F, 1.0F - var5);
     }
 
-    public int c() {
+    public int d() {
         return 20;
     }
 
@@ -30,20 +32,20 @@ public class OBlockPressurePlate extends OBlock {
     }
 
     public boolean c(OWorld var1, int var2, int var3, int var4) {
-        return var1.e(var2, var3 - 1, var4) || var1.a(var2, var3 - 1, var4) == OBlock.ba.bA;
+        return var1.e(var2, var3 - 1, var4) || var1.a(var2, var3 - 1, var4) == OBlock.bb.bO;
     }
 
-    public void a(OWorld var1, int var2, int var3, int var4) {
-    }
+    public void a(OWorld var1, int var2, int var3, int var4) {}
 
     public void a(OWorld var1, int var2, int var3, int var4, int var5) {
         boolean var6 = false;
-        if (!var1.e(var2, var3 - 1, var4) && var1.a(var2, var3 - 1, var4) != OBlock.ba.bA) {
+
+        if (!var1.e(var2, var3 - 1, var4) && var1.a(var2, var3 - 1, var4) != OBlock.bb.bO) {
             var6 = true;
         }
 
         if (var6) {
-            this.g(var1, var2, var3, var4, var1.c(var2, var3, var4));
+            this.b(var1, var2, var3, var4, var1.c(var2, var3, var4), 0);
             var1.e(var2, var3, var4, 0);
         }
 
@@ -70,6 +72,7 @@ public class OBlockPressurePlate extends OBlock {
         boolean var6 = false;
         float var7 = 0.125F;
         List var8 = null;
+
         if (this.a == OEnumMobType.a) {
             var8 = var1.b((OEntity) null, OAxisAlignedBB.b((double) ((float) var2 + var7), (double) var3, (double) ((float) var4 + var7), (double) ((float) (var2 + 1) - var7), (double) var3 + 0.25D, (double) ((float) (var4 + 1) - var7)));
         }
@@ -85,38 +88,40 @@ public class OBlockPressurePlate extends OBlock {
         if (var8.size() > 0) {
             var6 = true;
         }
-
+      
         // CanaryMod: Allow pressure plate interaction to power redstone
-        if (var6 != var5)
-            var6 = (Integer) etc.getLoader().callHook(PluginLoader.Hook.REDSTONE_CHANGE, new Block(var1.world, bA, var2, var3, var4), var5 ? 1 : 0, var6 ? 1 : 0) > 0;
+        if (var6 != var5) {
+            var6 = (Integer) etc.getLoader().callHook(PluginLoader.Hook.REDSTONE_CHANGE, new Block(var1.world, bO, var2, var3, var4), var5 ? 1 : 0, var6 ? 1 : 0) > 0;
+        }
 
         if (var6 && !var5) {
             var1.c(var2, var3, var4, 1);
-            var1.h(var2, var3, var4, this.bA);
-            var1.h(var2, var3 - 1, var4, this.bA);
+            var1.h(var2, var3, var4, this.bO);
+            var1.h(var2, var3 - 1, var4, this.bO);
             var1.b(var2, var3, var4, var2, var3, var4);
             var1.a((double) var2 + 0.5D, (double) var3 + 0.1D, (double) var4 + 0.5D, "random.click", 0.3F, 0.6F);
         }
 
         if (!var6 && var5) {
             var1.c(var2, var3, var4, 0);
-            var1.h(var2, var3, var4, this.bA);
-            var1.h(var2, var3 - 1, var4, this.bA);
+            var1.h(var2, var3, var4, this.bO);
+            var1.h(var2, var3 - 1, var4, this.bO);
             var1.b(var2, var3, var4, var2, var3, var4);
             var1.a((double) var2 + 0.5D, (double) var3 + 0.1D, (double) var4 + 0.5D, "random.click", 0.3F, 0.5F);
         }
 
         if (var6) {
-            var1.c(var2, var3, var4, this.bA, this.c());
+            var1.c(var2, var3, var4, this.bO, this.d());
         }
 
     }
 
     public void d(OWorld var1, int var2, int var3, int var4) {
         int var5 = var1.c(var2, var3, var4);
+
         if (var5 > 0) {
-            var1.h(var2, var3, var4, this.bA);
-            var1.h(var2, var3 - 1, var4, this.bA);
+            var1.h(var2, var3, var4, this.bO);
+            var1.h(var2, var3 - 1, var4, this.bO);
         }
 
         super.d(var1, var2, var3, var4);
@@ -125,6 +130,7 @@ public class OBlockPressurePlate extends OBlock {
     public void a(OIBlockAccess var1, int var2, int var3, int var4) {
         boolean var5 = var1.c(var2, var3, var4) == 1;
         float var6 = 0.0625F;
+
         if (var5) {
             this.a(var6, 0.0F, var6, 1.0F - var6, 0.03125F, 1.0F - var6);
         } else {
@@ -141,11 +147,19 @@ public class OBlockPressurePlate extends OBlock {
         return var1.c(var2, var3, var4) == 0 ? false : var5 == 1;
     }
 
-    public boolean d() {
+    public boolean e() {
         return true;
     }
 
-    public int e() {
+    public void f() {
+        float var1 = 0.5F;
+        float var2 = 0.125F;
+        float var3 = 0.5F;
+
+        this.a(0.5F - var1, 0.5F - var2, 0.5F - var3, 0.5F + var1, 0.5F + var2, 0.5F + var3);
+    }
+
+    public int g() {
         return 1;
     }
 }

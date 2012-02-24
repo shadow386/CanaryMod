@@ -1,9 +1,14 @@
+
 public class OEntityCow extends OEntityAnimal {
 
     public OEntityCow(OWorld var1) {
         super(var1);
-        this.ab = "/mob/cow.png";
+        this.ae = "/mob/cow.png";
         this.b(0.9F, 1.3F);
+    }
+
+    public int c() {
+        return 10;
     }
 
     public void b(ONBTTagCompound var1) {
@@ -14,60 +19,64 @@ public class OEntityCow extends OEntityAnimal {
         super.a(var1);
     }
 
-    protected String h() {
+    protected String c_() {
         return "mob.cow";
     }
 
-    protected String i() {
+    protected String m() {
         return "mob.cowhurt";
     }
 
-    protected String j() {
+    protected String n() {
         return "mob.cowhurt";
     }
 
-    protected float l() {
+    protected float o() {
         return 0.4F;
     }
 
-    protected int k() {
-        return OItem.aD.bo;
+    protected int e() {
+        return OItem.aE.bN;
     }
 
-    protected void a(boolean var1) {
-        int var2 = this.bL.nextInt(3);
+    protected void a(boolean var1, int var2) {
+        int var3 = this.bS.nextInt(3) + this.bS.nextInt(1 + var2);
 
-        int var3;
+        int var4;
 
-        for (var3 = 0; var3 < var2; ++var3) {
-            this.b(OItem.aD.bo, 1);
+        for (var4 = 0; var4 < var3; ++var4) {
+            this.b(OItem.aE.bN, 1);
         }
 
-        var2 = this.bL.nextInt(3) + 1;
+        var3 = this.bS.nextInt(3) + 1 + this.bS.nextInt(1 + var2);
 
-        for (var3 = 0; var3 < var2; ++var3) {
-            if (this.bO > 0) {
-                this.b(OItem.bh.bo, 1);
+        for (var4 = 0; var4 < var3; ++var4) {
+            if (this.A()) {
+                this.b(OItem.bi.bN, 1);
             } else {
-                this.b(OItem.bg.bo, 1);
+                this.b(OItem.bh.bN, 1);
             }
         }
 
     }
 
     public boolean b(OEntityPlayer var1) {
-        OItemStack var2 = var1.j.b();
+        OItemStack var2 = var1.k.d();
 
-        if (var2 != null && var2.c == OItem.au.bo) {
+        if (var2 != null && var2.c == OItem.av.bN) {
             // CanaryMod hook: onCowMilk
             if (!(Boolean) etc.getLoader().callHook(PluginLoader.Hook.COW_MILK, ((OEntityPlayerMP) var1).getPlayer(), new Mob(this))) {
-                var1.j.a(var1.j.c, new OItemStack(OItem.aE));
+                var1.k.a(var1.k.c, new OItemStack(OItem.aF));
                 return true;
             } else {
-                return false;
+                return super.b(var1);
             }
         } else {
-            return false;
+            return super.b(var1);
         }
+    }
+
+    protected OEntityAnimal a(OEntityAnimal var1) {
+        return new OEntityCow(this.bi);
     }
 }

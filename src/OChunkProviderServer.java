@@ -1,8 +1,10 @@
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
 
 public class OChunkProviderServer implements OIChunkProvider {
 
@@ -11,7 +13,7 @@ public class OChunkProviderServer implements OIChunkProvider {
     private OIChunkProvider d;
     private OIChunkLoader e;
     public boolean a = false;
-    private OPlayerHash f = new OPlayerHash();
+    private OLongHashMap f = new OLongHashMap();
     private List g = new ArrayList();
     private OWorldServer h;
     // CanaryMod: load status
@@ -20,8 +22,7 @@ public class OChunkProviderServer implements OIChunkProvider {
 
     public OChunkProviderServer(OWorldServer var1, OIChunkLoader var2, OIChunkProvider var3) {
         super();
-        var1.getClass();
-        this.c = new OEmptyChunk(var1, new byte[256 * 128], 0, 0);
+        this.c = new OEmptyChunk(var1, new byte[256 * var1.c], 0, 0);
         this.h = var1;
         this.e = var2;
         this.d = var3;
@@ -32,20 +33,38 @@ public class OChunkProviderServer implements OIChunkProvider {
     }
 
     public void d(int var1, int var2) {
-        OChunkCoordinates var3 = this.h.m();
-        int var4 = var1 * 16 + 8 - var3.a;
-        int var5 = var2 * 16 + 8 - var3.c;
-        short var6 = 128;
-        if (var4 < -var6 || var4 > var6 || var5 < -var6 || var5 > var6) {
+        if (this.h.y.c()) {
+            OChunkCoordinates var3 = this.h.o();
+            int var4 = var1 * 16 + 8 - var3.a;
+            int var5 = var2 * 16 + 8 - var3.c;
+            short var6 = 128;
+
+            if (var4 < -var6 || var4 > var6 || var5 < -var6 || var5 > var6) {
+                this.b.add(Long.valueOf(OChunkCoordIntPair.a(var1, var2)));
+            }
+        } else {
             this.b.add(Long.valueOf(OChunkCoordIntPair.a(var1, var2)));
+        }
+
+    }
+
+    public void c() {
+        Iterator var1 = this.g.iterator();
+
+        while (var1.hasNext()) {
+            OChunk var2 = (OChunk) var1.next();
+
+            this.d(var2.l, var2.m);
         }
 
     }
 
     public OChunk c(int var1, int var2) {
         long var3 = OChunkCoordIntPair.a(var1, var2);
+
         this.b.remove(Long.valueOf(var3));
         OChunk var5 = (OChunk) this.f.a(var3);
+
         if (var5 == null) {
             // CanaryMod: load preload plugins once!
             if (!loadedpreload) {
@@ -56,6 +75,7 @@ public class OChunkProviderServer implements OIChunkProvider {
             if (var5 == null) {
                 // Canary onChunkCreate hook
                 byte[] blocks = (byte[]) etc.getLoader().callHook(PluginLoader.Hook.CHUNK_CREATE, var1, var2, h.world);
+
                 if (blocks != null) {
                     var5 = Chunk.getNewChunk(h, blocks, var1, var2).chunk;
                     var5.p = true; // is populated = true
@@ -76,8 +96,6 @@ public class OChunkProviderServer implements OIChunkProvider {
                 var5.d();
                 // Canary onChunkLoaded hook
                 etc.getLoader().callHook(PluginLoader.Hook.CHUNK_LOADED, var5.chunk);
-                // }
-
                 if (!var5.p && this.a(var1 + 1, var2 + 1) && this.a(var1, var2 + 1) && this.a(var1 + 1, var2)) {
                     this.a(this, var1, var2);
                 }
@@ -86,15 +104,12 @@ public class OChunkProviderServer implements OIChunkProvider {
                 this.a(this, var1 - 1, var2);
             }
 
-            if (this.a(var1, var2 - 1) && !this.b(var1, var2 - 1).p && this.a(var1 + 1, var2 - 1) && this.a(var1, var2 - 1) && this.a(var1 + 1, var2)) {
-                this.a(this, var1, var2 - 1);
-            }
-
-            if (this.a(var1 - 1, var2 - 1) && !this.b(var1 - 1, var2 - 1).p && this.a(var1 - 1, var2 - 1) && this.a(var1, var2 - 1) && this.a(var1 - 1, var2)) {
-                this.a(this, var1 - 1, var2 - 1);
-            }
-
             var5.a(this, this, var1, var2);
+            // CanaryMod scan newly created and loaded chunks for anti xray blocks
+            if (etc.getInstance().isAntiXRayEnabled()) {
+                var5.scan();
+                var5.updateNeighborChunks();
+            }
         }
 
         return var5;
@@ -102,6 +117,7 @@ public class OChunkProviderServer implements OIChunkProvider {
 
     public OChunk b(int var1, int var2) {
         OChunk var3 = (OChunk) this.f.a(OChunkCoordIntPair.a(var1, var2));
+
         return var3 == null ? (!this.h.D && !this.a ? this.c : this.c(var1, var2)) : var3;
     }
 
@@ -111,8 +127,9 @@ public class OChunkProviderServer implements OIChunkProvider {
         } else {
             try {
                 OChunk var3 = this.e.a(this.h, var1, var2);
+
                 if (var3 != null) {
-                    var3.t = this.h.l();
+                    var3.t = this.h.n();
                 }
 
                 return var3;
@@ -136,7 +153,7 @@ public class OChunkProviderServer implements OIChunkProvider {
 
     private void b(OChunk var1) {
         if (this.e != null) {
-            var1.t = this.h.l();
+            var1.t = this.h.n();
             this.e.a(this.h, var1);
 
         }
@@ -144,6 +161,7 @@ public class OChunkProviderServer implements OIChunkProvider {
 
     public void a(OIChunkProvider var1, int var2, int var3) {
         OChunk var4 = this.b(var2, var3);
+
         if (!var4.p) {
             var4.p = true;
             if (this.d != null) {
@@ -165,6 +183,7 @@ public class OChunkProviderServer implements OIChunkProvider {
 
         for (int var4 = 0; var4 < this.g.size(); ++var4) {
             OChunk var5 = (OChunk) this.g.get(var4);
+
             if (var1 && !var5.r) {
                 this.a(var5);
             }
@@ -191,11 +210,12 @@ public class OChunkProviderServer implements OIChunkProvider {
     }
 
     public boolean a() {
-        if (!this.h.O) {
+        if (!this.h.L) {
             for (int var1 = 0; var1 < 100; ++var1) {
                 if (!this.b.isEmpty()) {
                     Long var2 = (Long) this.b.iterator().next();
                     OChunk var3 = (OChunk) this.f.a(var2.longValue());
+
                     // Canary onChunkUnload hook
                     etc.getLoader().callHook(PluginLoader.Hook.CHUNK_UNLOAD, var3.chunk);
                     var3.e();
@@ -214,8 +234,59 @@ public class OChunkProviderServer implements OIChunkProvider {
 
         return this.d.a();
     }
+    
+    public OChunk regenerateChunk(int chunkX, int chunkZ)
+    {
+        Long chunkCoordIntPair = OChunkCoordIntPair.a(chunkX, chunkZ);
+        
+        // Unloading the chunk
+        OChunk unloadedChunk = (OChunk)f.a(chunkCoordIntPair.longValue());
+        if (unloadedChunk != null)
+        {
+            unloadedChunk.e();
+            b(unloadedChunk);
+            a(unloadedChunk);
+            b.remove(chunkCoordIntPair);
+            f.d(chunkCoordIntPair.longValue());
+            g.remove(unloadedChunk);
+        }
+        
+        // Generating the new chunk
+        OChunk newChunk = d.b(chunkX, chunkZ);
+        f.a(chunkCoordIntPair, newChunk);
+        g.add(newChunk);
+        if(newChunk != null)
+        {
+            newChunk.c();
+            newChunk.d();
+        }
+        newChunk.a(this, this, chunkX, chunkZ);
+        
+        // Save the new chunk, overriding the old one
+        a(newChunk);
+        b(newChunk);
+        newChunk.q = false;
+        if(e != null)
+        {
+            e.b();
+        }
+        
+        return newChunk;
+    }
 
     public boolean b() {
-        return !this.h.O;
+        return !this.h.L;
+    }
+
+    public String d() {
+        return "ServerChunkCache: " + this.f.a() + " Drop: " + this.b.size();
+    }
+
+    public List a(OEnumCreatureType var1, int var2, int var3, int var4) {
+        return this.d.a(var1, var2, var3, var4);
+    }
+
+    public OChunkPosition a(OWorld var1, String var2, int var3, int var4, int var5) {
+        return this.d.a(var1, var2, var3, var4, var5);
     }
 }

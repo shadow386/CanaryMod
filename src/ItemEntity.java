@@ -1,10 +1,10 @@
 
 public class ItemEntity extends BaseEntity {
+
     /**
      * Constructor
      */
-    public ItemEntity() {
-    }
+    public ItemEntity() {}
 
     /**
      * Constructor
@@ -47,7 +47,7 @@ public class ItemEntity extends BaseEntity {
 
     @Override
     public World getWorld() {
-        return getEntity().bb.world;
+        return getEntity().bi.world;
     }
 
 }

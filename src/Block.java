@@ -1,41 +1,43 @@
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
  * Block.java - Provides some way of making/editing blocks
  * 
  * @author James
  */
 public class Block {
+
     /**
      * Type - Used to identify blocks
      */
     public enum Type {
-        Air(0), // 
-        Stone(1), // 
-        Grass(2), // 
-        Dirt(3), // 
-        Cobblestone(4), // 
-        Wood(5), // 
-        Sapling(6), // 
-        Bedrock(7), // 
-        Water(8), // 
-        StationaryWater(9), // 
-        Lava(10), // 
-        StationaryLava(11), // 
-        Sand(12), // 
-        Gravel(13), // 
-        GoldOre(14), // 
-        IronOre(15), // 
-        CoalOre(16), // 
-        Log(17), // 
-        Leaves(18), // 
-        Sponge(19), // 
-        Glass(20), // 
-        LapisLazuliOre(21), // 
-        LapisLazuliBlock(22), // 
-        Dispenser(23), // 
-        SandStone(24), // 
+        Air(0), //
+        Stone(1), //
+        Grass(2), //
+        Dirt(3), //
+        Cobblestone(4), //
+        Wood(5), //
+        Sapling(6), //
+        Bedrock(7), //
+        Water(8), //
+        StationaryWater(9), //
+        Lava(10), //
+        StationaryLava(11), //
+        Sand(12), //
+        Gravel(13), //
+        GoldOre(14), //
+        IronOre(15), //
+        CoalOre(16), //
+        Log(17), //
+        Leaves(18), //
+        Sponge(19), //
+        Glass(20), //
+        LapisLazuliOre(21), //
+        LapisLazuliBlock(22), //
+        Dispenser(23), //
+        SandStone(24), //
         NoteBlock(25), //
         Bed(26), //
         PoweredRails(27), //
@@ -48,60 +50,60 @@ public class Block {
         PistonExtended(34), //
         Cloth(35), //
         PistonBlockFiller(36), //
-        YellowFlower(37), // 
-        RedRose(38), // 
-        BrownMushroom(39), // 
-        RedMushroom(40), // 
-        GoldBlock(41), // 
-        IronBlock(42), // 
-        DoubleStep(43), // 
-        Step(44), // 
-        Brick(45), // 
-        TNT(46), // 
-        BookShelf(47), // 
-        MossyCobblestone(48), // 
-        Obsidian(49), // 
-        Torch(50), // 
-        Fire(51), // 
-        MobSpawner(52), // 
-        WoodStairs(53), // 
-        Chest(54), // 
-        RedstoneWire(55), // 
-        DiamondOre(56), // 
-        Workbench(58), // 
-        Crops(59), // 
-        Soil(60), // 
-        Furnace(61), // 
-        BurningFurnace(62), // 
-        SignPost(63), // 
-        WoodDoor(64), // 
-        Ladder(65), // 
-        Rails(66), // 
-        CobblestoneStairs(67), // 
-        WallSign(68), // 
-        Lever(69), // 
-        StonePlate(70), // 
-        IronDoor(71), // 
-        WoodPlate(72), // 
-        RedstoneOre(73), // 
-        GlowingRedstoneOre(74), // 
-        RedstoneTorchOff(75), // 
-        RedstoneTorchOn(76), // 
-        StoneButton(77), // 
-        Snow(78), // 
-        Ice(79), // 
-        SnowBlock(80), // 
-        Cactus(81), // 
-        Clay(82), // 
-        Reed(83), // 
-        Jukebox(84), // 
-        Fence(85), // 
-        Pumpkin(86), // 
-        Netherstone(87), // 
-        SlowSand(88), // 
-        LightStone(89), // 
-        Portal(90), // 
-        JackOLantern(91), // 
+        YellowFlower(37), //
+        RedRose(38), //
+        BrownMushroom(39), //
+        RedMushroom(40), //
+        GoldBlock(41), //
+        IronBlock(42), //
+        DoubleStep(43), //
+        Step(44), //
+        Brick(45), //
+        TNT(46), //
+        BookShelf(47), //
+        MossyCobblestone(48), //
+        Obsidian(49), //
+        Torch(50), //
+        Fire(51), //
+        MobSpawner(52), //
+        WoodStairs(53), //
+        Chest(54), //
+        RedstoneWire(55), //
+        DiamondOre(56), //
+        Workbench(58), //
+        Crops(59), //
+        Soil(60), //
+        Furnace(61), //
+        BurningFurnace(62), //
+        SignPost(63), //
+        WoodDoor(64), //
+        Ladder(65), //
+        Rails(66), //
+        CobblestoneStairs(67), //
+        WallSign(68), //
+        Lever(69), //
+        StonePlate(70), //
+        IronDoor(71), //
+        WoodPlate(72), //
+        RedstoneOre(73), //
+        GlowingRedstoneOre(74), //
+        RedstoneTorchOff(75), //
+        RedstoneTorchOn(76), //
+        StoneButton(77), //
+        Snow(78), //
+        Ice(79), //
+        SnowBlock(80), //
+        Cactus(81), //
+        Clay(82), //
+        Reed(83), //
+        Jukebox(84), //
+        Fence(85), //
+        Pumpkin(86), //
+        Netherstone(87), //
+        SlowSand(88), //
+        LightStone(89), //
+        Portal(90), //
+        JackOLantern(91), //
         Cake(92), //
         RedstoneRepeaterOff(93), //
         RedstoneRepeaterOn(94), //
@@ -119,7 +121,20 @@ public class Block {
         Vine(106), //
         FenceGate(107), //
         BrickStair(108), //
-        StonebrickStair(109);
+        StonebrickStair(109), //
+        Mycelium(110), //
+        LilyPad(111), //
+        NetherBrick(112), //
+        NetherBrickFence(113), //
+        NetherBrickStair(114), //
+        NetherWart(115), //
+        EnchantmentTable(116), //
+        BrewingStand(117), //
+        Cauldron(118), //
+        EndPortal(119), //
+        EndPortalFrame(120), //
+        EndStone(121), //
+        EnderDragonEgg(122);
 
         private int                       id;
         private static Map<Integer, Type> map;
@@ -130,8 +145,9 @@ public class Block {
         }
 
         private static void add(int type, Type name) {
-            if (map == null)
+            if (map == null) {
                 map = new HashMap<Integer, Type>();
+            }
 
             map.put(type, name);
         }
@@ -144,6 +160,7 @@ public class Block {
             return map.get(type);
         }
     }
+
 
     /**
      * Face - Used for what face of the block was clicked
@@ -188,9 +205,11 @@ public class Block {
          * @return face
          */
         public static Face fromId(final int id) {
-            for (Face e : Face.values())
-                if (e.id == id)
+            for (Face e : Face.values()) {
+                if (e.id == id) {
                     return e;
+                }
+            }
             return null;
         }
     }
@@ -204,8 +223,7 @@ public class Block {
     /**
      * Create a block with no type, x, y or z.
      */
-    public Block() {
-    }
+    public Block() {}
 
     /**
      * Creates a block of specified type
@@ -213,12 +231,11 @@ public class Block {
      * @param type
      */
     public Block(int type) {
-        this.type = type;
-        blockType = Type.fromId(type);
+        this(etc.getServer().getDefaultWorld(), type, 0, 0, 0, 0);
     }
 
     /**
-     * Creates a block of specified type and specified x, y and z
+     * Creates a block of specified type, x, y and z
      * 
      * @param type
      *            Type of block
@@ -227,12 +244,12 @@ public class Block {
      * @param z
      */
     public Block(int type, int x, int y, int z) {
-        this(type, x, y, z, 0);
+        this(etc.getServer().getDefaultWorld(), type, x, y, z, 0);
     }
 
     /**
-     * Creates a block of specified type and specified world, x, y and z
-     *
+     * Creates a block of specified world, type, x, y and z
+     * 
      * @param world
      *            The world the block is in.
      * @param type
@@ -242,12 +259,11 @@ public class Block {
      * @param z
      */
     public Block(World world, int type, int x, int y, int z) {
-        this(type, x, y, z);
-        this.world = world;
+        this(world, type, x, y, z, 0);
     }
 
     /**
-     * Creates a block of specified type and specified x, y, z and data
+     * Creates a block of specified type, x, y, z and data
      * 
      * @param type
      *            Type of block
@@ -257,17 +273,12 @@ public class Block {
      * @param data
      */
     public Block(int type, int x, int y, int z, int data) {
-        this.type = type;
-        blockType = Type.fromId(type);
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.data = data;
+        this(etc.getServer().getDefaultWorld(), type, x, y, z, data);
     }
 
     /**
-     * Creates a block of specified type and specified world, x, y, z and data
-     *
+     * Creates a block of specified world, type, x, y, z and data
+     * 
      * @param type
      *            Type of block
      * @param x
@@ -277,12 +288,39 @@ public class Block {
      * @param world
      */
     public Block(World world, int type, int x, int y, int z, int data) {
-        this(type, x, y, z, data);
         this.world = world;
+        this.type = type;
+        this.blockType = Type.fromId(type);
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.data = data;
     }
 
     /**
-     * Creates a block of specified type and specified x, y and z
+     * Creates a block of specified world, type x, y, z and data
+     * 
+     * @param world
+     *            The world the block is in.
+     * @param type
+     *            Type of block
+     * @param x
+     * @param y
+     * @param z
+     * @param data
+     */
+    public Block(World world, Type type, int x, int y, int z, int data) {
+        this.world = world;
+        this.blockType = type;
+        this.type = type.getType();
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.data = data;
+    }
+
+    /**
+     * Creates a block of specified type, x, y, z and data
      * 
      * @param type
      *            Type of block
@@ -292,36 +330,91 @@ public class Block {
      * @param data
      */
     public Block(Type type, int x, int y, int z, int data) {
-        this.type = type.getType();
-        blockType = type;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.data = data;
+        this(etc.getServer().getDefaultWorld(), type, x, y, z, data);
     }
 
     /**
-     * Creates a block of specified type and specified
+     * Creates a block of specified type and data
      * 
      * @param type
      *            Type of block
      * @param data
      */
     public Block(Type type, int data) {
-        this.type = type.getType();
-        blockType = type;
-        this.data = data;
+        this(etc.getServer().getDefaultWorld(), type, 0, 0, 0, data);
     }
 
     /**
-     * Creates a block of specified type and specified
+     * Creates a block of specified type
      * 
      * @param type
      *            Type of block
      */
     public Block(Type type) {
-        this.type = type.getType();
-        blockType = type;
+        this(etc.getServer().getDefaultWorld(), type, 0, 0, 0, 0);
+    }
+
+    /**
+     * Creates a block of specified type and location
+     * 
+     * @param type
+     *            Type of block
+     * @param location
+     *            Location in the world
+     */
+    public Block(Type type, Location location) {
+        this(location.getWorld(), type, (int) location.x, (int) location.y, (int) location.z, 0);
+    }
+
+    /**
+     * Creates a block of specified type, location and data
+     * 
+     * @param type
+     *            Type of block
+     * @param location
+     *            Location in the world
+     * @param data
+     */
+    public Block(Type type, Location location, int data) {
+        this(location.getWorld(), type, (int) location.x, (int) location.y, (int) location.z, data);
+    }
+
+    /**
+     * Creates a block of specified type, location and data
+     * 
+     * @param type
+     *            Type of block
+     * @param location
+     *            Location in the world
+     * @param data
+     */
+    public Block(int type, Location location, int data) {
+        this(location.getWorld(), type, (int) location.x, (int) location.y, (int) location.z, data);
+    }
+
+    /**
+     * Creates a block of specified type, location and data
+     * 
+     * @param type
+     *            Type of block
+     * @param location
+     *            Location in the world
+     */
+    public Block(int type, Location location) {
+        this(location.getWorld(), type, (int) location.x, (int) location.y, (int) location.z, 0);
+    }
+
+    /**
+     * Creates a block of specified type, location and data
+     * 
+     * @param type
+     *            Type of block
+     * @param location
+     *            Location in the world
+     * @param data
+     */
+    public Block(Location location) {
+        this(location.getWorld(), 0, (int) location.x, (int) location.y, (int) location.z, 0);
     }
 
     /**
@@ -395,6 +488,27 @@ public class Block {
      */
     public void setZ(int z) {
         this.z = z;
+    }
+
+    /**
+     * Gets Location
+     * 
+     * @return location
+     */
+    public Location getLocation() {
+        return new Location(world, x, y, z);
+    }
+
+    /**
+     * Sets Location
+     * 
+     * @param location
+     */
+    public void setLocation(Location location) {
+        this.world = location.getWorld();
+        this.x = (int) location.x;
+        this.y = (int) location.y;
+        this.z = (int) location.z;
     }
 
     /**
@@ -489,20 +603,26 @@ public class Block {
      * @return Block at the specified Face
      */
     public Block getFace(Face face) {
-        if (face == null)
+        if (face == null) {
             return null;
+        }
 
         switch (face) {
             case Front:
                 return getRelative(1, 0, 0);
+
             case Back:
                 return getRelative(-1, 0, 0);
+
             case Top:
                 return getRelative(0, 1, 0);
+
             case Bottom:
                 return getRelative(0, -1, 0);
+
             case Left:
                 return getRelative(0, 0, 1);
+
             case Right:
                 return getRelative(0, 0, -1);
         }
@@ -573,19 +693,26 @@ public class Block {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj == null)
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         final Block other = (Block) obj;
-        if (x != other.x)
+
+        if (x != other.x) {
             return false;
-        if (y != other.y)
+        }
+        if (y != other.y) {
             return false;
-        if (z != other.z)
+        }
+        if (z != other.z) {
             return false;
-        if (!world.equals(other.world))
+        }
+        if (!world.equals(other.world)) {
             return false;
+        }
         return true;
     }
 
@@ -597,6 +724,7 @@ public class Block {
     @Override
     public int hashCode() {
         int hash = 7;
+
         hash = 97 * hash + x;
         hash = 97 * hash + y;
         hash = 97 * hash + z;
@@ -618,10 +746,11 @@ public class Block {
      * @return the {@link Cloth.Color Color}
      */
     public Cloth.Color getColor() {
-        if (!isCloth())
+        if (!isCloth()) {
             return null;
-        else
+        } else {
             return Cloth.Color.getColor(data);
+        }
     }
 
 }
