@@ -1,11 +1,12 @@
 /**
- * HookParamtersConnect.java - send/receive parameters from hooks
+ * HookParamtersDisconnect.java - send/receive parameters from hooks
  * 
  * @author James
  */
 
 public class HookParametersDisconnect extends HookParameters {
     private String leaveMessage;
+    private String reason;
     private boolean Hidden = false;
 
     public boolean isHidden() {
@@ -16,17 +17,22 @@ public class HookParametersDisconnect extends HookParameters {
         Hidden = hidden;
     }
 
-    public void setLeaveMessage(String joinMessage) {
-        this.leaveMessage = joinMessage;
+    public void setLeaveMessage(String leaveMessage) {
+        this.leaveMessage = leaveMessage;
     }
 
     public String getLeaveMessage() {
         return leaveMessage;
     }
 
-    public HookParametersDisconnect(String leaveMessage) {
+    public String getReason() {
+        return reason;
+    }
+
+    public HookParametersDisconnect(String leaveMessage, String reason) {
         super();
         this.leaveMessage = leaveMessage;
+        this.reason = reason;
     }
     
 }

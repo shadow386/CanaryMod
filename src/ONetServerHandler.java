@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.logging.Logger;
+
 import net.minecraft.server.MinecraftServer;
 
 
@@ -61,7 +62,7 @@ public class ONetServerHandler extends ONetHandler implements OICommandListener 
             this.b.d();
 
             // CanaryMod - onPlayerDisconnect Hook
-            HookParametersDisconnect hookResult = new HookParametersDisconnect(String.format(Colors.Yellow + "%s left the game.", this.e.v));
+            HookParametersDisconnect hookResult = new HookParametersDisconnect(String.format(Colors.Yellow + "%s left the game.", this.e.v), var1);
 
             hookResult = (HookParametersDisconnect) etc.getLoader().callHook(PluginLoader.Hook.PLAYER_DISCONNECT, this.e.getPlayer(), hookResult);
             if (!hookResult.isHidden()) { 
@@ -570,7 +571,7 @@ public class ONetServerHandler extends ONetHandler implements OICommandListener 
         a.info(this.e.v + " lost connection: " + var1);
 
         // CanaryMod - onPlayerDisconnect Hook
-        HookParametersDisconnect hookResult = new HookParametersDisconnect(String.format(Colors.Yellow + "%s left the server.", this.e.v));
+        HookParametersDisconnect hookResult = new HookParametersDisconnect(String.format(Colors.Yellow + "%s left the server.", this.e.v), var1);
 
         hookResult = (HookParametersDisconnect) etc.getLoader().callHook(PluginLoader.Hook.PLAYER_DISCONNECT, this.e.getPlayer(), hookResult);
         if (!hookResult.isHidden()) { 
