@@ -260,6 +260,100 @@ public class Player extends HumanEntity implements MessageReceiver {
             } while (temp > 0);
         }
     }
+    
+    /**
+     * Drop the player inventory
+     */
+    public void dropInventory() {
+        Item[] items = inventory.getContents();
+        for(Item i: items) {
+            if(i == null) {
+                continue;
+            }
+            getWorld().dropItem(getLocation(), i.getItemId(), i.getAmount(), i.getDamage());
+        }
+        inventory.clearContents();
+    }
+    
+    /**
+     * Drop the player inventory at the specified Location
+     * @param location the location to drop the inventory at
+     */
+    public void dropInventory(Location location) {
+        Item[] items = inventory.getContents();
+        for(Item i: items) {
+            if(i == null) {
+                continue;
+            }
+            getWorld().dropItem(location, i.getItemId(), i.getAmount(), i.getDamage());
+        }
+        inventory.clearContents();
+    }
+    
+    /**
+     * Drop the player inventory at the specified coordinate
+     * @param x
+     * @param y
+     * @param z
+     */
+    public void dropInventory(double x, double y, double z) {
+        Item[] items = inventory.getContents();
+        for(Item i: items) {
+            if(i == null) {
+                continue;
+            }
+            getWorld().dropItem(x, y, z, i.getItemId(), i.getAmount(), i.getDamage());
+        }
+        inventory.clearContents();
+    }
+    
+    /**
+     * Drop item form specified slot
+     * @param slot
+     */
+    public void dropItemFromSlot(int slot) {
+        Item i = inventory.getItemFromSlot(slot);
+        if(i != null) {
+            getWorld().dropItem(getLocation(), i.getItemId(), i.getAmount(), i.getDamage());
+            inventory.removeItem(slot);
+        }
+    }
+    
+    /**
+     * Drop item form specified slot at the specified Location
+     * @param slot
+     * @param location
+     */
+    public void dropItemFromSlot(int slot, Location location) {
+        Item i = inventory.getItemFromSlot(slot);
+        if(i != null) {
+            getWorld().dropItem(location, i.getItemId(), i.getAmount(), i.getDamage());
+            inventory.removeItem(slot);
+        }
+    }
+    
+    /**
+     * Drop item form specified slot at the specified coordinate
+     * @param slot
+     * @param x
+     * @param y
+     * @param z
+     */
+    public void dropItemFromSlot(int slot, double x, double y, double z) {
+        Item i = inventory.getItemFromSlot(slot);
+        if(i != null) {
+            getWorld().dropItem(x, y, z, i.getItemId(), i.getAmount(), i.getDamage());
+            inventory.removeItem(slot);
+        }
+    }
+    
+    public boolean hasItem(Item item) {
+        Item i = inventory.getItemFromId(item.getItemId());
+        if(i == null) {
+            return false;
+        }
+        return true;
+    }
 
     /**
      * Returns true if this player can use the specified command

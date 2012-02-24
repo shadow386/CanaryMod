@@ -1,4 +1,3 @@
-
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,13 +21,10 @@ public class ConnectionGuard implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
-            try {
-                cp.clearConnections();
-            } catch (SQLException e) {
-                // oh shit
-                log.log(Level.SEVERE, "Error in ConnectionGuard", e);
-            }
+        try {
+            cp.clearConnections();
+        } catch (SQLException e) {
+            log.log(Level.SEVERE, "Error in ConnectionGuard", e);
         }
     }
 }

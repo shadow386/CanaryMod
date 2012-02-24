@@ -105,15 +105,12 @@ public class ConnectionService {
 
         while (v.hasNext()) {
             CanaryConnection c = v.next();
-            if (((c.isLeased()) && (idle > c.getLastUsage()))
-                    || ((!c.isLeased()) && (idle > c.getLastUsage()))) {
+            if ((c.isLeased()) || (idle > c.getLastUsage())) {
                 //connection exists for too long
-                if (!c.getConnection().isValid(timeout)) {
-                    if (!c.isClosed()) {
-                        c.close();
-                    }
-                    connectionPool.remove(c);
+                if (!c.isClosed()) {
+                    c.close();
                 }
+                connectionPool.remove(c);
             }
         }
     }

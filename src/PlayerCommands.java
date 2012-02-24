@@ -1445,6 +1445,35 @@ public class PlayerCommands {
             }
         }
     };
+    @Command
+    public static final BaseCommand kill = new BaseCommand("<Player> - Kill the specified player", "Correct usage is: /kill [player]", 1, 2) {
+        @Override
+        void execute(MessageReceiver caller, String[] split) {
+            Player killer = (Player) caller;
+            if(split.length == 2) {
+                Player victim = etc.getServer().matchPlayer(split[1]);
+                if(victim == null) {
+                    killer.notify(split[1] + " could not be found (and therefore he has not been killed)");
+                    return;
+                }
+                if(killer.hasControlOver(victim)) {
+                    victim.dropInventory();
+                    victim.setHealth(0);
+                    killer.notify(victim.getName() + " has been killed!");
+                }
+                else {
+                    killer.notify("You cannot kill " + victim.getName());
+                }
+                
+            }
+            else {
+                killer.dropInventory();
+                killer.setHealth(0);
+                killer.notify("You suicided.");
+            }
+            
+        }
+    };
     
     @Command
     public static final BaseCommand playerinfo = new BaseCommand("<Player> Shows player data", "Correct usage is: /playerinfo <player>", 1, 2) {

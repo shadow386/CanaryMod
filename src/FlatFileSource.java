@@ -1567,6 +1567,24 @@ public class FlatFileSource extends DataSource {
 	public void loadMutedPlayers() {
         try {
         	String location = etc.getInstance().getMuteListLocation();
+        	if (!new File(location).exists()) {
+                FileWriter writer = null;
+
+                try {
+                    writer = new FileWriter(location);
+                    writer.write("# Add muted users to this file. One user each line\r\n");
+                } catch (Exception e) {
+                    log.log(Level.SEVERE, String.format("Exception while creating %s", location), e);
+                } finally {
+                    try {
+                        if (writer != null) {
+                            writer.close();
+                        }
+                    } catch (IOException e) {
+                        log.log(Level.SEVERE, String.format("Exception while closing writer for %s", location), e);
+                    }
+                }
+            }
             String line = "";
         	BufferedReader reader = new BufferedReader(new FileReader(new File(location)));
 			while ((line = reader.readLine()) != null) {
