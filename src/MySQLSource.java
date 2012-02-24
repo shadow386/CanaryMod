@@ -1,4 +1,3 @@
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -54,7 +53,7 @@ public class MySQLSource extends DataSource {
 
             try {
                 //conn = etc.getSQLConnection();
-            	conn = etc.getConnection(); //get canary connection
+                conn = etc.getConnection(); //get canary connection
                 groups = new ArrayList<Group>();
                 ps = conn.prepareStatement("SELECT * FROM " + table_groups);
                 rs = ps.executeQuery();
@@ -88,8 +87,8 @@ public class MySQLSource extends DataSource {
                         rs.close();
                     }
                     if (conn != null) {
-                       // conn.close();
-                    	conn.release();
+                        // conn.close();
+                        conn.release();
                     }
                 } catch (SQLException ex) {}
             }
@@ -120,7 +119,7 @@ public class MySQLSource extends DataSource {
                     String[] ids = rs.getString("items").split(",");
 
                     for (String str : ids) {
-                        String id = "";
+                        String id;
                         int amount = 1;
 
                         if (str.contains(" ")) {
@@ -145,7 +144,7 @@ public class MySQLSource extends DataSource {
                     }
                     if (conn != null) {
                         //conn.close();
-                    	conn.release();
+                        conn.release();
                     }
                 } catch (SQLException ex) {}
             }
@@ -195,7 +194,7 @@ public class MySQLSource extends DataSource {
                     }
                     if (conn != null) {
                         //conn.close();
-                    	conn.release();
+                        conn.release();
                     }
                 } catch (SQLException ex) {}
             }
@@ -243,7 +242,7 @@ public class MySQLSource extends DataSource {
                     }
                     if (conn != null) {
                         //conn.close();
-                    	conn.release();
+                        conn.release();
                     }
                 } catch (SQLException ex) {}
             }
@@ -277,7 +276,7 @@ public class MySQLSource extends DataSource {
                     }
                     if (conn != null) {
                        // conn.close();
-                    	conn.release();
+                        conn.release();
                     }
                 } catch (SQLException ex) {}
             }
@@ -311,7 +310,7 @@ public class MySQLSource extends DataSource {
                     }
                     if (conn != null) {
                         //conn.close();
-                    	conn.release();
+                        conn.release();
                     }
                 } catch (SQLException ex) {}
             }
@@ -350,7 +349,8 @@ public class MySQLSource extends DataSource {
                         rs.close();
                     }
                     if (conn != null) {
-                        conn.close();
+                        //conn.close();
+                        conn.release();
                     }
                 } catch (SQLException ex) {}
             }
@@ -392,7 +392,7 @@ public class MySQLSource extends DataSource {
                 }
                 if (conn != null) {
                     //conn.close();
-                	conn.release();
+                    conn.release();
                 }
             } catch (SQLException ex) {}
         }
@@ -423,7 +423,7 @@ public class MySQLSource extends DataSource {
                 }
                 if (conn != null) {
                     //conn.close();
-                	conn.release();
+                    conn.release();
                 }
             } catch (SQLException ex) {}
         }
@@ -456,7 +456,7 @@ public class MySQLSource extends DataSource {
                 }
                 if (conn != null) {
                     //conn.close();
-                	conn.release();
+                    conn.release();
                 }
             } catch (SQLException ex) {}
         }
@@ -523,7 +523,7 @@ public class MySQLSource extends DataSource {
                 }
                 if (conn != null) {
                     //conn.close();
-                	conn.release();
+                    conn.release();
                 }
             } catch (SQLException ex) {}
         }
@@ -568,7 +568,7 @@ public class MySQLSource extends DataSource {
                 }
                 if (conn != null) {
                     //conn.close();
-                	conn.release();
+                    conn.release();
                 }
             } catch (SQLException ex) {}
         }
@@ -613,7 +613,7 @@ public class MySQLSource extends DataSource {
                 }
                 if (conn != null) {
                     //conn.close();
-                	conn.release();
+                    conn.release();
                 }
             } catch (SQLException ex) {}
         }
@@ -659,7 +659,7 @@ public class MySQLSource extends DataSource {
                 }
                 if (conn != null) {
                     //conn.close();
-                	conn.release();
+                    conn.release();
                 }
             } catch (SQLException ex) {}
         }
@@ -684,7 +684,7 @@ public class MySQLSource extends DataSource {
                 }
                 if (conn != null) {
                     //conn.close();
-                	conn.release();
+                    conn.release();
                 }
             } catch (SQLException ex) {}
         }
@@ -717,7 +717,7 @@ public class MySQLSource extends DataSource {
                 }
                 if (conn != null) {
                     //conn.close();
-                	conn.release();
+                    conn.release();
                 }
             } catch (SQLException ex) {}
         }
@@ -746,7 +746,7 @@ public class MySQLSource extends DataSource {
                 }
                 if (conn != null) {
                     //conn.close();
-                	conn.release();
+                    conn.release();
                 }
             } catch (SQLException ex) {}
         }
@@ -785,8 +785,8 @@ public class MySQLSource extends DataSource {
                     rs.close();
                 }
                 if (conn != null) {
-                   // conn.close();
-                	conn.release();
+                    // conn.close();
+                    conn.release();
                 }
             } catch (SQLException ex) {}
         }
@@ -826,7 +826,7 @@ public class MySQLSource extends DataSource {
                     }
                     if (conn != null) {
                         //conn.close();
-                    	conn.release();
+                        conn.release();
                     }
                 } catch (SQLException ex) {}
             }
@@ -860,7 +860,7 @@ public class MySQLSource extends DataSource {
                 }
                 if (conn != null) {
                     //conn.close();
-                	conn.release();
+                    conn.release();
                 }
             } catch (SQLException ex) {}
         }
@@ -899,7 +899,7 @@ public class MySQLSource extends DataSource {
                 }
                 if (conn != null) {
                     //conn.close();
-                	conn.release();
+                    conn.release();
                 }
             } catch (SQLException ex) {}
         }
@@ -941,7 +941,7 @@ public class MySQLSource extends DataSource {
                 }
                 if (conn != null) {
                     //conn.close();
-                	conn.release();
+                    conn.release();
                 }
             } catch (SQLException ex) {}
         }
@@ -969,8 +969,8 @@ public class MySQLSource extends DataSource {
                     ps.close();
                 }
                 if (conn != null) {
-                   // conn.close();
-                	conn.release();
+                    // conn.close();
+                    conn.release();
                 }
             } catch (SQLException ex) {}
         }
@@ -982,18 +982,18 @@ public class MySQLSource extends DataSource {
         return this.groups;
     }
 
-	@Override
-	public void loadMutedPlayers() {
+    @Override
+    public void loadMutedPlayers() {
         CanaryConnection conn = null;
         PreparedStatement ps = null;
 
         try {
             conn = etc.getConnection();
             ps = conn.prepareStatement("SELECT * FROM " + table_muted_players);
-           ResultSet rs = ps.executeQuery();
-           while(rs.next()) {
-        	   this.mutedPlayers.add(rs.getString("name"));
-           }
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                this.mutedPlayers.add(rs.getString("name"));
+            }
         } catch (SQLException ex) {
             log.log(Level.SEVERE, "Unable to load muted players list", ex);
         } finally {
@@ -1003,24 +1003,24 @@ public class MySQLSource extends DataSource {
                 }
                 if (conn != null) {
                     //conn.close();
-                	conn.release();
+                    conn.release();
                 }
             } catch (SQLException ex) {}
         }
-		
-	}
 
-	@Override
-	public void setPlayerToMuteList(String name) {
-		CanaryConnection conn = null;
+    }
+
+    @Override
+    public void setPlayerToMuteList(String name) {
+        CanaryConnection conn = null;
         PreparedStatement ps = null;
 
         try {
             conn = etc.getConnection();
             ps = conn.prepareStatement("INSERT INTO " + table_muted_players + "(name) VALUES (?)");
             ps.setString(1, name);
-           ps.executeUpdate();
-           this.mutedPlayers.add(name);
+            ps.executeUpdate();
+            this.mutedPlayers.add(name);
 
         } catch (SQLException ex) {
             log.log(Level.SEVERE, "Unable to add player to muted players list", ex);
@@ -1031,24 +1031,24 @@ public class MySQLSource extends DataSource {
                 }
                 if (conn != null) {
                     //conn.close();
-                	conn.release();
+                    conn.release();
                 }
             } catch (SQLException ex) {}
         }
-		
-	}
 
-	@Override
-	public void removePlayerFromMuteList(String name) {
-		CanaryConnection conn = null;
+    }
+
+    @Override
+    public void removePlayerFromMuteList(String name) {
+        CanaryConnection conn = null;
         PreparedStatement ps = null;
 
         try {
             conn = etc.getConnection();
             ps = conn.prepareStatement("DELETE FROM " + table_muted_players + "WHERE name = ?");
             ps.setString(1, name);
-           ps.executeUpdate();
-           this.mutedPlayers.remove(name);
+            ps.executeUpdate();
+            this.mutedPlayers.remove(name);
 
         } catch (SQLException ex) {
             log.log(Level.SEVERE, "Unable to add player to muted players list", ex);
@@ -1059,9 +1059,9 @@ public class MySQLSource extends DataSource {
                 }
                 if (conn != null) {
                     //conn.close();
-                	conn.release();
+                    conn.release();
                 }
             } catch (SQLException ex) {}
         }
-	}
+    }
 }

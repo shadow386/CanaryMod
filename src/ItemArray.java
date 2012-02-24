@@ -71,7 +71,8 @@ public abstract class ItemArray<C extends Container<OItemStack>> {
     }
 
     /**
-     * Retrieves from the slot
+     * Retrieves an item from inventory by this item Type.
+     * May return null if the item does not exist within the inventory.
      * 
      * @param type
      * @return item
@@ -81,7 +82,8 @@ public abstract class ItemArray<C extends Container<OItemStack>> {
     }
 
     /**
-     * Retrieves from the slot
+     * Retrieves an item from inventory by this Id.
+     * May return null if the item does not exist within the inventory.
      * 
      * @param id
      * @return item

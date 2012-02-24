@@ -387,14 +387,16 @@ public class PlayerCommands {
                     } else if (player.canIgnoreRestrictions()) {
                         toGive = etc.getServer().matchPlayer(split[3]);
                     }
-                    if (temp > -1 && temp < 50) {
-                        damage = temp;
+                    if (temp > -1 && temp < 201) {
+                    	damage = temp;
                     }
                 } else if (split.length == 5) {
                     damage = Integer.parseInt(split[3]);
-                    if (damage < 0 && damage > 49) {
-                        damage = 0;
-                    }
+                    if (itemId == 383)
+                    	System.out.println("ItemID: "+itemId);
+                   	if (damage < 0 || damage > 200) {
+                   		damage = 0;
+                   	}
                     if (player.canIgnoreRestrictions()) {
                         toGive = etc.getServer().matchPlayer(split[4]);
                     }
@@ -1441,6 +1443,21 @@ public class PlayerCommands {
             } else {
                 caller.notify("Can't find player " + split[1]);
             }
+        }
+    };
+    
+    @Command
+    public static final BaseCommand kill = new BaseCommand("Kills a specified player", "Correct usage is: /kill <player>", 2, 2) {
+        @Override
+        void execute(MessageReceiver caller, String[] split) {
+            Player killer = (Player) caller;
+            Player victim = etc.getServer().matchPlayer(split[1]);
+            if(victim == null) {
+                killer.notify("You cannot kill this player, he's not here.");
+                return;
+            }
+            victim.setHealth(0);
+            killer.notify("You killed " + victim.getName());
         }
     };
     

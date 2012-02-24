@@ -5,16 +5,9 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import net.minecraft.server.MinecraftServer;
 
 
@@ -28,7 +21,7 @@ public class etc {
     private static final Logger           log = Logger.getLogger("Minecraft");
     private static final etc              instance = new etc();
     private static MinecraftServer        server;
-    private String                   	  configDir = "config/";
+    private String                        configDir = "config/";
     private String                        usersLoc = "config/users.txt", kitsLoc = "config/kits.txt", homeLoc = "config/homes.txt", warpLoc = "config/warps.txt", itemLoc = "config/items.txt", groupLoc = "config/groups.txt", enderBlocksLoc = "config/endermanblocks.txt", muteListLoc = "config/muted-players.txt";
     private String                        whitelistLoc = "config/whitelist.txt", reservelistLoc = "config/reservelist.txt", antiXRayBlocksLoc = "config/antixray.txt";
     private String                        whitelistMessage = "Not on whitelist.";
@@ -57,6 +50,7 @@ public class etc {
     private boolean                       enableAntiXRayLighting = false;
     private int[]                         opaqueAntiXRayBlocks = new int[] { 1, 2, 3, 4, 5, 7, 12, 13, 14, 15, 16, 17, 19, 21, 22, 23, 24, 25, 29, 33, 35, 36, 41, 42, 43, 45, 46, 47, 48, 49, 54, 56, 57, 58, 60, 61, 62, 73, 74, 80, 82, 84, 86, 87, 88, 89, 91, 95, 97, 98, 99, 100, 103, 110, 112, 120, 121};
     private PluginLoader.HookResult       autoHeal = PluginLoader.HookResult.DEFAULT_ACTION;
+    private PluginLoader.HookResult       protectFromSpam = PluginLoader.HookResult.DEFAULT_ACTION;
     private boolean                       showUnknownCommand = true;
     private String                        versionStr;
     private boolean                       tainted = true;
@@ -187,10 +181,17 @@ public class etc {
 
             String autoHealString = properties.getString("auto-heal", "default");
 
-            if (autoHealString.equalsIgnoreCase("true")) {
+            if (autoHealString.matches("(?i:true|on)")) {
                 autoHeal = PluginLoader.HookResult.ALLOW_ACTION;
-            } else if (autoHealString.equalsIgnoreCase("false")) {
+            } else if (autoHealString.matches("(?i:false|off)")) {
                 autoHeal = PluginLoader.HookResult.PREVENT_ACTION;
+            }
+            
+            String protectSpamString = properties.getString("protect-spam", "default");
+            if (protectSpamString.matches("(?i:true|on|always)")) {
+                protectFromSpam = PluginLoader.HookResult.ALLOW_ACTION;
+            } else if (protectSpamString.matches("(?i:false|off|never)")) {
+                protectFromSpam = PluginLoader.HookResult.PREVENT_ACTION;
             }
 
             showUnknownCommand = properties.getBoolean("show-unknown-command", true);
@@ -1196,11 +1197,7 @@ public class etc {
         mobSpawnRate = rate;
     }
 
-    /**
-     * Get y mysql connection without pooling it.
-     * @return Connection 
-     * @deprecated
-     */
+    @Deprecated
     private Connection _getSQLConnection() {
         try {
             return DriverManager.getConnection(db + "?autoReconnect=true&user=" + username + "&password=" + password);
@@ -1211,26 +1208,27 @@ public class etc {
     }
     
     private CanaryConnection _getConnection() throws SQLException {
-    	return cs.getConnection();
+        return cs.getConnection();
     }
 
     /**
      * Returns a SQL connection
      * 
      * @return sql connection
-     * @deprecated
+     * @deprecated Use {@link #getConnection() } instead.
      */
+    @Deprecated
     public static Connection getSQLConnection() {
         return getInstance()._getSQLConnection();
     }
     
     /**
      * Return a connection from the connection pool
-     * @return
+     * @return A {@link CanaryConnection}
      * @throws SQLException
      */
     public static CanaryConnection getConnection() throws SQLException {
-    	return etc.getInstance()._getConnection();
+        return etc.getInstance()._getConnection();
     }
 
     public static int floor(float paramFloat) {
@@ -1320,5 +1318,29 @@ public class etc {
      */
     public String getServerMessage() {
         return motd;
+    }
+
+    /**
+     * Returns whether to protect from spam.
+     * @return {@link PluginLoader.HookResult#ALLOW_ACTION} if it should be
+     *          protected for all messages,
+     *          {@link PluginLoader.HookResult#DEFAULT_ACTION} if it should be
+     *          protected only for chat messages, or
+     *          {@link PluginLoader.HookResult#PREVENT_ACTION} to turn it off.
+     */
+    public PluginLoader.HookResult getProtectFromSpam() {
+        return protectFromSpam;
+    }
+
+    /**
+     * Sets whether to protect from spam. This is not persistent.
+     * @param protectFromSpam {@link PluginLoader.HookResult#ALLOW_ACTION} if it
+     *          should be protected for all messages,
+     *          {@link PluginLoader.HookResult#DEFAULT_ACTION} if it should be
+     *          protected only for chat messages, or
+     *          {@link PluginLoader.HookResult#PREVENT_ACTION} to turn it off.
+     */
+    public void setProtectFromSpam(PluginLoader.HookResult protectFromSpam) {
+        this.protectFromSpam = protectFromSpam;
     }
 }

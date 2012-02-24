@@ -231,12 +231,11 @@ public class Block {
      * @param type
      */
     public Block(int type) {
-        this.type = type;
-        blockType = Type.fromId(type);
+        this(etc.getServer().getDefaultWorld(), type, 0, 0, 0, 0);
     }
 
     /**
-     * Creates a block of specified type and specified x, y and z
+     * Creates a block of specified type, x, y and z
      * 
      * @param type
      *            Type of block
@@ -245,12 +244,12 @@ public class Block {
      * @param z
      */
     public Block(int type, int x, int y, int z) {
-        this(type, x, y, z, 0);
+        this(etc.getServer().getDefaultWorld(), type, x, y, z, 0);
     }
 
     /**
-     * Creates a block of specified type and specified world, x, y and z
-     *
+     * Creates a block of specified world, type, x, y and z
+     * 
      * @param world
      *            The world the block is in.
      * @param type
@@ -260,12 +259,11 @@ public class Block {
      * @param z
      */
     public Block(World world, int type, int x, int y, int z) {
-        this(type, x, y, z);
-        this.world = world;
+        this(world, type, x, y, z, 0);
     }
 
     /**
-     * Creates a block of specified type and specified x, y, z and data
+     * Creates a block of specified type, x, y, z and data
      * 
      * @param type
      *            Type of block
@@ -275,17 +273,12 @@ public class Block {
      * @param data
      */
     public Block(int type, int x, int y, int z, int data) {
-        this.type = type;
-        blockType = Type.fromId(type);
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.data = data;
+        this(etc.getServer().getDefaultWorld(), type, x, y, z, data);
     }
 
     /**
-     * Creates a block of specified type and specified world, x, y, z and data
-     *
+     * Creates a block of specified world, type, x, y, z and data
+     * 
      * @param type
      *            Type of block
      * @param x
@@ -295,12 +288,39 @@ public class Block {
      * @param world
      */
     public Block(World world, int type, int x, int y, int z, int data) {
-        this(type, x, y, z, data);
         this.world = world;
+        this.type = type;
+        this.blockType = Type.fromId(type);
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.data = data;
     }
 
     /**
-     * Creates a block of specified type and specified x, y and z
+     * Creates a block of specified world, type x, y, z and data
+     * 
+     * @param world
+     *            The world the block is in.
+     * @param type
+     *            Type of block
+     * @param x
+     * @param y
+     * @param z
+     * @param data
+     */
+    public Block(World world, Type type, int x, int y, int z, int data) {
+        this.world = world;
+        this.blockType = type;
+        this.type = type.getType();
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.data = data;
+    }
+
+    /**
+     * Creates a block of specified type, x, y, z and data
      * 
      * @param type
      *            Type of block
@@ -310,36 +330,91 @@ public class Block {
      * @param data
      */
     public Block(Type type, int x, int y, int z, int data) {
-        this.type = type.getType();
-        blockType = type;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.data = data;
+        this(etc.getServer().getDefaultWorld(), type, x, y, z, data);
     }
 
     /**
-     * Creates a block of specified type and specified
+     * Creates a block of specified type and data
      * 
      * @param type
      *            Type of block
      * @param data
      */
     public Block(Type type, int data) {
-        this.type = type.getType();
-        blockType = type;
-        this.data = data;
+        this(etc.getServer().getDefaultWorld(), type, 0, 0, 0, data);
     }
 
     /**
-     * Creates a block of specified type and specified
+     * Creates a block of specified type
      * 
      * @param type
      *            Type of block
      */
     public Block(Type type) {
-        this.type = type.getType();
-        blockType = type;
+        this(etc.getServer().getDefaultWorld(), type, 0, 0, 0, 0);
+    }
+
+    /**
+     * Creates a block of specified type and location
+     * 
+     * @param type
+     *            Type of block
+     * @param location
+     *            Location in the world
+     */
+    public Block(Type type, Location location) {
+        this(location.getWorld(), type, (int) location.x, (int) location.y, (int) location.z, 0);
+    }
+
+    /**
+     * Creates a block of specified type, location and data
+     * 
+     * @param type
+     *            Type of block
+     * @param location
+     *            Location in the world
+     * @param data
+     */
+    public Block(Type type, Location location, int data) {
+        this(location.getWorld(), type, (int) location.x, (int) location.y, (int) location.z, data);
+    }
+
+    /**
+     * Creates a block of specified type, location and data
+     * 
+     * @param type
+     *            Type of block
+     * @param location
+     *            Location in the world
+     * @param data
+     */
+    public Block(int type, Location location, int data) {
+        this(location.getWorld(), type, (int) location.x, (int) location.y, (int) location.z, data);
+    }
+
+    /**
+     * Creates a block of specified type, location and data
+     * 
+     * @param type
+     *            Type of block
+     * @param location
+     *            Location in the world
+     */
+    public Block(int type, Location location) {
+        this(location.getWorld(), type, (int) location.x, (int) location.y, (int) location.z, 0);
+    }
+
+    /**
+     * Creates a block of specified type, location and data
+     * 
+     * @param type
+     *            Type of block
+     * @param location
+     *            Location in the world
+     * @param data
+     */
+    public Block(Location location) {
+        this(location.getWorld(), 0, (int) location.x, (int) location.y, (int) location.z, 0);
     }
 
     /**
@@ -413,6 +488,27 @@ public class Block {
      */
     public void setZ(int z) {
         this.z = z;
+    }
+
+    /**
+     * Gets Location
+     * 
+     * @return location
+     */
+    public Location getLocation() {
+        return new Location(world, x, y, z);
+    }
+
+    /**
+     * Sets Location
+     * 
+     * @param location
+     */
+    public void setLocation(Location location) {
+        this.world = location.getWorld();
+        this.x = (int) location.x;
+        this.y = (int) location.y;
+        this.z = (int) location.z;
     }
 
     /**

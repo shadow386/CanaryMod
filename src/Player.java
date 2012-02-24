@@ -1,14 +1,11 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import net.minecraft.server.MinecraftServer;
 
 
@@ -33,6 +30,8 @@ public class Player extends HumanEntity implements MessageReceiver {
     private List<String> onlyOneUseKits = new ArrayList<String>();
     private Pattern badChatPattern = Pattern.compile("[\u00a7\u2302\u00D7\u00AA\u00BA\u00AE\u00AC\u00BD\u00BC\u00A1\u00AB\u00BB]");
     private String offlineName = ""; // Allows modify command to work on offline players
+    private long lastMessage;
+    private int spamTicker;
     
     /**
      * Creates an empty player. Add the player by calling {@link #setUser(OEntityPlayerMP)}
@@ -76,6 +75,7 @@ public class Player extends HumanEntity implements MessageReceiver {
      * 
      * @param message
      */
+    @Override
     public void notify(String message) {
         if (message.length() > 0) {
             sendMessage(Colors.Rose + message);
@@ -114,10 +114,17 @@ public class Player extends HumanEntity implements MessageReceiver {
         message = message.trim();
         Matcher m = badChatPattern.matcher(message);
         String out = message;
-        if (m.find() && !this.canIgnoreRestrictions()) {    
+        if (m.find() && !this.canIgnoreRestrictions()) {
             out = message.replaceAll(m.group(), "");
         }
         message = out;
+        
+        PluginLoader.HookResult protectFromSpam = etc.getInstance().getProtectFromSpam();
+        
+        if (protectFromSpam == PluginLoader.HookResult.ALLOW_ACTION
+                && this.checkSpam())
+            this.kick("Spamming.");
+        
         if (message.startsWith("/")) {
             command(message);
         } else {
@@ -125,15 +132,37 @@ public class Player extends HumanEntity implements MessageReceiver {
                 sendMessage(Colors.Rose + "You are currently muted.");
                 return;
             }
+            
+            if (protectFromSpam == PluginLoader.HookResult.DEFAULT_ACTION
+                    && this.checkSpam())
+                this.kick("Spamming.");
+
+            List<Player> receivers = etc.getServer().getPlayerList();
+            StringBuilder prefix = new StringBuilder("<" + getColor() + getName() + Colors.White + ">");
             StringBuilder sbMessage = new StringBuilder(message);
-            if ((Boolean) etc.getLoader().callHook(PluginLoader.Hook.CHAT, new Object[] { this, sbMessage })) {
+            HookParametersChat parametersChat = (HookParametersChat) etc.getLoader().callHook(PluginLoader.Hook.CHAT, new Object[]{new HookParametersChat(this, prefix, sbMessage, receivers)});
+
+            if ((parametersChat.isCanceled())) {
                 return;
             }
 
-            String chat = "<" + getColor() + getName() + Colors.White + "> " + sbMessage.toString();
+            receivers = parametersChat.getReceivers();
+            prefix = parametersChat.getPrefix();
+            sbMessage = parametersChat.getMessage();
+
+            String chat = prefix.toString() + " " + sbMessage.toString();
 
             log.log(Level.INFO, "<" + getName() + "> " + sbMessage.toString());
-            etc.getServer().messageAll(chat);
+
+            //etc.getServer().messageAll(chat);
+            for (Player player : receivers) {
+                if (prefix.length() + message.length() >= 119) {
+                    player.sendMessage(prefix.toString());
+                    player.sendMessage(sbMessage.toString());
+                } else {
+                    player.sendMessage(chat);
+                }
+            }
         }
     }
 
@@ -206,6 +235,30 @@ public class Player extends HumanEntity implements MessageReceiver {
     public void giveItemDrop(Item item) {
         giveItemDrop(item.getItemId(), item.getAmount());
     }
+    
+    /**
+     * Check if a player has the specified item.
+     * @param item
+     * @return
+     */
+    public boolean hasItem(Item item) {
+        if(inventory.getItemFromId(item.getItemId()) == null) {
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * Check if a player has an item with the specified ID
+     * @param itemId
+     * @return
+     */
+    public boolean hasItem(int itemId) {
+        if(inventory.getItemFromId(itemId) == null) {
+            return false;
+        }
+        return true;
+    }
 
     /**
      * Gives the player this item by dropping it in front of them
@@ -230,6 +283,56 @@ public class Player extends HumanEntity implements MessageReceiver {
                 temp -= 64;
             } while (temp > 0);
         }
+    }
+    
+    /**
+     * Drops the whole inventory of this player.
+     */
+    public void dropInventory() {
+    	Item[] items = inventory.getContents();
+    	for(Item i : items) {
+    		getWorld().dropItem(getLocation(), i.getItemId(), i.getAmount(), i.getDamage());
+    	}
+    	inventory.clearContents();
+    }
+    
+    /**
+     * Drops the inventory of this player at a specified location, for example a different player
+     * @param location
+     */
+    public void dropInventory(Location location) {
+        Item[] items = inventory.getContents();
+        for(Item i : items) {
+            getWorld().dropItem(location, i.getItemId(), i.getAmount(), i.getDamage());
+        }
+        inventory.clearContents();
+    }
+    
+    /**
+     * Drops the inventory of this player at a specified coordinate defined by x, y and z
+     * @param x
+     * @param y
+     * @param z
+     */
+    public void dropInventory(double x, double y, double z) {
+        Item[] items = inventory.getContents();
+        for(Item i : items) {
+            getWorld().dropItem(x, y, z, i.getItemId(), i.getAmount(), i.getDamage());
+        }
+        inventory.clearContents();
+    }
+    
+    /**
+     * Drop an item from a specified inventory slot.
+     * @param slot
+     */
+    public void dropFromSlot(int slot) {
+        Item i = inventory.getItemFromSlot(slot);
+        if(i == null) {
+            return;
+        }
+        getWorld().dropItem(getLocation(), i.getItemId(), i.getAmount(), i.getDamage());
+        inventory.removeItem(slot);
     }
 
     /**
@@ -1277,5 +1380,23 @@ public class Player extends HumanEntity implements MessageReceiver {
      */
     public static boolean isOp(String playerName) {
         return etc.getMCServer().h.h(playerName);
+    }
+
+    private boolean checkSpam() {
+        long diff = System.currentTimeMillis() - this.lastMessage;
+        
+        if (this.spamTicker >= diff / 50)
+            this.spamTicker = 0;
+        else
+            this.spamTicker -= diff / 50;
+        
+        this.spamTicker += 20;
+        if (this.spamTicker > 200) {
+            this.kick("Spamming.");
+        }
+        
+        this.lastMessage = System.currentTimeMillis();
+
+        return false;
     }
 }

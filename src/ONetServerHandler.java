@@ -1,13 +1,6 @@
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.logging.Logger;
 import net.minecraft.server.MinecraftServer;
 
@@ -26,7 +19,7 @@ public class ONetServerHandler extends ONetHandler implements OICommandListener 
     private long j;
     private static Random k = new Random();
     private long l;
-    private int m = 0;
+    // private int m = 0; CanaryMod - disable native spam protection
     private double n;
     private double o;
     private double p;
@@ -53,9 +46,11 @@ public class ONetServerHandler extends ONetHandler implements OICommandListener 
             this.b((OPacket) (new OPacket0KeepAlive(this.i)));
         }
 
+        /* CanaryMod - disable native spam protection
         if (this.m > 0) {
             --this.m;
         }
+        */
 
     }
 
@@ -424,7 +419,7 @@ public class ONetServerHandler extends ONetHandler implements OICommandListener 
       
         // CanaryMod: Store block data to call hooks
         // CanaryMod START
-        Block blockClicked = null;
+        Block blockClicked;
         Block blockPlaced = null;
 
         // We allow admins and ops to build!
@@ -439,6 +434,7 @@ public class ONetServerHandler extends ONetHandler implements OICommandListener 
             // RIGHTCLICK or BLOCK_PLACE .. or nothing
             blockClicked = new Block(var2.world, var2.world.getBlockIdAt(var1.a, var1.b, var1.c), var1.a, var1.b, var1.c);
             blockClicked.setFaceClicked(Block.Face.fromId(var1.d));
+            
             lastRightClicked = blockClicked;
         }
 
@@ -605,10 +601,7 @@ public class ONetServerHandler extends ONetHandler implements OICommandListener 
     public void a(OPacket3Chat var1) {
         String var2 = var1.a;
         
-        this.m += 20;
-        if (this.m > 200) {
-            this.a("disconnect.spam");
-        }
+        // CanaryMod - disable native spam protection
             
         // CanaryMod: redirect chathandling to player class
         getPlayer().chat(var2);

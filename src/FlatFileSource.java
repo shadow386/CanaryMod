@@ -667,6 +667,8 @@ public class FlatFileSource extends DataSource {
                 writer.write("brewingstand:379\r\n");
                 writer.write("eyeofender:381\r\n");
                 writer.write("glisteringmelon:382\r\n");
+                writer.write("spawnegg:383\r\n");
+                writer.write("monsterplacer:383\r\n");
                 writer.write("goldrecord:2256\r\n");
                 writer.write("greenrecord:2257\r\n");
                 writer.write("blocksrecord:2258\r\n");
@@ -1566,6 +1568,25 @@ public class FlatFileSource extends DataSource {
         try {
         	String location = etc.getInstance().getMuteListLocation();
             String line = "";
+            if (!new File(location).exists()) {
+                FileWriter writer = null;
+
+                try {
+                    writer = new FileWriter(location);
+                    writer.write("# Add players here that shall be persistently muted. One player per line\r\n");
+                } catch (Exception e) {
+                    log.log(Level.SEVERE, String.format("Exception while creating %s", location), e);
+                } finally {
+                    try {
+                        if (writer != null) {
+                            writer.close();
+                        }
+                    } catch (IOException e) {
+                        log.log(Level.SEVERE, String.format("Exception while closing writer for %s", location), e);
+                    }
+                }
+            }
+            
         	BufferedReader reader = new BufferedReader(new FileReader(new File(location)));
 			while ((line = reader.readLine()) != null) {
 			   this.mutedPlayers.add(line);
