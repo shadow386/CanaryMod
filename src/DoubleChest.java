@@ -34,7 +34,7 @@ public class DoubleChest extends ItemArray<OInventoryLargeChest> implements Comp
 
     @Override
     public void update() {
-        container.d();
+        container.H_();
     }
 
     @Override

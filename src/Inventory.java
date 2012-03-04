@@ -4,6 +4,7 @@
  * @author James
  */
 public interface Inventory {
+
     /**
      * Updates this inventory, sending the new information to clients
      */

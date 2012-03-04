@@ -23,36 +23,33 @@ public abstract class BaseContainerBlock<C extends OTileEntity & OIInventory & C
     }
 
     public int getX() {
-        return container.j;
-    }
-
-    public int getY() {
-        return container.k;
-    }
-
-    public int getZ() {
         return container.l;
     }
 
+    public int getY() {
+        return container.m;
+    }
+
+    public int getZ() {
+        return container.n;
+    }
+
     public World getWorld() {
-        return container.i.world;
+        return container.k.world;
     }
 
     public Block getBlock() {
         return getWorld().getBlockAt(getX(), getY(), getZ());
     }
 
-    @Override
     public void update() {
-        container.k();
+        container.q_();
     }
 
-    @Override
     public String getName() {
         return container.getName();
     }
 
-    @Override
     public void setName(String value) {
         container.setName(value);
     }
@@ -66,21 +63,28 @@ public abstract class BaseContainerBlock<C extends OTileEntity & OIInventory & C
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj == null)
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         // Supress warning since we've already returned if class is wrong.
         @SuppressWarnings("unchecked")
         final BaseContainerBlock<C> other = (BaseContainerBlock<C>) obj;
-        if (this.getX() != other.getX())
+
+        if (this.getX() != other.getX()) {
             return false;
-        if (this.getY() != other.getY())
+        }
+        if (this.getY() != other.getY()) {
             return false;
-        if (this.getZ() != other.getZ())
+        }
+        if (this.getZ() != other.getZ()) {
             return false;
-        if (!this.getWorld().equals(other.getWorld()))
+        }
+        if (!this.getWorld().equals(other.getWorld())) {
             return false;
+        }
         return true;
     }
 
@@ -92,6 +96,7 @@ public abstract class BaseContainerBlock<C extends OTileEntity & OIInventory & C
     @Override
     public int hashCode() {
         int hash = 7;
+
         hash = 97 * hash + this.getX();
         hash = 97 * hash + this.getY();
         hash = 97 * hash + this.getZ();

@@ -1,4 +1,3 @@
-
 /**
  * BaseEntity.java - Class for accessing things that all entities share - W, X,
  * Y, health.
@@ -20,8 +19,7 @@ public class BaseEntity {
     /**
      * Interface for entities.
      */
-    public BaseEntity() {
-    }
+    public BaseEntity() {}
 
     /**
      * Returns the ID for this mob
@@ -29,7 +27,7 @@ public class BaseEntity {
      * @return id
      */
     public int getId() {
-        return entity.aW;
+        return entity.bd;
     }
 
     /**
@@ -71,7 +69,7 @@ public class BaseEntity {
      * @return x
      */
     public double getX() {
-        return entity.bf;
+        return entity.bm;
     }
 
     /**
@@ -90,7 +88,7 @@ public class BaseEntity {
      * @return y
      */
     public double getY() {
-        return entity.bg;
+        return entity.bn;
     }
 
     /**
@@ -109,7 +107,7 @@ public class BaseEntity {
      * @return z
      */
     public double getZ() {
-        return entity.bh;
+        return entity.bo;
     }
 
     /**
@@ -128,7 +126,7 @@ public class BaseEntity {
      * @return pitch
      */
     public float getPitch() {
-        return entity.bm;
+        return entity.bt;
     }
 
     /**
@@ -147,7 +145,7 @@ public class BaseEntity {
      * @return rotation
      */
     public float getRotation() {
-        return entity.bl;
+        return entity.bs;
     }
 
     /**
@@ -240,8 +238,9 @@ public class BaseEntity {
      * @return player
      */
     public Player getPlayer() {
-        if (!isPlayer())
+        if (!isPlayer()) {
             return null;
+        }
 
         OEntityPlayerMP p = (OEntityPlayerMP) entity;
 
@@ -251,19 +250,24 @@ public class BaseEntity {
     /**
      * Get the default amount of AirTicks for this entity 20 ticks per second.
      * 
-     * @return
+     * @return 300
+     * @deprecated It doesn't exist anymore P:
      */
+    @Deprecated
     public int getBaseAirTicks() {
-        return getEntity().bS;
+        return 300;
     }
 
     /**
      * Set the default amount of AirTicks for this entity 20 ticks per second.
      * 
      * @param ticks
+     * @deprecated It doesn't exist anymore
+     * @throws UnsupportedOperationException because it doesn't exist anymore
      */
+    @Deprecated
     public void setBaseAirTicks(int ticks) {
-        getEntity().bz = ticks;
+        throw new UnsupportedOperationException("BaseAirTicks has been abolished by Notch.");
     }
 
     /**
@@ -276,7 +280,7 @@ public class BaseEntity {
      * @return
      */
     public int getNoDamageTicks() {
-        return getEntity().bR;
+        return getEntity().bW;
     }
 
     /**
@@ -289,7 +293,7 @@ public class BaseEntity {
      * @param ticks
      */
     public void setNoDamageTicks(int ticks) {
-        getEntity().bB = ticks;
+        getEntity().bW = ticks;
     }
 
     /**
@@ -301,7 +305,7 @@ public class BaseEntity {
      * @return
      */
     public int getAirTicks() {
-        return getEntity().bS;
+        return getEntity().aZ();
     }
 
     /**
@@ -310,10 +314,10 @@ public class BaseEntity {
      * This gets lowered every game tick when you are under water. 20 ticks per
      * second.
      * 
-     * @return
+     * @param ticks the number of ticks you have air
      */
     public void setAirTicks(int ticks) {
-        getEntity().bC = ticks;
+        getEntity().k(ticks);
     }
 
     /**
@@ -325,7 +329,7 @@ public class BaseEntity {
      * @return
      */
     public int getFireTicks() {
-        return getEntity().bO;
+        return getEntity().c;
     }
 
     /**
@@ -334,10 +338,10 @@ public class BaseEntity {
      * This gets lowered every game tick when you are on fire. 20 ticks per
      * second.
      * 
-     * @return
+     * @param ticks the amount of fire ticks
      */
     public void setFireTicks(int ticks) {
-        getEntity().bO = ticks;
+        getEntity().c = ticks;
     }
 
     /**
@@ -345,7 +349,7 @@ public class BaseEntity {
      * @return the World this entity is in
      */
     public World getWorld() {
-        return getEntity().bb.world;
+        return getEntity().bi.world;
     }
 
     /**
@@ -354,7 +358,7 @@ public class BaseEntity {
      * @return x-motion
      */
     public double getMotionX() {
-        return entity.bi;
+        return entity.bp;
     }
 
     /**
@@ -363,7 +367,7 @@ public class BaseEntity {
      * @return y-motion
      */
     public double getMotionY() {
-        return entity.bj;
+        return entity.bq;
     }
 
     /**
@@ -372,7 +376,7 @@ public class BaseEntity {
      * @return z-motion
      */
     public double getMotionZ() {
-        return entity.bk;
+        return entity.br;
     }
 
     /**
@@ -395,8 +399,8 @@ public class BaseEntity {
      * motion to set
      */
     public void setMotionX(double motion) {
-        entity.bi = motion;
-        entity.bt = true;
+        entity.bp = motion;
+        entity.bA = true;
     }
 
     /**
@@ -406,8 +410,8 @@ public class BaseEntity {
      * motion to set
      */
     public void setMotionY(double motion) {
-        entity.bj = motion;
-        entity.bt = true;
+        entity.bq = motion;
+        entity.bA = true;
     }
 
     /**
@@ -417,15 +421,15 @@ public class BaseEntity {
      * motion to set
      */
     public void setMotionZ(double motion) {
-        entity.bk = motion;
-        entity.bt = true;
+        entity.br = motion;
+        entity.bA = true;
     }
 
     /**
      * Destroys this entity
      */
     public void destroy() {
-        entity.N();
+        entity.W();
     }
 
     /**
@@ -435,6 +439,23 @@ public class BaseEntity {
      */
     public String getName() {
         return OEntityList.b(entity);
+    }
+
+    /**
+     * Returns whether this entity is sprinting.
+     * @return the sprinting state
+     */
+    public boolean getSprinting() {
+        return entity.aY();
+    }
+
+    /**
+     * Set whether this entity is sprinting.
+     * Note: for players, this may not make them go faster.
+     * @param sprinting 
+     */
+    public void setSprinting(boolean sprinting) {
+        entity.g(sprinting);
     }
 
 }

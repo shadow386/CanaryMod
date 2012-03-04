@@ -1,0 +1,12 @@
+build/*
+files/*
+jarjar/*
+!jarjar/rules.rules
+bin/*
+build/*
+servero/*
+.settings/*
+.externalToolBuilders/*
+!.gitignore
+.project
+.classpath

@@ -2,12 +2,14 @@
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
  * Item.java - Item stuff.
  * 
  * @author James
  */
 public class Item {
+
     /**
      * Type - Used to identify items
      */
@@ -107,6 +109,36 @@ public class Item {
         CakeBlock(92), //
         RedstoneRepeaterOff(93), //
         RedstoneRepeaterOn(94), //
+        LockedChest(95), //
+        Trapdoor(96), //
+        SilverBlock(97), //
+        StoneBrick(98), //
+        HugeBrownMushroom(99), //
+        HugeRedMushroom(100), //
+        IronBars(101), //
+        GlassPane(102), //
+        MelonBlock(103), //
+        PumpkinStem(104), //
+        MelonStem(105), //
+        Vine(106), //
+        FenceGate(107), //
+        BrickStair(108), //
+        StonebrickStair(109), //
+        Mycelium(110), //
+        LilyPad(111), //
+        NetherBrick(112), //
+        NetherBrickFence(113), //
+        NetherBrickStair(114), //
+        NetherWartBlock(115), //
+        EnchantmentTable(116), //
+        BrewingStandBlock(117), //
+        CauldronBlock(118), //
+        EndPortal(119), //
+        EndPortalFrame(120), //
+        EndStone(121), //
+        EnderDragonEgg(122), //
+        RedstoneLampOff(123), //
+        RedstoneLampOn(124), //
         IronSpade(256), //
         IronPickaxe(257), //
         IronAxe(258), //
@@ -220,8 +252,35 @@ public class Item {
         CookedChicken(366), //
         RottenFlesh(367), //
         EnderPearl(368), //
+        BlazeRod(369), //
+        GhastTear(370), //
+        GoldNugget(371), //
+        NetherWart(372), //
+        Potion(373), //
+        GlassBottle(374),//
+        SpiderEye(375), //
+        FermentedSpiderEye(376), //
+        BlazePowder(377), //
+        MagmaCream(378), //
+        BrewingStand(379), //
+        Cauldron(380), //
+        EyeofEnder(381), //
+        GlisteringMelon(382), //
+        SpawnEgg(383), //
+        BottleOEnchanting(384), //
+        FireCharge(385), //
         GoldRecord(2256), //
-        GreenRecord(2257);
+        GreenRecord(2257), //
+        BlocksRecord(2258), //
+        ChirpRecord(2259), //
+        FarRecord(2260), //
+        MallRecord(2261), //
+        MellohiRecord(2262), //
+        StalRecord(2263), //
+        StradRecord(2264), //
+        WardRecord(2265), //
+        ElevenRecord(2266); //
+
         private int id;
         private static Map<Integer, Type> map;
 
@@ -231,8 +290,9 @@ public class Item {
         }
 
         private static void add(int type, Type name) {
-            if (map == null)
+            if (map == null) {
                 map = new HashMap<Integer, Type>();
+            }
 
             map.put(type, name);
         }
@@ -254,8 +314,7 @@ public class Item {
     /**
      * Create an item with an id of 1 and amount of 1
      */
-    public Item() {
-    }
+    public Item() {}
 
     /**
      * Create a new item.
@@ -400,8 +459,9 @@ public class Item {
      * @return
      */
     public static boolean isValidItem(int itemId) {
-        if (itemId < OItem.c.length)
-            return OItem.c[itemId] != null;
+        if (itemId < OItem.d.length) {
+            return OItem.d[itemId] != null;
+        }
         return false;
     }
 
@@ -461,17 +521,23 @@ public class Item {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj == null)
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         final Item other = (Item) obj;
-        if (itemId != other.itemId)
+
+        if (itemId != other.itemId) {
             return false;
-        if (amount != other.amount)
+        }
+        if (amount != other.amount) {
             return false;
-        if (slot != other.slot)
+        }
+        if (slot != other.slot) {
             return false;
+        }
         return true;
     }
 
@@ -483,6 +549,7 @@ public class Item {
     @Override
     public int hashCode() {
         int hash = 7;
+
         hash = 97 * hash + itemId;
         hash = 97 * hash + amount;
         hash = 97 * hash + slot;
@@ -515,10 +582,11 @@ public class Item {
     }
 
     public Cloth.Color getColor() {
-        if (!isCloth())
+        if (!isCloth()) {
             return null;
-        else
+        } else {
             return Cloth.Color.getColor(damage);
+        }
     }
 
     public OItemStack getBaseItem() {

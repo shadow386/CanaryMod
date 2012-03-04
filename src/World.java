@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * World.java - Interface to worlds.
  * Most of the stuff in Server.java was moved here.
@@ -14,8 +15,10 @@ public class World {
     private final OWorldServer world;
 
     public enum Type {
-        NETHER(-1),
-        NORMAL(0);
+        NETHER(-1), //
+        NORMAL(0), //
+        END(1);
+        
         private int id;
         private static Map<Integer, Type> map;
 
@@ -25,8 +28,9 @@ public class World {
         }
 
         private static void add(int type, Type name) {
-            if (map == null)
+            if (map == null) {
                 map = new HashMap<Integer, Type>();
+            }
 
             map.put(type, name);
         }
@@ -38,11 +42,17 @@ public class World {
         public static Type fromId(final int type) {
             return map.get(type);
         }
+        
+        @Override
+        public String toString() {
+            String name = this.name();
+            return name.substring(0, 1).toUpperCase() + name.substring(1);
+        }
 
     }
 
     /**
-     * Instantiated this wrapper around {@code dimension}
+     * Instantiates this wrapper around {@code world}
      * @param world the OWorldServer to wrap
      */
     public World(OWorldServer world) {
@@ -59,12 +69,12 @@ public class World {
 
     /**
      * Returns this dimension's type.
-     * Currently Nether and Normal, possibly Aether in the future
+     * Currently Nether, End and Normal
      * 
      * @return the dimension type
      */
     public Type getType() {
-        return Type.fromId(world.y.g);
+        return Type.fromId(world.t.g);
     }
 
     /**
@@ -73,7 +83,7 @@ public class World {
      * @return time server time
      */
     public long getTime() {
-        return world.l();
+        return world.o();
     }
 
     /**
@@ -83,9 +93,11 @@ public class World {
      */
     public long getRelativeTime() {
         long time = (getTime() % 24000);
+
         // Java modulus is stupid.
-        if (time < 0)
+        if (time < 0) {
             time += 24000;
+        }
         return time;
     }
 
@@ -96,8 +108,9 @@ public class World {
      *            time (-2^63 to 2^63-1)
      */
     public void setTime(long time) {
-        etc.getMCServer().a(0).a(time);
-        etc.getMCServer().a(-1).a(time);
+        etc.getServer().getWorld(-1).getWorld().a(time);
+        etc.getServer().getWorld(0).getWorld().a(time);
+        etc.getServer().getWorld(1).getWorld().a(time);
     }
 
     /**
@@ -108,9 +121,11 @@ public class World {
      */
     public void setRelativeTime(long time) {
         long margin = (time - getTime()) % 24000;
+
         // Java modulus is stupid.
-        if (margin < 0)
+        if (margin < 0) {
             margin += 24000;
+        }
         setTime(getTime() + margin);
     }
 
@@ -121,9 +136,12 @@ public class World {
      */
     public List<Mob> getMobList() {
         List<Mob> toRet = new ArrayList<Mob>();
-        for (Object o : world.g)
-            if (o instanceof OEntityMob || o instanceof OEntityGhast)
+
+        for (Object o : world.c) {
+            if (o instanceof OEntityMob || o instanceof OEntityGhast || o instanceof OEntitySlime || o instanceof OEntityEnderDragon || o instanceof OEntityLavaSlime) {
                 toRet.add(new Mob((OEntityLiving) o));
+            }
+        }
         return toRet;
     }
 
@@ -134,12 +152,15 @@ public class World {
      */
     public List<Mob> getAnimalList() {
         List<Mob> toRet = new ArrayList<Mob>();
-        for (Object o : world.g)
-            if (o instanceof OEntityAnimal)
+
+        for (Object o : world.c) {
+            if (o instanceof OEntityAnimal || o instanceof OEntitySquid || o instanceof OEntitySnowMan) {
                 toRet.add(new Mob((OEntityLiving) o));
+            }
+        }
         return toRet;
     }
-
+    
     /**
      * Returns the list of minecarts in all open chunks.
      *
@@ -147,9 +168,12 @@ public class World {
      */
     public List<Minecart> getMinecartList() {
         List<Minecart> toRet = new ArrayList<Minecart>();
-        for (Object o : world.g)
-            if (o instanceof OEntityMinecart)
+
+        for (Object o : world.c) {
+            if (o instanceof OEntityMinecart) {
                 toRet.add(((OEntityMinecart) o).cart);
+            }
+        }
         return toRet;
     }
 
@@ -160,45 +184,54 @@ public class World {
      */
     public List<Boat> getBoatList() {
         List<Boat> toRet = new ArrayList<Boat>();
-        for (Object o : world.g)
-            if (o instanceof OEntityBoat)
+
+        for (Object o : world.c) {
+            if (o instanceof OEntityBoat) {
                 toRet.add(((OEntityBoat) o).boat);
+            }
+        }
         return toRet;
     }
 
-	/**
+    /**
      * Returns the list of all entities in the server in open chunks.
      *
      * @return list of entities
      */
     public List<BaseEntity> getEntityList() {
         List<BaseEntity> toRet = new ArrayList<BaseEntity>();
-        for (Object o : world.g)
-            if (o instanceof OEntityMob || o instanceof OEntityGhast || o instanceof OEntityAnimal)
+
+        for (Object o : world.c) {
+            if (o instanceof OEntityMob || o instanceof OEntityGhast || o instanceof OEntityAnimal || o instanceof OEntitySlime || o instanceof OEntityEnderDragon || o instanceof OEntityLavaSlime || o instanceof OEntityVillager || o instanceof OEntitySquid || o instanceof OEntitySnowMan) {
                 toRet.add(new Mob((OEntityLiving) o));
-            else if (o instanceof OEntityMinecart)
+            } else if (o instanceof OEntityMinecart) {
                 toRet.add(((OEntityMinecart) o).cart);
-            else if (o instanceof OEntityBoat)
+            } else if (o instanceof OEntityBoat) {
                 toRet.add(((OEntityBoat) o).boat);
-            else if (o instanceof OEntityPlayerMP)
+            } else if (o instanceof OEntityPlayerMP) {
                 toRet.add(((OEntityPlayerMP) o).getPlayer());
-            else if (o instanceof OEntityItem)
-                toRet.add(((OEntityItem)o).item);
+            } else if (o instanceof OEntityItem) {
+                toRet.add(((OEntityItem) o).item);
+            }
+        }
         return toRet;
     }
 	
-	/**
-	* Returns the list of items in all open chunks.
-	*
-	* @return list of items
-	*/
-	public List<ItemEntity> getItemList() {
-		List<ItemEntity> toRet = new ArrayList<ItemEntity>();
-		for (Object o : world.g)
-			if (o instanceof OEntityItem)
-				toRet.add(((OEntityItem) o).item);
-		return toRet;
-	}
+    /**
+     * Returns the list of items in all open chunks.
+     *
+     * @return list of items
+     */
+    public List<ItemEntity> getItemList() {
+        List<ItemEntity> toRet = new ArrayList<ItemEntity>();
+
+        for (Object o : world.c) {
+            if (o instanceof OEntityItem) {
+                toRet.add(((OEntityItem) o).item);
+            }
+        }
+        return toRet;
+    }
 
     /**
      * Returns the list of all living entities (players, animals, mobs) in open
@@ -208,11 +241,14 @@ public class World {
      */
     public List<LivingEntity> getLivingEntityList() {
         List<LivingEntity> toRet = new ArrayList<LivingEntity>();
-        for (Object o : world.g)
-            if (o instanceof OEntityMob || o instanceof OEntityGhast || o instanceof OEntityAnimal)
+
+        for (Object o : world.c) {
+            if (o instanceof OEntityMob || o instanceof OEntityGhast || o instanceof OEntityAnimal || o instanceof OEntitySlime || o instanceof OEntityEnderDragon || o instanceof OEntityLavaSlime || o instanceof OEntityVillager || o instanceof OEntitySquid || o instanceof OEntitySnowMan) {
                 toRet.add(new Mob((OEntityLiving) o));
-            else if (o instanceof OEntityPlayerMP)
+            } else if (o instanceof OEntityPlayerMP) {
                 toRet.add(((OEntityPlayerMP) o).getPlayer());
+            }
+        }
         return toRet;
     }
 
@@ -223,11 +259,14 @@ public class World {
      */
     public List<BaseVehicle> getVehicleEntityList() {
         List<BaseVehicle> toRet = new ArrayList<BaseVehicle>();
-        for (Object o : world.g)
-            if (o instanceof OEntityMinecart)
+
+        for (Object o : world.c) {
+            if (o instanceof OEntityMinecart) {
                 toRet.add(((OEntityMinecart) o).cart);
-            else if (o instanceof OEntityBoat)
+            } else if (o instanceof OEntityBoat) {
                 toRet.add(((OEntityBoat) o).boat);
+            }
+        }
         return toRet;
     }
 
@@ -238,8 +277,9 @@ public class World {
      */
     public Location getSpawnLocation() {
         // More structure ftw
-        OWorldInfo info = world.C;
+        OWorldInfo info = world.x;
         Location spawn = new Location();
+
         spawn.x = info.c() + 0.5D;
         spawn.y = world.f(info.c(), info.e()) + 1.5D;
         spawn.z = info.e() + 0.5D;
@@ -300,10 +340,13 @@ public class World {
      */
     public boolean setBlockData(int x, int y, int z, int data) {
         boolean toRet = world.d(x, y, z, data);
-        etc.getMCServer().f.a(new OPacket53BlockChange(x, y, z, world), getType().getId());
+
+        etc.getMCServer().h.a(new OPacket53BlockChange(x, y, z, world), getType().getId());
         ComplexBlock block = getComplexBlock(x, y, z);
-        if (block != null)
+
+        if (block != null) {
             block.update();
+        }
         return toRet;
     }
 
@@ -371,16 +414,19 @@ public class World {
     public ComplexBlock getComplexBlock(int x, int y, int z) {
         ComplexBlock result = getOnlyComplexBlock(x, y, z);
 
-        if (result != null)
+        if (result != null) {
             if (result instanceof Chest) {
                 Chest chest = (Chest) result;
+
                 result = chest.findAttachedChest();
 
-                if (result != null)
+                if (result != null) {
                     return result;
-                else
+                } else {
                     return chest;
+                }
             }
+        }
 
         return result;
     }
@@ -410,19 +456,24 @@ public class World {
      */
     public ComplexBlock getOnlyComplexBlock(int x, int y, int z) {
         OTileEntity localav = world.b(x, y, z);
-        if (localav != null)
-            if (localav instanceof OTileEntityChest)
+
+        if (localav != null) {
+            if (localav instanceof OTileEntityChest) {
                 return new Chest((OTileEntityChest) localav);
-            else if (localav instanceof OTileEntitySign)
+            } else if (localav instanceof OTileEntitySign) {
                 return new Sign((OTileEntitySign) localav);
-            else if (localav instanceof OTileEntityFurnace)
+            } else if (localav instanceof OTileEntityFurnace) {
                 return new Furnace((OTileEntityFurnace) localav);
-            else if (localav instanceof OTileEntityMobSpawner)
+            } else if (localav instanceof OTileEntityMobSpawner) {
                 return new MobSpawner((OTileEntityMobSpawner) localav);
-            else if (localav instanceof OTileEntityDispenser)
+            } else if (localav instanceof OTileEntityDispenser) {
                 return new Dispenser((OTileEntityDispenser) localav);
-            else if (localav instanceof OTileEntityNote)
+            } else if (localav instanceof OTileEntityNote) {
                 return new NoteBlock((OTileEntityNote) localav);
+            } else if (localav instanceof OTileEntityBrewingStand) {
+                return new BrewingStand((OTileEntityBrewingStand) localav);
+            }
+        }
         return null;
     }
 
@@ -506,11 +557,12 @@ public class World {
      * @return returns the ItemEntity that was dropped
      */
     public ItemEntity dropItem(double x, double y, double z, int itemId, int quantity, int damage) {
-        double d1 = world.w.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
-        double d2 = world.w.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
-        double d3 = world.w.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
+        double d1 = world.r.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
+        double d2 = world.r.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
+        double d3 = world.r.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
 
         OEntityItem oei = new OEntityItem(world, x + d1, y + d2, z + d3, new OItemStack(itemId, quantity, damage));
+
         oei.c = 10;
         world.b(oei);
         return oei.item;
@@ -567,7 +619,21 @@ public class World {
      * @return true if the chunk is loaded
      */
     public boolean isChunkLoaded(int x, int y, int z) {
-        return world.M.a(x >> 4, z >> 4);
+        return isChunkLoaded(x >> 4, z >> 4);
+    }
+    
+    /**
+     * Checks to see whether or not the chunk containing the given chunk
+     * coordinates is loaded into memory.
+     *
+     * @param x
+     *            a block x-coordinate
+     * @param z
+     *            a block z-coordinate
+     * @return true if the chunk is loaded
+     */
+    public boolean isChunkLoaded(int x, int z) {
+        return world.G.a(x, z);
     }
 
     /**
@@ -609,7 +675,7 @@ public class World {
      * @return chunk
      */
     public Chunk loadChunk(int x, int z) {
-        return world.M.c(x, z).chunk;
+        return world.v.c(x, z).chunk;
     }
 
     /**
@@ -651,8 +717,8 @@ public class World {
      * @return chunk
      */
     public Chunk getChunk(int x, int z) {
-        if (world.M.a(x, z)) {
-            return world.M.b(x, z).chunk;
+        if (isChunkLoaded(x, z)) {
+            return world.G.b(x, z).chunk;
         } else {
             return null;
         }
@@ -681,7 +747,7 @@ public class World {
      * @return true if the block is being powered
      */
     public boolean isBlockPowered(int x, int y, int z) {
-        return world.q(x, y, z);
+        return world.t(x, y, z);
     }
 
     /**
@@ -707,7 +773,7 @@ public class World {
      * @return true if the block is being indirectly powered
      */
     public boolean isBlockIndirectlyPowered(int x, int y, int z) {
-        return world.r(x, y, z);
+        return world.u(x, y, z);
     }
 
     /**
@@ -715,15 +781,16 @@ public class World {
      * @param thundering whether it should thunder
      */
     public void setThundering(boolean thundering) {
-        if ((Boolean) etc.getLoader().callHook(PluginLoader.Hook.THUNDER_CHANGE, this, thundering))
+        if ((Boolean) etc.getLoader().callHook(PluginLoader.Hook.THUNDER_CHANGE, this, thundering)) {
             return;
-        world.C.a(thundering);
+        }
+        world.x.a(thundering);
 
         // Thanks to Bukkit for figuring out these numbers
         if (thundering) {
-            setThunderTime(world.w.nextInt(12000) + 3600);
+            setThunderTime(world.r.nextInt(12000) + 3600);
         } else {
-            setThunderTime(world.w.nextInt(168000) + 12000);
+            setThunderTime(world.r.nextInt(168000) + 12000);
         }
     }
 
@@ -732,7 +799,7 @@ public class World {
      * @param ticks ticks of thunder
      */
     public void setThunderTime(int ticks) {
-        world.C.b(ticks);
+        world.x.b(ticks);
     }
 
     /**
@@ -740,15 +807,16 @@ public class World {
      * @param raining whether it should rain
      */
     public void setRaining(boolean raining) {
-        if ((Boolean) etc.getLoader().callHook(PluginLoader.Hook.WEATHER_CHANGE, this, raining))
+        if ((Boolean) etc.getLoader().callHook(PluginLoader.Hook.WEATHER_CHANGE, this, raining)) {
             return;
-        world.C.b(raining);
+        }
+        world.x.b(raining);
 
         // Thanks to Bukkit for figuring out these numbers
         if (raining) {
-            setRainTime(world.w.nextInt(12000) + 3600);
+            setRainTime(world.r.nextInt(12000) + 3600);
         } else {
-            setRainTime(world.w.nextInt(168000) + 12000);
+            setRainTime(world.r.nextInt(168000) + 12000);
         }
     }
 
@@ -757,7 +825,7 @@ public class World {
      * @param ticks ticks of rain
      */
     public void setRainTime(int ticks) {
-        world.C.c(ticks);
+        world.x.c(ticks);
     }
 
     /**
@@ -765,7 +833,7 @@ public class World {
      * @return whether it's thundering
      */
     public boolean isThundering() {
-        return world.C.j();
+        return world.x.i();
     }
 
     /**
@@ -773,7 +841,7 @@ public class World {
      * @return the thunder ticks
      */
     public int getThunderTime() {
-        return world.C.k();
+        return world.x.j();
     }
 
     /**
@@ -781,7 +849,7 @@ public class World {
      * @return whether it's raining
      */
     public boolean isRaining() {
-        return world.C.l();
+        return world.x.k();
     }
 
     /**
@@ -789,7 +857,7 @@ public class World {
      * @return the rain ticks
      */
     public int getRainTime() {
-        return world.C.m();
+        return world.x.l();
     }
 
     @Override
@@ -800,6 +868,7 @@ public class World {
     @Override
     public int hashCode() {
         int hash = 7;
+
         hash = 89 * hash + (this.world != null ? this.world.hashCode() : 0);
         return hash;
     }
@@ -821,7 +890,44 @@ public class World {
      * @return seed of the world
      */
     public long getRandomSeed() {
-        return world.l();
+        return world.n();
+    }
+    
+    /**
+     * Sets a new light level with the specified level at the given location.
+     * @param x
+     * @param y
+     * @param z
+     * @param newlevel The light level.
+     */
+    public void setLightLevel(int x, int y, int z, int newlevel){
+      this.getWorld().a(OEnumSkyBlock.b, x, y, z, newlevel);
+    }
+   
+    /**
+     * Gets the light level of the given location.
+     * @param x
+     * @param y
+     * @param z
+     * @return Light level of the location.
+     */
+    public float getLightLevel(int x, int y, int z){
+        return this.getWorld().m(x, y, z);
+    }
+    /**
+     * Updates the light around the given location.
+     * @param x
+     * @param y
+     * @param z 
+     */
+    public void updateLight(int x, int y, int z){
+        for(int x2 = x-2; x2 <= x+2; x2++){
+			for(int y2 = y-2; y2 <= y+2; y2++){
+				for(int z2 = z-2; z2 <= z+2; z2++){
+				this.getWorld().b(x2,y2,z2,this.getWorld().a(x2,y2,z2),this.getWorld().c(x2,y2,z2));	
+				}
+			}
+		}
     }
 
 }

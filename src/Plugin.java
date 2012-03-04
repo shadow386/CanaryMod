@@ -1,6 +1,7 @@
 
 import java.io.File;
 
+
 /**
  * Plugin.java - Extend this to create your own plugins.
  * 
@@ -61,8 +62,7 @@ public abstract class Plugin {
     /**
      * Plugin is loaded and may now register hooks
      */
-    public void initialize() {
-    }
+    public void initialize() {}
 
     /**
      * Returns the default PropertiesFile for this plugin.
@@ -70,8 +70,10 @@ public abstract class Plugin {
      */
     public final PropertiesFile getPropertiesFile() {
         File dir = new File("plugins/" + name);
-        if (!dir.exists())
+
+        if (!dir.exists()) {
             dir.mkdirs();
+        }
         return new PropertiesFile("plugins/" + name + "/" + name + ".properties");
     }
 
@@ -82,8 +84,10 @@ public abstract class Plugin {
      */
     public final PropertiesFile getPropertiesFile(String filename) {
         File dir = new File("plugins/" + name);
-        if (!dir.exists())
+
+        if (!dir.exists()) {
             dir.mkdirs();
+        }
         return new PropertiesFile("plugins/" + name + "/" + filename + ".properties");
     }
 
@@ -93,8 +97,10 @@ public abstract class Plugin {
      */
     public final File getTxtFile() {
         File dir = new File("plugins/" + name);
-        if (!dir.exists())
+
+        if (!dir.exists()) {
             dir.mkdirs();
+        }
         return new File(dir, name + ".txt");
     }
 
@@ -105,8 +111,10 @@ public abstract class Plugin {
      */
     public final File getTxtFile(String filename) {
         File dir = new File("plugins/" + name);
-        if (!dir.exists())
+
+        if (!dir.exists()) {
             dir.mkdirs();
+        }
         return new File(dir, name + ".txt");
     }
 
@@ -117,8 +125,10 @@ public abstract class Plugin {
      */
     public final File getFile(String filetype) {
         File dir = new File("plugins/" + name);
-        if (!dir.exists())
+
+        if (!dir.exists()) {
             dir.mkdirs();
+        }
         return new File(dir, name + "." + filetype);
     }
 
@@ -130,8 +140,10 @@ public abstract class Plugin {
      */
     public final File getFile(String filename, String filetype) {
         File dir = new File("plugins/" + name);
-        if (!dir.exists())
+
+        if (!dir.exists()) {
             dir.mkdirs();
+        }
         return new File(dir, filename + "." + filetype);
     }
 
@@ -141,8 +153,10 @@ public abstract class Plugin {
      */
     public final File getDirectory() {
         File dir = new File("plugins/" + name);
-        if (!dir.exists())
+
+        if (!dir.exists()) {
             dir.mkdirs();
+        }
         return dir;
     }
 
