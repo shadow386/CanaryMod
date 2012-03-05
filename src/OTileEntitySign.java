@@ -1,6 +1,7 @@
+
 public class OTileEntitySign extends OTileEntity {
 
-    public String[] a = new String[] { "", "", "", "" };
+    public String[] a = new String[] { "", "", "", ""};
     public int b = -1;
     private boolean c = true;
 
@@ -21,7 +22,7 @@ public class OTileEntitySign extends OTileEntity {
         super.a(var1);
 
         for (int var2 = 0; var2 < 4; ++var2) {
-            this.a[var2] = var1.i("Text" + (var2 + 1));
+            this.a[var2] = var1.j("Text" + (var2 + 1));
             if (this.a[var2].length() > 15) {
                 this.a[var2] = this.a[var2].substring(0, 15);
             }
@@ -29,21 +30,17 @@ public class OTileEntitySign extends OTileEntity {
 
     }
 
-    public OPacket l() {
+    public OPacket d() {
         String[] var1 = new String[4];
 
         for (int var2 = 0; var2 < 4; ++var2) {
             var1[var2] = this.a[var2];
         }
 
-        return new OPacket130UpdateSign(this.j, this.k, this.l, var1);
+        return new OPacket130UpdateSign(this.l, this.m, this.n, var1);
     }
 
-    public boolean a() {
+    public boolean c() {
         return this.c;
-    }
-
-    public void a(boolean var1) {
-        this.c = var1;
     }
 }

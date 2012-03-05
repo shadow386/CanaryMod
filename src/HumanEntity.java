@@ -3,11 +3,11 @@
  * @author
  */
 public class HumanEntity extends LivingEntity {
+
     /**
      * Constructor
      */
-    public HumanEntity() {
-    }
+    public HumanEntity() {}
 
     /**
      * Constructor
@@ -33,12 +33,18 @@ public class HumanEntity extends LivingEntity {
      * 
      * @return
      */
+    @Override
     public String getName() {
-        return getEntity().u;
+        return getEntity().v;
     }
 
+    /**
+     * Returns the world
+     * 
+     * @return
+     */
     @Override
     public World getWorld() {
-        return etc.getMCServer().a(getEntity().v).world;
+        return etc.getMCServer().a(getEntity().w).world;
     }
 }

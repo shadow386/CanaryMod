@@ -100,8 +100,9 @@ public class HitBlox {
      * @return Block
      */
     public Block getTargetBlock() {
-        while ((getNextBlock() != null) && (getCurBlock().getType() == 0))
+        while ((getNextBlock() != null) && (getCurBlock().getType() == 0)) {
             ;
+        }
         return getCurBlock();
     }
 
@@ -111,10 +112,12 @@ public class HitBlox {
      * @param type
      */
     public void setTargetBlock(int type) {
-        while ((getNextBlock() != null) && (getCurBlock().getType() == 0))
+        while ((getNextBlock() != null) && (getCurBlock().getType() == 0)) {
             ;
-        if (getCurBlock() != null)
+        }
+        if (getCurBlock() != null) {
             player_loc.getWorld().setBlockAt(type, target_x, target_y, target_z);
+        }
     }
 
     /**
@@ -124,12 +127,14 @@ public class HitBlox {
      * @return Block
      */
     public Block getFaceBlock() {
-        while ((getNextBlock() != null) && (getCurBlock().getType() == 0))
+        while ((getNextBlock() != null) && (getCurBlock().getType() == 0)) {
             ;
-        if (getCurBlock() != null)
+        }
+        if (getCurBlock() != null) {
             return getLastBlock();
-        else
+        } else {
             return null;
+        }
     }
 
     /**
@@ -138,10 +143,12 @@ public class HitBlox {
      * @param type
      */
     public void setFaceBlock(int type) {
-        while ((getNextBlock() != null) && (getCurBlock().getType() == 0))
+        while ((getNextBlock() != null) && (getCurBlock().getType() == 0)) {
             ;
-        if (getCurBlock() != null)
+        }
+        if (getCurBlock() != null) {
             player_loc.getWorld().setBlockAt(type, last_x, last_y, last_z);
+        }
     }
 
     /**
@@ -168,8 +175,9 @@ public class HitBlox {
 
         } while ((length <= range) && ((target_x == last_x) && (target_y == last_y) && (target_z == last_z)));
 
-        if (length > range)
+        if (length > range) {
             return null;
+        }
 
         return player_loc.getWorld().getBlockAt(target_x, target_y, target_z);
     }
@@ -180,10 +188,11 @@ public class HitBlox {
      * @return Block
      */
     public Block getCurBlock() {
-        if (length > range)
+        if (length > range) {
             return null;
-        else
+        } else {
             return player_loc.getWorld().getBlockAt(target_x, target_y, target_z);
+        }
     }
 
     /**
@@ -192,8 +201,9 @@ public class HitBlox {
      * @param type
      */
     public void setCurBlock(int type) {
-        if (getCurBlock() != null)
+        if (getCurBlock() != null) {
             player_loc.getWorld().setBlockAt(type, target_x, target_y, target_z);
+        }
     }
 
     /**
@@ -211,7 +221,8 @@ public class HitBlox {
      * @param type
      */
     public void setLastBlock(int type) {
-        if (getLastBlock() != null)
+        if (getLastBlock() != null) {
             player_loc.getWorld().setBlockAt(type, last_x, last_y, last_z);
+        }
     }
 }

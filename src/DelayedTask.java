@@ -1,6 +1,7 @@
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
+
 /**
  * DelayedTask - Lets you add a task to a j.u.concurrent.DelayQueue
  * 
@@ -27,7 +28,6 @@ public class DelayedTask implements Runnable, Delayed {
     /**
      * Runs the embedded task
      */
-    @Override
     public void run() {
         task.run();
     }
@@ -38,7 +38,6 @@ public class DelayedTask implements Runnable, Delayed {
      * @param unit
      *            the TimeUnit of the result
      */
-    @Override
     public long getDelay(TimeUnit unit) {
         return unit.convert(endOfDelay - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
     }
@@ -49,13 +48,14 @@ public class DelayedTask implements Runnable, Delayed {
      * @param delayed
      *            the other object to compare to
      */
-    @Override
     public int compareTo(Delayed delayed) {
         DelayedTask other = (DelayedTask) delayed;
-        if (endOfDelay < other.endOfDelay)
+
+        if (endOfDelay < other.endOfDelay) {
             return -1;
-        else if (endOfDelay > other.endOfDelay)
+        } else if (endOfDelay > other.endOfDelay) {
             return 1;
+        }
         return 0;
     }
 }

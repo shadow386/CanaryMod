@@ -1,6 +1,7 @@
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
  * 
  * @author Meaglin
@@ -37,11 +38,13 @@ public class Cloth {
         }
 
         private static void add(int data, Color color) {
-            if (colors == null)
+            if (colors == null) {
                 colors = new Color[16];
+            }
 
-            if (colorMap == null)
+            if (colorMap == null) {
                 colorMap = new HashMap<String, Color>();
+            }
 
             colors[data] = color;
             colorMap.put(color.getName().toLowerCase(), color);
@@ -50,10 +53,11 @@ public class Cloth {
         }
 
         public static Color getColor(int data) {
-            if (data < 0 || data > 15)
+            if (data < 0 || data > 15) {
                 return null;
-            else
+            } else {
                 return colors[data];
+            }
         }
 
         public static Color getColor(String name) {

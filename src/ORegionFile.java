@@ -1,3 +1,4 @@
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
+
 
 public class ORegionFile {
 
@@ -33,6 +35,7 @@ public class ORegionFile {
 
             this.c = new RandomAccessFile(var1, "rw");
             int var2;
+
             if (this.c.length() < 4096L) {
                 for (var2 = 0; var2 < 1024; ++var2) {
                     this.c.writeInt(0);
@@ -55,6 +58,7 @@ public class ORegionFile {
             this.f = new ArrayList(var2);
 
             int var3;
+
             for (var3 = 0; var3 < var2; ++var3) {
                 this.f.add(Boolean.valueOf(true));
             }
@@ -64,6 +68,7 @@ public class ORegionFile {
             this.c.seek(0L);
 
             int var4;
+
             for (var3 = 0; var3 < 1024; ++var3) {
                 var4 = this.c.readInt();
                 this.d[var3] = var4;
@@ -84,14 +89,7 @@ public class ORegionFile {
 
     }
 
-    public synchronized int a() {
-        int var1 = this.g;
-        this.g = 0;
-        return var1;
-    }
-
-    private void a(String var1) {
-    }
+    private void a(String var1) {}
 
     private void b(String var1) {
         this.a(var1 + "\n");
@@ -116,33 +114,40 @@ public class ORegionFile {
         } else {
             try {
                 int var3 = this.e(var1, var2);
+
                 if (var3 == 0) {
                     return null;
                 } else {
                     int var4 = var3 >> 8;
                     int var5 = var3 & 255;
+
                     if (var4 + var5 > this.f.size()) {
                         this.b("READ", var1, var2, "invalid sector");
                         return null;
                     } else {
                         this.c.seek((long) (var4 * 4096));
                         int var6 = this.c.readInt();
+
                         if (var6 > 4096 * var5) {
                             this.b("READ", var1, var2, "invalid length: " + var6 + " > 4096 * " + var5);
+                            return null;
+                        } else if (var6 <= 0) {
+                            this.b("READ", var1, var2, "invalid length: " + var6 + " < 1");
                             return null;
                         } else {
                             byte var7 = this.c.readByte();
                             byte[] var8;
                             DataInputStream var9;
+
                             if (var7 == 1) {
                                 var8 = new byte[var6 - 1];
                                 this.c.read(var8);
-                                var9 = new DataInputStream(new GZIPInputStream(new ByteArrayInputStream(var8)));
+                                var9 = new DataInputStream(new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(var8))));
                                 return var9;
                             } else if (var7 == 2) {
                                 var8 = new byte[var6 - 1];
                                 this.c.read(var8);
-                                var9 = new DataInputStream(new InflaterInputStream(new ByteArrayInputStream(var8)));
+                                var9 = new DataInputStream(new BufferedInputStream(new InflaterInputStream(new ByteArrayInputStream(var8))));
                                 return var9;
                             } else {
                                 this.b("READ", var1, var2, "unknown version " + var7);
@@ -168,6 +173,7 @@ public class ORegionFile {
             int var6 = var5 >> 8;
             int var7 = var5 & 255;
             int var8 = (var4 + 5) / 4096 + 1;
+
             if (var8 >= 256) {
                 return;
             }
@@ -177,6 +183,7 @@ public class ORegionFile {
                 this.a(var6, var3, var4);
             } else {
                 int var9;
+
                 for (var9 = 0; var9 < var7; ++var9) {
                     this.f.set(var6 + var9, Boolean.valueOf(true));
                 }
@@ -184,6 +191,7 @@ public class ORegionFile {
                 var9 = this.f.indexOf(Boolean.valueOf(true));
                 int var10 = 0;
                 int var11;
+
                 if (var9 != -1) {
                     for (var11 = var9; var11 < this.f.size(); ++var11) {
                         if (var10 != 0) {
@@ -268,7 +276,7 @@ public class ORegionFile {
         this.c.writeInt(var3);
     }
 
-    public void b() throws IOException {
+    public void a() throws IOException {
         this.c.close();
     }
 

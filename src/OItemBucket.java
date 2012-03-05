@@ -1,125 +1,125 @@
+
 public class OItemBucket extends OItem {
 
     private int a;
 
     public OItemBucket(int var1, int var2) {
         super(var1);
-        this.bp = 1;
+        this.bQ = 1;
         this.a = var2;
     }
 
     public OItemStack a(OItemStack var1, OWorld var2, OEntityPlayer var3) {
         float var4 = 1.0F;
-        float var5 = var3.bo + (var3.bm - var3.bo) * var4;
-        float var6 = var3.bn + (var3.bl - var3.bn) * var4;
-        double var7 = var3.bc + (var3.bf - var3.bc) * (double) var4;
-        double var9 = var3.bd + (var3.bg - var3.bd) * (double) var4 + 1.62D - (double) var3.by;
-        double var11 = var3.be + (var3.bh - var3.be) * (double) var4;
-        OVec3D var13 = OVec3D.b(var7, var9, var11);
-        float var14 = OMathHelper.b(-var6 * 0.017453292F - 3.1415927F);
-        float var15 = OMathHelper.a(-var6 * 0.017453292F - 3.1415927F);
-        float var16 = -OMathHelper.b(-var5 * 0.017453292F);
-        float var17 = OMathHelper.a(-var5 * 0.017453292F);
-        float var18 = var15 * var16;
-        float var20 = var14 * var16;
-        double var21 = 5.0D;
-        OVec3D var23 = var13.c((double) var18 * var21, (double) var17 * var21, (double) var20 * var21);
-        OMovingObjectPosition var24 = var2.a(var13, var23, this.a == 0);
-        if (var24 == null) {
+        double var5 = var3.bj + (var3.bm - var3.bj) * (double) var4;
+        double var7 = var3.bk + (var3.bn - var3.bk) * (double) var4 + 1.62D - (double) var3.bF;
+        double var9 = var3.bl + (var3.bo - var3.bl) * (double) var4;
+        boolean var11 = this.a == 0;
+        OMovingObjectPosition var12 = this.a(var2, var3, var11);
+
+        if (var12 == null) {
             return var1;
         } else {
-            if (var24.a == OEnumMovingObjectType.a) {
-                int var25 = var24.b;
-                int var26 = var24.c;
-                int var27 = var24.d;
-                if (!var2.a(var3, var25, var26, var27)) {
+            if (var12.a == OEnumMovingObjectType.a) {
+                int var13 = var12.b;
+                int var14 = var12.c;
+                int var15 = var12.d;
+
+                if (!var2.a(var3, var13, var14, var15)) {
                     return var1;
                 }
-                // CanaryMod: Click == placed when handling an empty bukkit!
-                Block blockClicked = new Block(var2.world, var2.a(var25, var26, var27), var25, var26, var27);
-                blockClicked.setFaceClicked(Block.Face.fromId(var24.e));
-                Block blockPlaced = new Block(var2.world, 0, var25, var26, var27);
+                
+                // CanaryMod: Click == placed when handling an empty bucket!
+                Block blockClicked = new Block(var2.world, var2.a(var13, var14, var15), var13, var14, var15);
+
+                blockClicked.setFaceClicked(Block.Face.fromId(var12.e));
+                Block blockPlaced = new Block(var2.world, 0, var13, var14, var15);
 
                 if (this.a == 0) {
-                    if (!var3.c(var25, var26, var27)) {
+                    if (!var3.d(var13, var14, var15)) {
                         return var1;
                     }
-
-                    if (var2.d(var25, var26, var27) == OMaterial.g && var2.c(var25, var26, var27) == 0) {
+                    
+                    if (var2.d(var13, var14, var15) == OMaterial.g && var2.c(var13, var14, var15) == 0) {
                         // Filling a bucket with water!
-                        if (var3 instanceof OEntityPlayerMP && (Boolean) etc.getLoader().callHook(PluginLoader.Hook.ITEM_USE, ((OEntityPlayerMP) var3).getPlayer(), blockPlaced, blockClicked, new Item(var1)))
+                        if (var3 instanceof OEntityPlayerMP && (Boolean) etc.getLoader().callHook(PluginLoader.Hook.ITEM_USE, ((OEntityPlayerMP) var3).getPlayer(), blockPlaced, blockClicked, new Item(var1)) && var3.L.d) {
                             return var1;
-                        var2.e(var25, var26, var27, 0);
-                        return new OItemStack(OItem.av);
+                        }
+                        
+                        var2.e(var13, var14, var15, 0);
+
+                        return new OItemStack(OItem.aw);
                     }
 
-                    if (var2.d(var25, var26, var27) == OMaterial.h && var2.c(var25, var26, var27) == 0) {
-                        // Filling a bucket with lava!
-                        if (var3 instanceof OEntityPlayerMP && (Boolean) etc.getLoader().callHook(PluginLoader.Hook.ITEM_USE, ((OEntityPlayerMP) var3).getPlayer(), blockPlaced, blockClicked, new Item(var1)))
+                    if (var2.d(var13, var14, var15) == OMaterial.h && var2.c(var13, var14, var15) == 0) {
+                        // Filling a bucket with water!
+                        if (var3 instanceof OEntityPlayerMP && (Boolean) etc.getLoader().callHook(PluginLoader.Hook.ITEM_USE, ((OEntityPlayerMP) var3).getPlayer(), blockPlaced, blockClicked, new Item(var1)) && var3.L.d) {
                             return var1;
-
-                        var2.e(var25, var26, var27, 0);
-                        return new OItemStack(OItem.aw);
+                        }
+                        var2.e(var13, var14, var15, 0);
+                        return new OItemStack(OItem.ax);
                     }
                 } else {
                     if (this.a < 0) {
-                        return new OItemStack(OItem.au);
+                        return new OItemStack(OItem.av);
                     }
 
-                    if (var24.e == 0) {
-                        --var26;
+                    if (var12.e == 0) {
+                        --var14;
                     }
 
-                    if (var24.e == 1) {
-                        ++var26;
+                    if (var12.e == 1) {
+                        ++var14;
                     }
 
-                    if (var24.e == 2) {
-                        --var27;
+                    if (var12.e == 2) {
+                        --var15;
                     }
 
-                    if (var24.e == 3) {
-                        ++var27;
+                    if (var12.e == 3) {
+                        ++var15;
                     }
 
-                    if (var24.e == 4) {
-                        --var25;
+                    if (var12.e == 4) {
+                        --var13;
                     }
 
-                    if (var24.e == 5) {
-                        ++var25;
+                    if (var12.e == 5) {
+                        ++var13;
                     }
 
-                    if (!var3.c(var25, var26, var27)) {
+                    if (!var3.d(var13, var14, var15)) {
                         return var1;
                     }
 
-                    if (var2.f(var25, var26, var27) || !var2.d(var25, var26, var27).a()) {
-                        if (var2.y.d && this.a == OBlock.B.bA) {
-                            var2.a(var7 + 0.5D, var9 + 0.5D, var11 + 0.5D, "random.fizz", 0.5F, 2.6F + (var2.w.nextFloat() - var2.w.nextFloat()) * 0.8F);
+                    if (var2.g(var13, var14, var15) || !var2.d(var13, var14, var15).a()) {
+                        if (var2.t.d && this.a == OBlock.A.bO) {
+                            var2.a(var5 + 0.5D, var7 + 0.5D, var9 + 0.5D, "random.fizz", 0.5F, 2.6F + (var2.r.nextFloat() - var2.r.nextFloat()) * 0.8F);
 
-                            for (int var28 = 0; var28 < 8; ++var28) {
-                                var2.a("largesmoke", (double) var25 + Math.random(), (double) var26 + Math.random(), (double) var27 + Math.random(), 0.0D, 0.0D, 0.0D);
+                            for (int var16 = 0; var16 < 8; ++var16) {
+                                var2.a("largesmoke", (double) var13 + Math.random(), (double) var14 + Math.random(), (double) var15 + Math.random(), 0.0D, 0.0D, 0.0D);
                             }
                         } else {
                             // CanaryMod: bucket empty
-                            blockPlaced = new Block(var2.world, a, var25, var26, var27);
-                            if (var3 instanceof OEntityPlayerMP && (Boolean) etc.getLoader().callHook(PluginLoader.Hook.ITEM_USE, ((OEntityPlayerMP) var3).getPlayer(), blockPlaced, blockClicked, new Item(var1)))
+                            blockPlaced = new Block(var2.world, a, var13, var14, var15);
+                            if (var3 instanceof OEntityPlayerMP && (Boolean) etc.getLoader().callHook(PluginLoader.Hook.ITEM_USE, ((OEntityPlayerMP) var3).getPlayer(), blockPlaced, blockClicked, new Item(var1))) {
                                 return var1;
-                            var2.b(var25, var26, var27, this.a, 0);
+                            }
+                            var2.b(var13, var14, var15, this.a, 0);
                         }
 
-                        if (var3.K.d) {
+                        if (var3.L.d) {
                             return var1;
                         }
 
-                        return new OItemStack(OItem.au);
+                        return new OItemStack(OItem.av);
                     }
                 }
-            } else if (this.a == 0 && var24.g instanceof OEntityCow) {
+            } else if (this.a == 0 && var12.g instanceof OEntityCow) {
                 // CanaryMod hook: onCowMilk
-                if (!(Boolean) etc.getLoader().callHook(PluginLoader.Hook.COW_MILK, etc.getServer().getPlayer(var3.r), new Mob((OEntityCow) var24.g)))
-                    return new OItemStack(OItem.aE);
+                if (!(Boolean) etc.getLoader().callHook(PluginLoader.Hook.COW_MILK, etc.getServer().getPlayer(var3.v), new Mob((OEntityCow) var12.g))) {
+                    return new OItemStack(OItem.aF);
+                }
             }
 
             return var1;

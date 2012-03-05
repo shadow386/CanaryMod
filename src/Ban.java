@@ -5,8 +5,14 @@
  */
 public class Ban {
 
-    private String name = "N/A", ip = "", reason = "N/A";
-    private int    id   = -1, timestamp = -1;
+    private String name = "", ip = "", reason = etc.getInstance().getDefaultBanMessage();
+    private int    id = -1, timestamp = -1;
+    
+    public Ban() {}
+
+    public Ban(String name) {
+        this.name = name;
+    }
 
     /**
      * Returns the specified IP address for this ban. Will be empty if no IP ban
@@ -100,5 +106,21 @@ public class Ban {
      */
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof Ban))
+            return false;
+        Ban that = (Ban) other;
+        return this.name.equalsIgnoreCase(that.name) && this.ip.equals(that.ip);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 53 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 53 * hash + (this.ip != null ? this.ip.hashCode() : 0);
+        return hash;
     }
 }

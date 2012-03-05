@@ -10,13 +10,16 @@ public class Warp {
      * Warp ID - Used in database transactions
      */
     public int      ID;
+
     /**
      * Warp name
      */
+    
     /**
      * Warp group
      */
     public String   Name, Group;
+
     /**
      * Warp's location
      */

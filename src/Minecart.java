@@ -1,16 +1,19 @@
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
  * Minecart - Used for manipulating minecarts
  * 
  * @author tw1nk
  */
 public class Minecart extends BaseVehicle {
+
     /**
      * Type of minecart
      */
     public enum Type {
+
         /**
          * Base minecart.
          */
@@ -28,8 +31,9 @@ public class Minecart extends BaseVehicle {
         private static final Map<Integer, Type> lookup = new HashMap<Integer, Type>();
 
         static {
-            for (Type t : Type.values())
+            for (Type t : Type.values()) {
                 lookup.put(t.getType(), t);
+            }
         }
 
         private Type(int id) {
@@ -62,10 +66,27 @@ public class Minecart extends BaseVehicle {
      * @param z
      * @param type
      *            0=Minecart, 1=StorageCart, 2=PoweredMinecart
+     * @deprecated Use {@link #Minecart(World, double, double, double, Minecart.Type)} instead.
      */
+    @Deprecated
     public Minecart(double x, double y, double z, Type type) {
         super(new OEntityMinecart(etc.getMCServer().a(0), x, y, z, type.getType()));
         etc.getMCServer().a(0).b(entity);
+    }
+
+    /**
+     * Create a new Minecart at the given position
+     * 
+     * @param world The world for the new minecart
+     * @param x The x coordinate for the new minecart
+     * @param y The y coordinate for the new minecart
+     * @param z The z coordinate for the new minecart
+     * @param type The type for the new minecart
+     * 
+     */
+    public Minecart(World world, double x, double y, double z, Type type) {
+        super(new OEntityMinecart(world.getWorld(), x, y, z, type.getType()));
+        world.getWorld().b(entity);
     }
 
     /**
@@ -85,7 +106,7 @@ public class Minecart extends BaseVehicle {
      *            over 40 and you "kill" the mineentity
      */
     public void setDamage(int damage) {
-        getEntity().a = damage;
+        getEntity().c(damage);
     }
 
     /**
@@ -94,7 +115,7 @@ public class Minecart extends BaseVehicle {
      * @return returns current damage
      */
     public int getDamage() {
-        return getEntity().a;
+        return getEntity().l();
     }
 
     /**
@@ -103,7 +124,7 @@ public class Minecart extends BaseVehicle {
      * @return type
      */
     public Type getType() {
-        return Type.fromId(getEntity().d);
+        return Type.fromId(getEntity().a);
     }
 
     /**
@@ -113,8 +134,9 @@ public class Minecart extends BaseVehicle {
      * @return storage
      */
     public StorageMinecart getStorage() {
-        if (getType() == Type.StorageCart || getType() == Type.PoweredMinecart)
+        if (getType() == Type.StorageCart || getType() == Type.PoweredMinecart) {
             return new StorageMinecart(getEntity());
+        }
         return null;
     }
 }

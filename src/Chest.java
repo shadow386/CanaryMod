@@ -15,20 +15,24 @@ public class Chest extends BaseContainerBlock<OTileEntityChest> implements Compl
         DoubleChest result;
 
         result = tryAttachedChest(block, Block.Face.Front);
-        if (result != null)
+        if (result != null) {
             return result;
+        }
 
         result = tryAttachedChest(block, Block.Face.Back);
-        if (result != null)
+        if (result != null) {
             return result;
+        }
 
         result = tryAttachedChest(block, Block.Face.Left);
-        if (result != null)
+        if (result != null) {
             return result;
+        }
 
         result = tryAttachedChest(block, Block.Face.Right);
-        if (result != null)
+        if (result != null) {
             return result;
+        }
 
         return null;
     }
@@ -38,9 +42,10 @@ public class Chest extends BaseContainerBlock<OTileEntityChest> implements Compl
 
         if (block.blockType == Block.Type.Chest) {
             ComplexBlock cblock = getWorld().getOnlyComplexBlock(block);
+
             if ((cblock != null) && (cblock instanceof Chest)) {
                 Chest chest = (Chest) cblock;
-                // Compiler derps on uncasted.
+
                 return new DoubleChest(new OInventoryLargeChest(getName(), container, chest.container));
             }
         }

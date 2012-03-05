@@ -27,12 +27,15 @@ public class PlayerlistEntry {
     public String getName() {
         return name.substring(0, Math.min(name.length(), 16));
     }
+
     public void setName(String name) {
         this.name = name;
     }
+
     public int getPing() {
         return ping;
     }
+
     public void setPing(int ping) {
         this.ping = ping;
     }

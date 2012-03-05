@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.minecraft.server.MinecraftServer;
 
+
 public class ONetworkListenThread {
 
     public static Logger a = Logger.getLogger("Minecraft");
@@ -33,6 +34,7 @@ public class ONetworkListenThread {
     public void a(Socket var1) {
         InetAddress var2 = var1.getInetAddress();
         HashMap var3 = this.i;
+
         synchronized (this.i) {
             this.i.remove(var2);
         }
@@ -52,6 +54,7 @@ public class ONetworkListenThread {
 
     public void a() {
         int var1;
+
         for (var1 = 0; var1 < this.g.size(); ++var1) {
             ONetLoginHandler var2 = (ONetLoginHandler) this.g.get(var1);
 

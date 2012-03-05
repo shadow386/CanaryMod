@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.server.MinecraftServer;
 
+
 /**
  * Server.java - Interface to server stuff
  * Crow build 3.1.9
@@ -33,7 +34,7 @@ public class Server {
      *            Message text to send
      */
     public void messageAll(String msg) {
-        server.f.a(new OPacket3Chat(msg));
+        server.h.a(new OPacket3Chat(msg));
     }
 
     /**
@@ -41,10 +42,11 @@ public class Server {
      * 
      * @param player
      *            Name of the player to ban
-     * 
+     * @deprecated Use one of the methods in {@link BanSystem} instead.
      */
+    @Deprecated
     public void ban(String player) {
-        server.f.a(player);
+        etc.getDataSource().addBan(new Ban(player));
     }
 
     /**
@@ -55,7 +57,8 @@ public class Server {
      * 
      */
     public void unban(String player) {
-        server.f.b(player);
+        server.h.b(player);
+        etc.getDataSource().expireBan(new Ban(player));
     }
 
     /**
@@ -110,7 +113,7 @@ public class Server {
      */
     @Deprecated
     public long getTime() {
-        return server.a(0).l();
+        return server.e[0].o();
     }
 
     /**
@@ -122,9 +125,11 @@ public class Server {
     @Deprecated
     public long getRelativeTime() {
         long time = (getTime() % 24000);
+
         // Java modulus is stupid.
-        if (time < 0)
+        if (time < 0) {
             time += 24000;
+        }
         return time;
     }
 
@@ -150,9 +155,11 @@ public class Server {
     @Deprecated
     public void setRelativeTime(long time) {
         long margin = (time - getTime()) % 24000;
+
         // Java modulus is stupid.
-        if (margin < 0)
+        if (margin < 0) {
             margin += 24000;
+        }
         setTime(getTime() + margin);
     }
 
@@ -173,10 +180,11 @@ public class Server {
      */
     public Player matchPlayer(String name) {
         Player lastPlayer = null;
+
         name = name.toLowerCase();
 
-        for (OEntityPlayerMP player : (List<OEntityPlayerMP>) server.f.b) {
-            String playerName = player.u;
+        for (OEntityPlayerMP player : (List<OEntityPlayerMP>) server.h.b) {
+            String playerName = player.v;
 
             if (playerName.toLowerCase().equals(name)) {
                 // Perfect match found
@@ -185,9 +193,10 @@ public class Server {
             }
             if (playerName.toLowerCase().indexOf(name.toLowerCase()) != -1) {
                 // Partial match
-                if (lastPlayer != null)
+                if (lastPlayer != null) {
                     // Found multiple
                     return null;
+                }
                 lastPlayer = player.getPlayer();
             }
         }
@@ -202,7 +211,8 @@ public class Server {
      * @return
      */
     public Player getPlayer(String name) {
-        OEntityPlayerMP user = server.f.i(name);
+        OEntityPlayerMP user = server.h.i(name);
+
         return user == null ? null : user.getPlayer();
     }
 
@@ -213,8 +223,10 @@ public class Server {
      */
     public List<Player> getPlayerList() {
         List<Player> toRet = new ArrayList<Player>();
-        for (OEntityPlayerMP oepmp : (List<OEntityPlayerMP>) server.f.b)
+
+        for (OEntityPlayerMP oepmp : (List<OEntityPlayerMP>) server.h.b) {
             toRet.add(oepmp.getPlayer());
+        }
         return toRet;
     }
 
@@ -224,7 +236,7 @@ public class Server {
      * @return list of player names
      */
     public String getPlayerNames() {
-        return server.f.c();
+        return server.h.c();
     }
 
     /**
@@ -236,9 +248,12 @@ public class Server {
     @Deprecated
     public List<Mob> getMobList() {
         List<Mob> toRet = new ArrayList<Mob>();
-        for (Object o : server.a(0).h)
-            if (o instanceof OEntityMob || o instanceof OEntityGhast)
+
+        for (Object o : server.a(0).b) {
+            if (o instanceof OEntityMob || o instanceof OEntityGhast) {
                 toRet.add(new Mob((OEntityLiving) o));
+            }
+        }
         return toRet;
     }
 
@@ -251,9 +266,12 @@ public class Server {
     @Deprecated
     public List<Mob> getAnimalList() {
         List<Mob> toRet = new ArrayList<Mob>();
-        for (Object o : server.a(0).h)
-            if (o instanceof OEntityAnimal)
+
+        for (Object o : server.a(0).b) {
+            if (o instanceof OEntityAnimal) {
                 toRet.add(new Mob((OEntityLiving) o));
+            }
+        }
         return toRet;
     }
 
@@ -266,9 +284,12 @@ public class Server {
     @Deprecated
     public List<Minecart> getMinecartList() {
         List<Minecart> toRet = new ArrayList<Minecart>();
-        for (Object o : server.a(0).h)
-            if (o instanceof OEntityMinecart)
+
+        for (Object o : server.a(0).b) {
+            if (o instanceof OEntityMinecart) {
                 toRet.add(((OEntityMinecart) o).cart);
+            }
+        }
         return toRet;
     }
 
@@ -281,9 +302,12 @@ public class Server {
     @Deprecated
     public List<Boat> getBoatList() {
         List<Boat> toRet = new ArrayList<Boat>();
-        for (Object o : server.a(0).h)
-            if (o instanceof OEntityBoat)
+
+        for (Object o : server.a(0).b) {
+            if (o instanceof OEntityBoat) {
                 toRet.add(((OEntityBoat) o).boat);
+            }
+        }
         return toRet;
     }
 
@@ -296,15 +320,18 @@ public class Server {
     @Deprecated
     public List<BaseEntity> getEntityList() {
         List<BaseEntity> toRet = new ArrayList<BaseEntity>();
-        for (Object o : server.a(0).h)
-            if (o instanceof OEntityMob || o instanceof OEntityGhast || o instanceof OEntityAnimal)
+
+        for (Object o : server.a(0).b) {
+            if (o instanceof OEntityMob || o instanceof OEntityGhast || o instanceof OEntityAnimal) {
                 toRet.add(new Mob((OEntityLiving) o));
-            else if (o instanceof OEntityMinecart)
+            } else if (o instanceof OEntityMinecart) {
                 toRet.add(((OEntityMinecart) o).cart);
-            else if (o instanceof OEntityBoat)
+            } else if (o instanceof OEntityBoat) {
                 toRet.add(((OEntityBoat) o).boat);
-            else if (o instanceof OEntityPlayerMP)
+            } else if (o instanceof OEntityPlayerMP) {
                 toRet.add(((OEntityPlayerMP) o).getPlayer());
+            }
+        }
         return toRet;
     }
 
@@ -318,11 +345,14 @@ public class Server {
     @Deprecated
     public List<LivingEntity> getLivingEntityList() {
         List<LivingEntity> toRet = new ArrayList<LivingEntity>();
-        for (Object o : server.a(0).h)
-            if (o instanceof OEntityMob || o instanceof OEntityGhast || o instanceof OEntityAnimal)
+
+        for (Object o : server.a(0).b) {
+            if (o instanceof OEntityMob || o instanceof OEntityGhast || o instanceof OEntityAnimal) {
                 toRet.add(new Mob((OEntityLiving) o));
-            else if (o instanceof OEntityPlayerMP)
+            } else if (o instanceof OEntityPlayerMP) {
                 toRet.add(((OEntityPlayerMP) o).getPlayer());
+            }
+        }
         return toRet;
     }
 
@@ -335,11 +365,14 @@ public class Server {
     @Deprecated
     public List<BaseVehicle> getVehicleEntityList() {
         List<BaseVehicle> toRet = new ArrayList<BaseVehicle>();
-        for (Object o : server.a(0).h)
-            if (o instanceof OEntityMinecart)
+
+        for (Object o : server.a(0).b) {
+            if (o instanceof OEntityMinecart) {
                 toRet.add(((OEntityMinecart) o).cart);
-            else if (o instanceof OEntityBoat)
+            } else if (o instanceof OEntityBoat) {
                 toRet.add(((OEntityBoat) o).boat);
+            }
+        }
         return toRet;
     }
 
@@ -352,8 +385,9 @@ public class Server {
     @Deprecated
     public Location getSpawnLocation() {
         // More structure ftw
-        OWorldInfo info = server.a(0).C;
+        OWorldInfo info = server.a(0).x;
         Location spawn = new Location();
+
         spawn.x = info.c() + 0.5D;
         spawn.y = getMCServer().a(0).f(info.c(), info.e());
         spawn.z = info.e() + 0.5D;
@@ -422,10 +456,13 @@ public class Server {
     @Deprecated
     public boolean setBlockData(int x, int y, int z, int data) {
         boolean toRet = server.a(0).d(x, y, z, data);
-        etc.getMCServer().f.a(new OPacket53BlockChange(x, y, z, etc.getMCServer().a(0)), 0);
+
+        etc.getMCServer().h.a(new OPacket53BlockChange(x, y, z, etc.getMCServer().a(0)), 0);
         ComplexBlock block = getComplexBlock(x, y, z);
-        if (block != null)
+
+        if (block != null) {
             block.update();
+        }
         return toRet;
     }
 
@@ -503,16 +540,19 @@ public class Server {
     public ComplexBlock getComplexBlock(int x, int y, int z) {
         ComplexBlock result = getOnlyComplexBlock(x, y, z);
 
-        if (result != null)
+        if (result != null) {
             if (result instanceof Chest) {
                 Chest chest = (Chest) result;
+
                 result = chest.findAttachedChest();
 
-                if (result != null)
+                if (result != null) {
                     return result;
-                else
+                } else {
                     return chest;
+                }
             }
+        }
 
         return result;
     }
@@ -546,17 +586,20 @@ public class Server {
     @Deprecated
     public ComplexBlock getOnlyComplexBlock(int x, int y, int z) {
         OTileEntity localav = server.a(0).b(x, y, z);
-        if (localav != null)
-            if (localav instanceof OTileEntityChest)
+
+        if (localav != null) {
+            if (localav instanceof OTileEntityChest) {
                 return new Chest((OTileEntityChest) localav);
-            else if (localav instanceof OTileEntitySign)
+            } else if (localav instanceof OTileEntitySign) {
                 return new Sign((OTileEntitySign) localav);
-            else if (localav instanceof OTileEntityFurnace)
+            } else if (localav instanceof OTileEntityFurnace) {
                 return new Furnace((OTileEntityFurnace) localav);
-            else if (localav instanceof OTileEntityMobSpawner)
+            } else if (localav instanceof OTileEntityMobSpawner) {
                 return new MobSpawner((OTileEntityMobSpawner) localav);
-            else if (localav instanceof OTileEntityDispenser)
+            } else if (localav instanceof OTileEntityDispenser) {
                 return new Dispenser((OTileEntityDispenser) localav);
+            }
+        }
         return null;
     }
 
@@ -620,11 +663,12 @@ public class Server {
     @Deprecated
     public ItemEntity dropItem(double x, double y, double z, int itemId, int quantity) {
         OWorldServer ows = server.a(0);
-        double d1 = ows.w.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
-        double d2 = ows.w.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
-        double d3 = ows.w.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
+        double d1 = ows.r.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
+        double d2 = ows.r.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
+        double d3 = ows.r.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
 
         OEntityItem oei = new OEntityItem(ows, x + d1, y + d2, z + d3, new OItemStack(itemId, quantity, 0));
+
         oei.c = 10;
         ows.b(oei);
         return oei.item;
@@ -688,7 +732,7 @@ public class Server {
      * Saves all player inventories to file
      */
     public void saveInventories() {
-        server.f.d();
+        server.h.g();
     }
 
     /**
@@ -720,7 +764,7 @@ public class Server {
      */
     @Deprecated
     public boolean isChunkLoaded(int x, int y, int z) {
-        return server.a(0).M.a(x >> 4, z >> 4);
+        return server.a(0).v.a(x >> 4, z >> 4);
     }
 
     /**
@@ -765,7 +809,7 @@ public class Server {
      */
     @Deprecated
     public void loadChunk(int x, int z) {
-        server.a(0).M.c(x, z);
+        server.a(0).v.a(x, z);
     }
 
     /**
@@ -795,7 +839,7 @@ public class Server {
      */
     @Deprecated
     public boolean isBlockPowered(int x, int y, int z) {
-        return server.a(0).q(x, y, z);
+        return server.a(0).t(x, y, z);
     }
 
     /**
@@ -826,7 +870,7 @@ public class Server {
      */
     @Deprecated
     public boolean isBlockIndirectlyPowered(int x, int y, int z) {
-        return server.a(0).r(x, y, z);
+        return server.a(0).u(x, y, z);
     }
 
     /**
@@ -837,17 +881,20 @@ public class Server {
      */
     @Deprecated
     public void setThundering(boolean thundering) {
-        if ((Boolean) etc.getLoader().callHook(PluginLoader.Hook.THUNDER_CHANGE, getDefaultWorld(), thundering))
+        if ((Boolean) etc.getLoader().callHook(PluginLoader.Hook.THUNDER_CHANGE, getDefaultWorld(), thundering)) {
             return;
+        }
 
         OWorldServer ows = server.a(0);
-        ows.C.a(thundering);
+
+        ows.x.a(thundering);
 
         // Thanks to Bukkit for figuring out these numbers
-        if (thundering)
-            setThunderTime(ows.w.nextInt(12000) + 3600);
-        else
-            setThunderTime(ows.w.nextInt(168000) + 12000);
+        if (thundering) {
+            setThunderTime(ows.r.nextInt(12000) + 3600);
+        } else {
+            setThunderTime(ows.r.nextInt(168000) + 12000);
+        }
     }
 
     /**
@@ -858,7 +905,7 @@ public class Server {
      */
     @Deprecated
     public void setThunderTime(int ticks) {
-        server.a(0).C.b(ticks);
+        server.a(0).x.b(ticks);
     }
 
     /**
@@ -869,17 +916,20 @@ public class Server {
      */
     @Deprecated
     public void setRaining(boolean raining) {
-        if ((Boolean) etc.getLoader().callHook(PluginLoader.Hook.WEATHER_CHANGE, getDefaultWorld(), raining))
+        if ((Boolean) etc.getLoader().callHook(PluginLoader.Hook.WEATHER_CHANGE, getDefaultWorld(), raining)) {
             return;
+        }
 
         OWorldServer ows = server.a(0);
-        ows.C.b(raining);
+
+        ows.x.b(raining);
 
         // Thanks to Bukkit for figuring out these numbers
-        if (raining)
-            setRainTime(ows.w.nextInt(12000) + 3600);
-        else
-            setRainTime(ows.w.nextInt(168000) + 12000);
+        if (raining) {
+            setRainTime(ows.r.nextInt(12000) + 3600);
+        } else {
+            setRainTime(ows.r.nextInt(168000) + 12000);
+        }
     }
 
     /**
@@ -890,7 +940,7 @@ public class Server {
      */
     @Deprecated
     public void setRainTime(int ticks) {
-        server.a(0).C.c(ticks);
+        server.a(0).x.c(ticks);
     }
 
     /**
@@ -901,7 +951,7 @@ public class Server {
      */
     @Deprecated
     public boolean isThundering() {
-        return server.a(0).C.j();
+        return server.a(0).x.i();
     }
 
     /**
@@ -912,7 +962,7 @@ public class Server {
      */
     @Deprecated
     public int getThunderTime() {
-        return server.a(0).C.k();
+        return server.a(0).x.j();
     }
 
     /**
@@ -923,7 +973,7 @@ public class Server {
      */
     @Deprecated
     public boolean isRaining() {
-        return server.a(0).C.l();
+        return server.a(0).x.k();
     }
 
     /**
@@ -934,7 +984,7 @@ public class Server {
      */
     @Deprecated
     public int getRainTime() {
-        return server.a(0).C.m();
+        return server.a(0).x.l();
     }
 
     /**
@@ -968,7 +1018,7 @@ public class Server {
             if (recipe[i] instanceof Block.Type) {
                 recipe[i] = OBlock.m[((Block.Type) recipe[i]).getType()];
             } else if (recipe[i] instanceof Item.Type) {
-                recipe[i] = OItem.c[((Item.Type) recipe[i]).getId()];
+                recipe[i] = OItem.d[((Item.Type) recipe[i]).getId()];
             }
         }
         OCraftingManager.a().a(item.getBaseItem(), recipe);
@@ -986,10 +1036,25 @@ public class Server {
             if (recipe[i] instanceof Block.Type) {
                 recipe[i] = OBlock.m[((Block.Type) recipe[i]).getType()];
             } else if (recipe[i] instanceof Item.Type) {
-                recipe[i] = OItem.c[((Item.Type) recipe[i]).getId()];
+                recipe[i] = OItem.d[((Item.Type) recipe[i]).getId()];
             }
         }
         OCraftingManager.a().b(item.getBaseItem(), recipe);
+    }
+    
+    /**
+     * Adds a smelting recipe to the furnace recipes.
+     * {@code from} is the item that is put into the furnace, and should have 
+     * amount 1. {@code to} is the result after smelting.
+     * @param from The inserted item
+     * @param to The resulting item
+     * @throws IllegalArgumentException if the amount of {@code from} doesn't
+     *          equal 1.
+     */
+    public void addSmeltingRecipe(Item from, Item to) {
+        if (from.getAmount() != 1)
+            throw new IllegalArgumentException("The 'from' amount should be 1");
+        OFurnaceRecipes.a().a(from.getItemId(), to.getBaseItem());
     }
 
     /**
