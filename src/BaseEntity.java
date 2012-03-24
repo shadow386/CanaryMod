@@ -429,7 +429,7 @@ public class BaseEntity {
      * Destroys this entity
      */
     public void destroy() {
-        entity.W();
+        entity.X();
     }
 
     /**
