@@ -213,7 +213,7 @@ public class OWorld implements OIBlockAccess {
     public boolean h(int var1, int var2, int var3) {
         int var4 = this.a(var1, var2, var3);
 
-        return OBlock.m[var4] != null && OBlock.m[var4].n();
+        return OBlock.m[var4] != null && OBlock.m[var4].o();
     }
 
     public boolean i(int var1, int var2, int var3) {
