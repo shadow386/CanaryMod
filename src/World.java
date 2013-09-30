@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +11,35 @@ import java.util.Map;
  */
 public class World {
     private final OWorldServer world;
+    
+    public enum Effect {
+    	CLICK_ONE(1001),
+    	CLICK_TWO(1000),
+    	BOW_FIRE(1002),
+    	DOOR_TOGGLE(1003),
+    	EXTINGUISH(1004),
+    	RECORD_PLAY(1005),
+    	GHAST_FIRE(1007),
+    	BLAZE_FIRE_ONE(1008),
+    	BLAZE_FIRE_TWO(1009),
+    	SMOKE(2000),
+    	BLOCK_BREAK(2001),
+    	SPLASH_POTION(2002),
+    	PORTAL(2003),
+    	FLAMES(2004);
+    }
+    
+    public enum Direction {
+    	SOUTH_EAST(0), 
+    	SOUTH(1), 
+    	SOUTH_WEST(2), 
+    	EAST(3), 
+    	UP(4), 
+    	WEST(5), 
+    	NORTH_EAST(6), 
+    	NORTH(7), 
+    	NORTH_WEST(8);
+    }
 
     public enum Type {
         NETHER(-1),
@@ -822,6 +850,16 @@ public class World {
      */
     public long getRandomSeed() {
         return world.l();
+    }
+    
+    /**
+     * Adds a sound/particle effect to the world.
+     */
+    public void addEffectAt(int effect, int data, int x, int y, int z) {
+    	OPacket61DoorChange pkt = new OPacket61DoorChange(effect, x, y, z, data);
+    	for(Player p : etc.getServer().getPlayerList()) {
+		p.getUser().a.b(pkt);
+	}
     }
 
 }
